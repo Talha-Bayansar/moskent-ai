@@ -2,16 +2,21 @@ import {
   HeadContent,
   Outlet,
   Scripts,
-  createRootRoute,
+  createRootRouteWithContext,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { ReactNode } from "react"
+import type { QueryClient } from "@tanstack/react-query"
 
 import { getLocale, m } from "@/shared/i18n"
 import appCss from "@/styles.css?url"
 
-export const Route = createRootRoute({
+type AppRouterContext = {
+  queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<AppRouterContext>()({
   head: () => ({
     meta: [
       {

@@ -35,7 +35,7 @@ describe("i18n integration", () => {
   })
 
   afterEach(() => {
-    activeRouter?.dispose?.()
+    ;(activeRouter as { dispose?: () => void } | undefined)?.dispose?.()
     activeRouter = undefined
     cleanup()
   })

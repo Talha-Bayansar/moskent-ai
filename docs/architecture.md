@@ -7,7 +7,7 @@ This file records the current technical shape of the application. It must be upd
 - Application framework: TanStack Start
 - UI foundation: React, TypeScript, shadcn/ui
 - Internationalization layer: Paraglide JS
-- Intended server-state layer: TanStack Query
+- Server-state layer: TanStack Query
 - Intended forms layer: TanStack Form
 - Database layer: Neon Postgres with Drizzle ORM
 - Authentication layer: Better Auth with email/password enabled and no auth UI yet
@@ -65,6 +65,7 @@ Current intended boundaries:
 - shared utilities live in `src/shared/lib/`
 - shared i18n helpers and locale-aware UI live in `src/shared/i18n/`
 - low-level database bootstrap lives in `src/shared/database/`
+- shared TanStack Query bootstrap lives in `src/shared/query/`
 - shared auth bootstrap lives in `src/shared/auth/`
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
@@ -118,6 +119,17 @@ Current i18n workflow notes:
 - locale detection order is URL, cookie, preferred language, then base locale fallback
 - `/api/*` is excluded from locale routing behavior
 - regenerate the committed Paraglide runtime with `pnpm paraglide:compile` after changing locale settings or message files
+
+Current server-state setup:
+
+- `src/shared/query/query-client.ts`: shared `QueryClient` factory with project-level defaults
+- `src/app/create-router.ts`: creates one TanStack Query client per router instance and wires SSR query hydration through `@tanstack/react-router-ssr-query`
+
+Current server-state workflow notes:
+
+- TanStack Query is installed as shared infrastructure only; feature query keys and hooks are still `TBD`
+- query clients are created per router instance to stay compatible with SSR and future request-scoped rendering
+- route modules and pages should start consuming TanStack Query only when real server-state behavior is introduced
 
 Current auth environment requirements:
 

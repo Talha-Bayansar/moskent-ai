@@ -1,11 +1,13 @@
 # Moskent AI
 
-This repository uses TanStack Start with a feature-sliced source structure.
+This repository uses TanStack Start, TanStack Query, and a feature-sliced source structure.
 
 ## Source layout
 
 - `src/routes/`: TanStack route adapters
+- `src/app/`: router and root app bootstrap
 - `src/pages/`: page UI owned outside the routing layer
+- `src/shared/query/`: TanStack Query client bootstrap
 - `src/shared/ui/`: shared UI primitives
 - `src/shared/database/`: Neon + Drizzle foundation
 

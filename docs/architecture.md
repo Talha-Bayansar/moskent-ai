@@ -6,10 +6,11 @@ This file records the current technical shape of the application. It must be upd
 
 - Application framework: TanStack Start
 - UI foundation: React, TypeScript, shadcn/ui
-- Intended server-state layer: TanStack Query
+- Internationalization layer: Paraglide JS
+- Server-state layer: TanStack Query
 - Intended forms layer: TanStack Form
-- Intended database layer: Neon Postgres with Drizzle ORM
-- Intended authentication layer: Better Auth
+- Database layer: Neon Postgres with Drizzle ORM
+- Authentication layer: Better Auth with email/password enabled and no auth UI yet
 
 Where code and this file disagree, update this file or resolve the implementation mismatch in the same change.
 
@@ -17,21 +18,39 @@ Where code and this file disagree, update this file or resolve the implementatio
 
 Current known repository structure:
 
-- `src/routes/`: route definitions and route-facing modules
-- `src/components/`: reusable UI components
-- `src/components/ui/`: shadcn/ui-based primitives
-- `src/lib/`: shared utilities and non-UI modules
+- `src/routes/`: TanStack Start file-based route adapters only
+- `src/app/`: app-wide bootstrapping and root document composition
+- `src/pages/`: page-level UI owned outside the routing layer
+- `src/widgets/`: reusable page sections when they emerge
+- `src/features/`: user-facing feature slices when they emerge
+- `src/entities/`: domain slices, including entity-owned persistence code
+- `src/shared/`: shared UI primitives, utilities, and database infrastructure
 
-Detailed feature/module structure: `TBD`
+Current routing structure rules:
+
+- concrete routes use folder-based entries with `index.tsx`
+- nested routes use nested folders under `src/routes/`
+- dynamic segments use TanStack param folders such as `$organizationId`
+- framework-required/generated exceptions remain allowed, including `__root.tsx` and `routeTree.gen.ts`
+
+Current file naming convention:
+
+- authored files and folders use kebab-case
+- framework-required/generated names are the only exceptions
+- server-only modules use `.server.ts`
+- server functions use `.functions.ts`
 
 ## Data Flow
 
 Current high-level expectation:
 
-- UI and route modules collect user input
+- route modules compose TanStack Router configuration and hand off rendering to page modules
+- router URL input/output is localized through Paraglide rewrite helpers
+- UI and page modules collect user input
 - application logic coordinates structured actions
 - persistence flows through Postgres via Drizzle
-- auth/session state is managed through Better Auth
+- auth/session state is managed through Better Auth mounted at `/api/auth/*`
+- locale detection flows through Paraglide using URL, cookie, preferred language, then base locale fallback
 - AI-driven workflows will translate natural-language input into structured application operations
 
 Concrete request, mutation, and orchestration flows: `TBD`
@@ -40,12 +59,23 @@ Concrete request, mutation, and orchestration flows: `TBD`
 
 Current intended boundaries:
 
-- route modules should stay thin and focused on request/UI composition
-- reusable UI should live separately from feature logic
-- shared utilities should not become a catch-all for domain behavior
+- route modules stay thin and focused on TanStack Router concerns such as loaders, params, and metadata
+- page modules own route-facing UI instead of embedding long-term page components directly in route files
+- reusable UI primitives live in `src/shared/ui/`
+- shared utilities live in `src/shared/lib/`
+- shared i18n helpers and locale-aware UI live in `src/shared/i18n/`
+- low-level database bootstrap lives in `src/shared/database/`
+- shared TanStack Query bootstrap lives in `src/shared/query/`
+- shared auth bootstrap lives in `src/shared/auth/`
+- entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
 
-Concrete package/module boundaries: `TBD`
+Current dependency direction:
+
+- `app -> pages -> widgets -> features -> entities -> shared`
+- `shared` must not depend on higher layers
+- `entities` may depend only on `shared`
+- `routes` are framework adapters over `app` and `pages`, not a general-purpose logic layer
 
 ## Future Architecture Notes
 
@@ -55,6 +85,69 @@ Use this section for short forward-looking notes that are grounded in active wor
 - organization and membership model: `TBD`
 - action execution model for structured AI operations: `TBD`
 - observability and audit strategy for AI actions: `TBD`
+
+## Database Foundation
+
+Current database setup:
+
+- `src/shared/database/env.server.ts`: runtime validation for server database configuration
+- `src/shared/database/client.server.ts`: Neon serverless HTTP client wrapped by Drizzle
+- `src/shared/database/schema/index.ts`: shared schema aggregation point, including Better Auth tables
+- `src/shared/database/migrations/`: committed Drizzle migration output directory
+- `drizzle.config.ts`: Drizzle Kit configuration for schema generation and migrations
+
+Current auth setup:
+
+- `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
+- `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
+- `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
+- `src/routes/api/auth/$.ts`: TanStack Start route that forwards `GET` and `POST` requests to Better Auth
+
+Current i18n setup:
+
+- `project.inlang/settings.json`: base locale and supported locale declarations for Paraglide
+- `messages/*.json`: source translation files for English, Dutch, and Turkish
+- `src/paraglide/`: generated Paraglide runtime, server middleware, and message modules
+- `scripts/paraglide-options.mjs`: shared Paraglide compiler/plugin options
+- `server.ts`: TanStack Start server entry wrapped with `paraglideMiddleware`
+
+Current i18n workflow notes:
+
+- English is the base locale and stays unprefixed
+- Dutch and Turkish use URL prefixes such as `/nl/...` and `/tr/...`
+- locale detection order is URL, cookie, preferred language, then base locale fallback
+- `/api/*` is excluded from locale routing behavior
+- regenerate the committed Paraglide runtime with `pnpm paraglide:compile` after changing locale settings or message files
+
+Current server-state setup:
+
+- `src/shared/query/query-client.ts`: shared `QueryClient` factory with project-level defaults
+- `src/app/create-router.ts`: creates one TanStack Query client per router instance and wires SSR query hydration through `@tanstack/react-router-ssr-query`
+
+Current server-state workflow notes:
+
+- TanStack Query is installed as shared infrastructure only; feature query keys and hooks are still `TBD`
+- query clients are created per router instance to stay compatible with SSR and future request-scoped rendering
+- route modules and pages should start consuming TanStack Query only when real server-state behavior is introduced
+
+Current auth environment requirements:
+
+- `BETTER_AUTH_SECRET`: required server secret, minimum 32 characters
+- `BETTER_AUTH_URL`: required public base URL for Better Auth
+
+Current auth workflow notes:
+
+- email/password auth is enabled as the first backend auth method
+- verification emails, password reset, protected routes, and auth UI are still `TBD`
+- regenerate the committed auth schema with `pnpm auth:generate` when Better Auth config or plugins change
+- generate SQL migrations for committed schema changes with `pnpm db:generate`
+
+Current database ownership rule:
+
+- shared database code owns connection/bootstrap only
+- first real tables and relations should be added from entity slices and re-exported through the shared schema index
+- the initial database setup intentionally does not define product tables yet
 
 ## Maintenance Rule
 

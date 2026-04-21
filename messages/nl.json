@@ -1,0 +1,21 @@
+{
+  "app_title": "Moskent AI",
+  "locale_switcher_label": "Taal",
+  "locale_en": "Engels",
+  "locale_nl": "Nederlands",
+  "locale_tr": "Turks",
+  "home_eyebrow": "Feature-sliced basis",
+  "home_title": "De TanStack starter routeert nu via feature-sliced page-grenzen.",
+  "home_description": "Routebestanden blijven in src/routes als framework-adapters, terwijl de view-eigendom in src/pages leeft en gedeelde bouwblokken in src/shared staan.",
+  "home_dashboard_label": "Dashboard",
+  "home_dashboard_description": "Dunne foldergebaseerde route-entry met een page-slice erachter.",
+  "home_organization_label": "Organisatiedetail",
+  "home_organization_description": "Dynamische folderroute met TanStack's $param-benaming.",
+  "home_open_route": "Route openen",
+  "dashboard_eyebrow": "routes/dashboard/index.tsx",
+  "dashboard_title": "Dashboard",
+  "dashboard_description": "Deze pagina bestaat vooral om de map-per-route-conventie van TanStack Router te bevestigen. Het routebestand is een dunne adapter en de page-UI leeft in de pages-laag.",
+  "organization_eyebrow": "routes/organizations/$organizationId/index.tsx",
+  "organization_title": "Organisatie: {organizationId}",
+  "organization_description": "Deze dynamische folderroute demonstreert TanStack Router-padparameters terwijl domeinpersistentiebeslissingen buiten de eerste database-opzet blijven."
+}

@@ -15,7 +15,8 @@ Keep entries high-level. Do not invent detailed product scope here.
 
 | Feature Area | Status | Notes |
 | --- | --- | --- |
-| Organization and user foundation | proposed | Users belong to organizations. Exact organization model is `TBD`. |
+| Organization and user foundation | in progress | Better Auth backend foundation now exists with email/password enabled and no auth UI yet. Exact organization model is `TBD`. |
+| Multilingual interface | implemented | Paraglide JS now provides English, Dutch, and Turkish UI copy with locale-aware routing. Localized route slugs beyond the locale prefix are still `TBD`. |
 | Natural-language AI interaction | proposed | AI interaction is central to the product direction. Exact interaction model is `TBD`. |
 | Structured action execution | proposed | AI is expected to perform structured application actions. Exact action catalog is `TBD`. |
 | Activity and relationship management | proposed | Example direction includes activities and linked contacts, but concrete scope is `TBD`. |

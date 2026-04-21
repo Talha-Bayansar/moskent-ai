@@ -1,0 +1,21 @@
+{
+  "app_title": "Moskent AI",
+  "locale_switcher_label": "Language",
+  "locale_en": "English",
+  "locale_nl": "Dutch",
+  "locale_tr": "Turkish",
+  "home_eyebrow": "Feature-sliced foundation",
+  "home_title": "The TanStack starter now routes through feature-sliced page boundaries.",
+  "home_description": "Route files stay inside src/routes as framework adapters, while view ownership lives in src/pages and shared building blocks live in src/shared.",
+  "home_dashboard_label": "Dashboard",
+  "home_dashboard_description": "Thin folder-based route entry backed by a page slice.",
+  "home_organization_label": "Organization detail",
+  "home_organization_description": "Dynamic folder route using TanStack's $param naming.",
+  "home_open_route": "Open route",
+  "dashboard_eyebrow": "routes/dashboard/index.tsx",
+  "dashboard_title": "Dashboard",
+  "dashboard_description": "This page exists mainly to prove the folder-per-route TanStack Router convention. The route file is a thin adapter and the page UI lives in the pages layer.",
+  "organization_eyebrow": "routes/organizations/$organizationId/index.tsx",
+  "organization_title": "Organization: {organizationId}",
+  "organization_description": "This dynamic folder route demonstrates TanStack Router path params while keeping domain persistence decisions out of the first database setup pass."
+}

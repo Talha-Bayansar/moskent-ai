@@ -1,21 +1,34 @@
-# TanStack Start + shadcn/ui
+# Moskent AI
 
-This is a template for a new TanStack Start project with React, TypeScript, and shadcn/ui.
+This repository uses TanStack Start, TanStack Query, and a feature-sliced source structure.
 
-## Adding components
+## Source layout
 
-To add components to your app, run the following command:
+- `src/routes/`: TanStack route adapters
+- `src/app/`: router and root app bootstrap
+- `src/pages/`: page UI owned outside the routing layer
+- `src/shared/query/`: TanStack Query client bootstrap
+- `src/shared/ui/`: shared UI primitives
+- `src/shared/database/`: Neon + Drizzle foundation
+
+## Database scripts
+
+Run the database tooling with:
 
 ```bash
-npx shadcn@latest add button
+pnpm db:generate
+pnpm db:migrate
+pnpm db:studio
 ```
 
-This will place the ui components in the `components` directory.
+Set `DATABASE_URL` in your local environment before using the Drizzle scripts.
 
-## Using components
+## Adding shadcn/ui components
 
-To use the components in your app, import them as follows:
+Generated shared primitives should live under `src/shared/ui/`. Update `components.json` aliases if the shadcn CLI needs to be rerun.
+
+## Using shared UI
 
 ```tsx
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button"
 ```

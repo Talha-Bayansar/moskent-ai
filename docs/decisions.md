@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-21 - Organization roles and permissions are owned by Better Auth's organization plugin
+
+- Status: accepted
+- Context: the project needs organization-aware auth infrastructure and dynamic per-organization roles before product workflows and UI are defined.
+- Decision: enable Better Auth's organization plugin with dynamic access control, keep `owner` / `admin` / `member` as the shared baseline roles, and store per-organization custom role permissions in Better Auth's generated `organization_role` table.
+- Why: this provides an organization-aware auth foundation without inventing parallel app-owned ACL tables before the product model is stable.
+- Impact: shared auth config owns the permission catalog and baseline roles, auth schema generation now includes organization-related tables, and future feature work should build on Better Auth's organization APIs instead of introducing a second role system by default.
+- Follow-up: decide later which domain resources beyond organization management should be added to the shared permission catalog.
+
 ## 2026-04-21 - TanStack Start is the application foundation
 
 - Status: accepted
@@ -93,7 +102,7 @@ Use this template for new entries:
 - Decision: place the Better Auth server/client/bootstrap code under `src/shared/auth/`, mount its handler through TanStack Start at `/api/auth/*`, commit the generated Drizzle auth schema, and generate SQL migrations through the existing Drizzle workflow.
 - Why: this keeps auth as an explicit shared infrastructure boundary, avoids hiding required tables behind runtime-only setup, and gives future contributors one documented place to update auth config and schema generation.
 - Impact: Better Auth config changes should be followed by `pnpm auth:generate`, and resulting schema changes should be turned into committed Drizzle migrations with `pnpm db:generate`.
-- Follow-up: add session access patterns and route protection conventions once authenticated application flows exist.
+- Follow-up: add session access patterns, organization-aware route protection conventions, and auth UI once authenticated application flows exist.
 
 ## 2026-04-21 - Paraglide JS is the initial i18n solution with English at the root URL
 

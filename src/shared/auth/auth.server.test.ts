@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 
 describe("createAuth", () => {
   it(
-    "creates a Better Auth instance with a handler and server api",
+    "creates a Better Auth instance with organization plugin APIs",
     async () => {
       process.env.BETTER_AUTH_SECRET = "12345678901234567890123456789012"
       process.env.BETTER_AUTH_URL = "http://localhost:3000"
@@ -26,7 +26,9 @@ describe("createAuth", () => {
         api: expect.any(Object),
         handler: expect.any(Function),
       })
+      expect("createOrganization" in auth.api).toBe(true)
+      expect("hasPermission" in auth.api).toBe(true)
     },
-    10000
+    20000
   )
 })

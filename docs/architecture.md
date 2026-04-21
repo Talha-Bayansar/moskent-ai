@@ -82,7 +82,7 @@ Current dependency direction:
 Use this section for short forward-looking notes that are grounded in active work, not speculation.
 
 - AI orchestration boundary: `TBD`
-- organization and membership model: `TBD`
+- organization and membership auth foundation now uses Better Auth's organization plugin with dynamic per-organization roles; product workflows on top remain `TBD`
 - action execution model for structured AI operations: `TBD`
 - observability and audit strategy for AI actions: `TBD`
 
@@ -101,6 +101,7 @@ Current auth setup:
 - `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
 - `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
 - `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/permissions.ts`: shared access-control statements and baseline organization roles reused by server and client auth setup
 - `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
 - `src/routes/api/auth/$.ts`: TanStack Start route that forwards `GET` and `POST` requests to Better Auth
 
@@ -139,6 +140,9 @@ Current auth environment requirements:
 Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
+- Better Auth's organization plugin is enabled as shared infrastructure only; no organization management UI or protected-route workflow exists yet
+- dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
+- shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource
 - verification emails, password reset, protected routes, and auth UI are still `TBD`
 - regenerate the committed auth schema with `pnpm auth:generate` when Better Auth config or plugins change
 - generate SQL migrations for committed schema changes with `pnpm db:generate`

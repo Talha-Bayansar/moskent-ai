@@ -14,7 +14,10 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
   const sessionState = authClient.useSession()
   const session = sessionState.data
   const isPending = sessionState.isPending
-  const redirectTo = `${location.pathname}${location.searchStr}${location.hash}`
+  const redirectTo =
+    typeof window === "undefined"
+      ? `${location.pathname}${location.searchStr}${location.hash}`
+      : `${window.location.pathname}${window.location.search}${window.location.hash}`
 
   if (isPending) {
     return (
@@ -46,5 +49,5 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
     )
   }
 
-  return <>{children}</>
+  return children
 }

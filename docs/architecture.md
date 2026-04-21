@@ -10,7 +10,7 @@ This file records the current technical shape of the application. It must be upd
 - Server-state layer: TanStack Query
 - Intended forms layer: TanStack Form
 - Database layer: Neon Postgres with Drizzle ORM
-- Authentication layer: Better Auth with email/password enabled and no auth UI yet
+- Authentication layer: Better Auth with email/password enabled and reusable auth UI now present
 
 Where code and this file disagree, update this file or resolve the implementation mismatch in the same change.
 
@@ -101,6 +101,9 @@ Current auth setup:
 - `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
 - `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
 - `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/ui/auth-page-shell.tsx`: centered auth page chrome shared by sign-in and sign-up pages
+- `src/shared/auth/ui/sign-in-form.tsx`: reusable sign-in form built with TanStack Form and Zod
+- `src/shared/auth/ui/sign-up-form.tsx`: reusable sign-up form built with TanStack Form and Zod
 - `src/shared/auth/ui/authenticated-route.tsx`: shared client-side protected-route wrapper for authenticated pages
 - `src/shared/auth/permissions.ts`: shared access-control statements and baseline organization roles reused by server and client auth setup
 - `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
@@ -142,11 +145,11 @@ Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
 - Better Auth's organization plugin is enabled as shared infrastructure only; organization management UI remains `TBD`
-- minimal placeholder routes now exist at `/sign-in` and `/sign-out`; they reserve app-owned auth pages while real auth UI and actions remain `TBD`
+- app-owned auth entry routes now exist at `/sign-in`, `/sign-up`, and `/sign-out`; sign-in and sign-up use reusable TanStack Form UI while sign-out remains a placeholder
 - current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves and redirects unauthenticated users to `/sign-in?redirectTo=...`
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource
-- verification emails, password reset, server-first protected-route conventions, and auth UI are still `TBD`
+- verification emails, password reset, and server-first protected-route conventions are still `TBD`
 - regenerate the committed auth schema with `pnpm auth:generate` when Better Auth config or plugins change
 - generate SQL migrations for committed schema changes with `pnpm db:generate`
 

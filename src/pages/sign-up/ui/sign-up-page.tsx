@@ -1,29 +1,29 @@
 import { Link } from "@tanstack/react-router"
 
 import { AuthPageShell } from "@/shared/auth/ui/auth-page-shell"
-import { SignInForm } from "@/shared/auth/ui/sign-in-form"
+import { SignUpForm } from "@/shared/auth/ui/sign-up-form"
 import { m } from "@/shared/i18n"
 
-type SignInPageProps = {
+type SignUpPageProps = {
   redirectTo?: string
 }
 
-export function SignInPage({ redirectTo }: SignInPageProps) {
+export function SignUpPage({ redirectTo }: SignUpPageProps) {
   return (
     <AuthPageShell
-      eyebrow={m.sign_in_eyebrow()}
-      title={m.sign_in_title()}
-      description={m.sign_in_description()}
+      eyebrow={m.sign_up_eyebrow()}
+      title={m.sign_up_title()}
+      description={m.sign_up_description()}
       footer={
         <div className="flex flex-col items-center gap-2 text-center text-sm text-muted-foreground">
           <p className="text-balance">
-            {m.sign_in_switch_prompt()}{" "}
+            {m.sign_up_switch_prompt()}{" "}
             <Link
-              to="/sign-up"
+              to="/sign-in"
               search={redirectTo ? { redirectTo } : undefined}
               className="font-medium text-foreground transition-colors hover:text-primary"
             >
-              {m.sign_in_switch_action()}
+              {m.sign_up_switch_action()}
             </Link>
           </p>
           <Link
@@ -35,15 +35,19 @@ export function SignInPage({ redirectTo }: SignInPageProps) {
         </div>
       }
     >
-      <SignInForm
+      <SignUpForm
         redirectTo={redirectTo}
         copy={{
+          nameLabel: m.auth_name_label(),
+          nameDescription: m.auth_name_description(),
           emailLabel: m.auth_email_label(),
           emailDescription: m.auth_email_description(),
           passwordLabel: m.auth_password_label(),
           passwordDescription: m.auth_password_description(),
-          submitLabel: m.sign_in_submit(),
-          submittingLabel: m.sign_in_submitting(),
+          confirmPasswordLabel: m.auth_confirm_password_label(),
+          confirmPasswordDescription: m.auth_confirm_password_description(),
+          submitLabel: m.sign_up_submit(),
+          submittingLabel: m.sign_up_submitting(),
           genericError: m.auth_generic_error(),
         }}
       />

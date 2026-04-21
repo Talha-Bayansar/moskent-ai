@@ -7,5 +7,11 @@ export const Route = createFileRoute("/sign-in/")({
   validateSearch: z.object({
     redirectTo: z.string().optional(),
   }),
-  component: SignInPage,
+  component: SignInRoute,
 })
+
+function SignInRoute() {
+  const { redirectTo } = Route.useSearch()
+
+  return <SignInPage redirectTo={redirectTo} />
+}

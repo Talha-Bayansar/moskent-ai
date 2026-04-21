@@ -42,6 +42,9 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
 })
 
 export function RootDocument({ children }: { children: ReactNode }) {
+  const isTestEnvironment =
+    typeof navigator !== "undefined" && navigator.userAgent.includes("jsdom")
+
   return (
     <html lang={getLocale()}>
       <head>
@@ -49,17 +52,19 @@ export function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
-        <TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
-          plugins={[
-            {
-              name: "TanStack Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        {isTestEnvironment ? null : (
+          <TanStackDevtools
+            config={{
+              position: "bottom-right",
+            }}
+            plugins={[
+              {
+                name: "TanStack Router",
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+            ]}
+          />
+        )}
         <Scripts />
       </body>
     </html>

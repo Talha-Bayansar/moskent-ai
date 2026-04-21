@@ -140,7 +140,8 @@ Current auth environment requirements:
 Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
-- Better Auth's organization plugin is enabled as shared infrastructure only; no organization management UI or protected-route workflow exists yet
+- Better Auth's organization plugin is enabled as shared infrastructure only; organization management UI and protected-route workflow remain `TBD`
+- minimal placeholder routes now exist at `/sign-in` and `/sign-out`; they reserve app-owned auth pages while real auth UI and actions remain `TBD`
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource
 - verification emails, password reset, protected routes, and auth UI are still `TBD`

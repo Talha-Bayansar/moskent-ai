@@ -86,10 +86,21 @@ describe("i18n integration", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "De TanStack starter routeert nu via feature-sliced page-grenzen.",
+        name: "Moskent AI voor organisaties.",
       })
     ).toBeTruthy()
-    expect(screen.getAllByRole("link", { name: "Route openen" }).length).toBe(2)
+    expect(screen.getByRole("link", { name: "Dashboard" }).getAttribute("href")).toBe(
+      "/nl/dashboard"
+    )
+    expect(screen.getByRole("link", { name: "Inloggen" }).getAttribute("href")).toBe(
+      "/nl/sign-in"
+    )
+    expect(screen.getByRole("link", { name: "Uitloggen" }).getAttribute("href")).toBe(
+      "/nl/sign-out"
+    )
+    expect(
+      screen.queryByRole("link", { name: "Organisatiedetail" })
+    ).toBeNull()
   })
 
   it("renders the dashboard page in Turkish", async () => {
@@ -106,5 +117,17 @@ describe("i18n integration", () => {
     expect(
       screen.getByRole("heading", { name: "Organization: demo-org" })
     ).toBeTruthy()
+  })
+
+  it("renders the sign-in page in Turkish", async () => {
+    await renderRoute("/tr/sign-in", "tr")
+
+    expect(screen.getByRole("heading", { name: "Giriş yap" })).toBeTruthy()
+  })
+
+  it("renders the sign-out page in English", async () => {
+    await renderRoute("/sign-out", "en")
+
+    expect(screen.getByRole("heading", { name: "Sign out" })).toBeTruthy()
   })
 })

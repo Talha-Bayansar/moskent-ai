@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SignOutIndexRouteImport } from './routes/sign-out/index'
+import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as OrganizationsOrganizationIdIndexRouteImport } from './routes/organizations/$organizationId/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -17,6 +19,16 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignOutIndexRoute = SignOutIndexRouteImport.update({
+  id: '/sign-out/',
+  path: '/sign-out/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInIndexRoute = SignInIndexRouteImport.update({
+  id: '/sign-in/',
+  path: '/sign-in/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
@@ -39,12 +51,16 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/sign-in/': typeof SignInIndexRoute
+  '/sign-out/': typeof SignOutIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations/$organizationId/': typeof OrganizationsOrganizationIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/sign-in': typeof SignInIndexRoute
+  '/sign-out': typeof SignOutIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations/$organizationId': typeof OrganizationsOrganizationIdIndexRoute
 }
@@ -52,6 +68,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/sign-in/': typeof SignInIndexRoute
+  '/sign-out/': typeof SignOutIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/organizations/$organizationId/': typeof OrganizationsOrganizationIdIndexRoute
 }
@@ -60,14 +78,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard/'
+    | '/sign-in/'
+    | '/sign-out/'
     | '/api/auth/$'
     | '/organizations/$organizationId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/api/auth/$' | '/organizations/$organizationId'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/sign-in'
+    | '/sign-out'
+    | '/api/auth/$'
+    | '/organizations/$organizationId'
   id:
     | '__root__'
     | '/'
     | '/dashboard/'
+    | '/sign-in/'
+    | '/sign-out/'
     | '/api/auth/$'
     | '/organizations/$organizationId/'
   fileRoutesById: FileRoutesById
@@ -75,6 +103,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  SignInIndexRoute: typeof SignInIndexRoute
+  SignOutIndexRoute: typeof SignOutIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   OrganizationsOrganizationIdIndexRoute: typeof OrganizationsOrganizationIdIndexRoute
 }
@@ -86,6 +116,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-out/': {
+      id: '/sign-out/'
+      path: '/sign-out'
+      fullPath: '/sign-out/'
+      preLoaderRoute: typeof SignOutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in/': {
+      id: '/sign-in/'
+      path: '/sign-in'
+      fullPath: '/sign-in/'
+      preLoaderRoute: typeof SignInIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -115,6 +159,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  SignInIndexRoute: SignInIndexRoute,
+  SignOutIndexRoute: SignOutIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   OrganizationsOrganizationIdIndexRoute: OrganizationsOrganizationIdIndexRoute,
 }

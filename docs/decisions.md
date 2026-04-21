@@ -95,6 +95,15 @@ Use this template for new entries:
 - Impact: Better Auth config changes should be followed by `pnpm auth:generate`, and resulting schema changes should be turned into committed Drizzle migrations with `pnpm db:generate`.
 - Follow-up: add session access patterns and route protection conventions once authenticated application flows exist.
 
+## 2026-04-21 - Paraglide JS is the initial i18n solution with English at the root URL
+
+- Status: accepted
+- Context: the application needs first-class multilingual support for English, Dutch, and Turkish in a TanStack Start app with SSR and locale-aware URLs.
+- Decision: use Paraglide JS as the i18n layer, keep English as the base locale at unprefixed URLs, prefix Dutch and Turkish URLs, and resolve locales in the order `url -> cookie -> preferredLanguage -> baseLocale`.
+- Why: Paraglide matches TanStack Start's routing model, provides typed messages plus SSR middleware, and supports localized URLs without duplicating route files.
+- Impact: UI copy should move to Paraglide message functions, router/server setup must keep Paraglide rewrite and middleware in sync, and `/api/*` routes stay excluded from locale routing.
+- Follow-up: decide later whether route slugs themselves should become localized beyond locale prefixes.
+
 ## Rule
 
 Every entry should explain `why`, not only `what`.

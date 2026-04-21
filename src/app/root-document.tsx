@@ -8,6 +8,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { ReactNode } from "react"
 
+import { getLocale, m } from "@/shared/i18n"
 import appCss from "@/styles.css?url"
 
 export const Route = createRootRoute({
@@ -21,7 +22,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "Moskent AI",
+        title: m.app_title(),
       },
     ],
     links: [
@@ -35,9 +36,9 @@ export const Route = createRootRoute({
   component: Outlet,
 })
 
-function RootDocument({ children }: { children: ReactNode }) {
+export function RootDocument({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang={getLocale()}>
       <head>
         <HeadContent />
       </head>

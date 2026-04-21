@@ -6,6 +6,7 @@ This file records the current technical shape of the application. It must be upd
 
 - Application framework: TanStack Start
 - UI foundation: React, TypeScript, shadcn/ui
+- Internationalization layer: Paraglide JS
 - Intended server-state layer: TanStack Query
 - Intended forms layer: TanStack Form
 - Database layer: Neon Postgres with Drizzle ORM
@@ -44,10 +45,12 @@ Current file naming convention:
 Current high-level expectation:
 
 - route modules compose TanStack Router configuration and hand off rendering to page modules
+- router URL input/output is localized through Paraglide rewrite helpers
 - UI and page modules collect user input
 - application logic coordinates structured actions
 - persistence flows through Postgres via Drizzle
 - auth/session state is managed through Better Auth mounted at `/api/auth/*`
+- locale detection flows through Paraglide using URL, cookie, preferred language, then base locale fallback
 - AI-driven workflows will translate natural-language input into structured application operations
 
 Concrete request, mutation, and orchestration flows: `TBD`
@@ -60,6 +63,7 @@ Current intended boundaries:
 - page modules own route-facing UI instead of embedding long-term page components directly in route files
 - reusable UI primitives live in `src/shared/ui/`
 - shared utilities live in `src/shared/lib/`
+- shared i18n helpers and locale-aware UI live in `src/shared/i18n/`
 - low-level database bootstrap lives in `src/shared/database/`
 - shared auth bootstrap lives in `src/shared/auth/`
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
@@ -98,6 +102,22 @@ Current auth setup:
 - `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
 - `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
 - `src/routes/api/auth/$.ts`: TanStack Start route that forwards `GET` and `POST` requests to Better Auth
+
+Current i18n setup:
+
+- `project.inlang/settings.json`: base locale and supported locale declarations for Paraglide
+- `messages/*.json`: source translation files for English, Dutch, and Turkish
+- `src/paraglide/`: generated Paraglide runtime, server middleware, and message modules
+- `scripts/paraglide-options.mjs`: shared Paraglide compiler/plugin options
+- `server.ts`: TanStack Start server entry wrapped with `paraglideMiddleware`
+
+Current i18n workflow notes:
+
+- English is the base locale and stays unprefixed
+- Dutch and Turkish use URL prefixes such as `/nl/...` and `/tr/...`
+- locale detection order is URL, cookie, preferred language, then base locale fallback
+- `/api/*` is excluded from locale routing behavior
+- regenerate the committed Paraglide runtime with `pnpm paraglide:compile` after changing locale settings or message files
 
 Current auth environment requirements:
 

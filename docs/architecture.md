@@ -9,7 +9,7 @@ This file records the current technical shape of the application. It must be upd
 - Intended server-state layer: TanStack Query
 - Intended forms layer: TanStack Form
 - Database layer: Neon Postgres with Drizzle ORM
-- Intended authentication layer: Better Auth
+- Authentication layer: Better Auth with email/password enabled and no auth UI yet
 
 Where code and this file disagree, update this file or resolve the implementation mismatch in the same change.
 
@@ -47,7 +47,7 @@ Current high-level expectation:
 - UI and page modules collect user input
 - application logic coordinates structured actions
 - persistence flows through Postgres via Drizzle
-- auth/session state is managed through Better Auth
+- auth/session state is managed through Better Auth mounted at `/api/auth/*`
 - AI-driven workflows will translate natural-language input into structured application operations
 
 Concrete request, mutation, and orchestration flows: `TBD`
@@ -61,6 +61,7 @@ Current intended boundaries:
 - reusable UI primitives live in `src/shared/ui/`
 - shared utilities live in `src/shared/lib/`
 - low-level database bootstrap lives in `src/shared/database/`
+- shared auth bootstrap lives in `src/shared/auth/`
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
 
@@ -86,9 +87,29 @@ Current database setup:
 
 - `src/shared/database/env.server.ts`: runtime validation for server database configuration
 - `src/shared/database/client.server.ts`: Neon serverless HTTP client wrapped by Drizzle
-- `src/shared/database/schema/index.ts`: shared schema aggregation point
+- `src/shared/database/schema/index.ts`: shared schema aggregation point, including Better Auth tables
 - `src/shared/database/migrations/`: committed Drizzle migration output directory
 - `drizzle.config.ts`: Drizzle Kit configuration for schema generation and migrations
+
+Current auth setup:
+
+- `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
+- `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
+- `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
+- `src/routes/api/auth/$.ts`: TanStack Start route that forwards `GET` and `POST` requests to Better Auth
+
+Current auth environment requirements:
+
+- `BETTER_AUTH_SECRET`: required server secret, minimum 32 characters
+- `BETTER_AUTH_URL`: required public base URL for Better Auth
+
+Current auth workflow notes:
+
+- email/password auth is enabled as the first backend auth method
+- verification emails, password reset, protected routes, and auth UI are still `TBD`
+- regenerate the committed auth schema with `pnpm auth:generate` when Better Auth config or plugins change
+- generate SQL migrations for committed schema changes with `pnpm db:generate`
 
 Current database ownership rule:
 

@@ -86,6 +86,15 @@ Use this template for new entries:
 - Impact: database access should flow through server-only shared infrastructure, and real tables should be introduced from entity slices rather than a central catch-all data layer.
 - Follow-up: add the first real entity schema and migration once the initial persistent domain slice is accepted.
 
+## 2026-04-21 - Better Auth lives in a shared auth boundary with committed generated schema
+
+- Status: accepted
+- Context: the project needed a backend auth foundation without adding UI yet, while keeping auth schema changes visible in the same workflow as the rest of the database.
+- Decision: place the Better Auth server/client/bootstrap code under `src/shared/auth/`, mount its handler through TanStack Start at `/api/auth/*`, commit the generated Drizzle auth schema, and generate SQL migrations through the existing Drizzle workflow.
+- Why: this keeps auth as an explicit shared infrastructure boundary, avoids hiding required tables behind runtime-only setup, and gives future contributors one documented place to update auth config and schema generation.
+- Impact: Better Auth config changes should be followed by `pnpm auth:generate`, and resulting schema changes should be turned into committed Drizzle migrations with `pnpm db:generate`.
+- Follow-up: add session access patterns and route protection conventions once authenticated application flows exist.
+
 ## Rule
 
 Every entry should explain `why`, not only `what`.

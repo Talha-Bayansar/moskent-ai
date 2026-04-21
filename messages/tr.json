@@ -16,6 +16,8 @@
   "sign_in_eyebrow": "Kimlik doğrulama",
   "sign_in_title": "Giriş yap",
   "sign_in_description": "Bu rota gelecekteki giriş akışı için ayrıldı. Kimlik doğrulama arayüzü bağlantısı halen `TBD`.",
+  "auth_checking_title": "Oturumunuz kontrol ediliyor",
+  "auth_checking_description": "Kimlik doğrulama durumunuzu doğrularken lütfen bekleyin.",
   "sign_out_eyebrow": "Kimlik doğrulama",
   "sign_out_title": "Çıkış yap",
   "sign_out_description": "Bu rota gelecekteki çıkış akışı için ayrıldı. Çıkış eylemi bağlantısı halen `TBD`.",

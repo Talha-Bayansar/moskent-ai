@@ -1,13 +1,37 @@
 // @vitest-environment jsdom
 
 import { RouterProvider } from "@tanstack/react-router"
-import { cleanup, render, screen } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { cleanup, render, screen, waitFor } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+
+const mockUseSession = vi.fn()
+
+vi.mock("@/shared/auth/auth-client", () => ({
+  authClient: {
+    useSession: mockUseSession,
+  },
+}))
 
 import { createAppRouter } from "@/app/create-router"
 import { setLocale } from "@/shared/i18n"
 
 let activeRouter: ReturnType<typeof createAppRouter> | undefined
+
+type MockSessionState = {
+  data: null | {
+    session: {
+      id: string
+    }
+    user: {
+      id: string
+    }
+  }
+  isPending: boolean
+}
+
+function setMockSessionState(state: MockSessionState) {
+  mockUseSession.mockReturnValue(state)
+}
 
 function toUrl(value: string | URL) {
   return value instanceof URL ? value : new URL(value)
@@ -31,12 +55,24 @@ describe("i18n integration", () => {
     window.history.replaceState({}, "", "/")
     window.scrollTo = () => {}
     document.cookie = ""
+    setMockSessionState({
+      data: {
+        session: {
+          id: "session-1",
+        },
+        user: {
+          id: "user-1",
+        },
+      },
+      isPending: false,
+    })
     await setLocale("en", { reload: false })
   })
 
   afterEach(() => {
     ;(activeRouter as { dispose?: () => void } | undefined)?.dispose?.()
     activeRouter = undefined
+    mockUseSession.mockReset()
     cleanup()
   })
 
@@ -129,5 +165,68 @@ describe("i18n integration", () => {
     await renderRoute("/sign-out", "en")
 
     expect(screen.getByRole("heading", { name: "Sign out" })).toBeTruthy()
+  })
+
+  it("shows an auth-check spinner while a protected route session is pending", async () => {
+    setMockSessionState({
+      data: null,
+      isPending: true,
+    })
+
+    await renderRoute("/tr/dashboard", "tr")
+
+    expect(
+      screen.getByRole("heading", { name: "Oturumunuz kontrol ediliyor" })
+    ).toBeTruthy()
+    expect(screen.getByRole("status", { name: "Loading" })).toBeTruthy()
+  })
+
+  it("redirects unauthenticated dashboard visits to sign-in with a localized return URL", async () => {
+    setMockSessionState({
+      data: null,
+      isPending: false,
+    })
+
+    await renderRoute("/nl/dashboard", "nl")
+
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/nl/sign-in")
+    })
+
+    expect(screen.getByRole("heading", { name: "Inloggen" })).toBeTruthy()
+    expect(
+      new URLSearchParams(window.location.search).get("redirectTo")
+    ).toBe("/nl/dashboard")
+  })
+
+  it("redirects unauthenticated organization visits to sign-in with the original path", async () => {
+    setMockSessionState({
+      data: null,
+      isPending: false,
+    })
+
+    await renderRoute("/organizations/demo-org", "en")
+
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/sign-in")
+    })
+
+    expect(screen.getByRole("heading", { name: "Sign in" })).toBeTruthy()
+    expect(
+      new URLSearchParams(window.location.search).get("redirectTo")
+    ).toBe("/organizations/demo-org")
+  })
+
+  it("keeps public routes accessible without a session", async () => {
+    setMockSessionState({
+      data: null,
+      isPending: false,
+    })
+
+    await renderRoute("/", "en")
+
+    expect(
+      screen.getByRole("heading", { name: "Moskent AI for organizations." })
+    ).toBeTruthy()
   })
 })

@@ -101,6 +101,7 @@ Current auth setup:
 - `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
 - `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
 - `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/ui/authenticated-route.tsx`: shared client-side protected-route wrapper for authenticated pages
 - `src/shared/auth/permissions.ts`: shared access-control statements and baseline organization roles reused by server and client auth setup
 - `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
 - `src/routes/api/auth/$.ts`: TanStack Start route that forwards `GET` and `POST` requests to Better Auth
@@ -140,11 +141,12 @@ Current auth environment requirements:
 Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
-- Better Auth's organization plugin is enabled as shared infrastructure only; organization management UI and protected-route workflow remain `TBD`
+- Better Auth's organization plugin is enabled as shared infrastructure only; organization management UI remains `TBD`
 - minimal placeholder routes now exist at `/sign-in` and `/sign-out`; they reserve app-owned auth pages while real auth UI and actions remain `TBD`
+- current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves and redirects unauthenticated users to `/sign-in?redirectTo=...`
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource
-- verification emails, password reset, protected routes, and auth UI are still `TBD`
+- verification emails, password reset, server-first protected-route conventions, and auth UI are still `TBD`
 - regenerate the committed auth schema with `pnpm auth:generate` when Better Auth config or plugins change
 - generate SQL migrations for committed schema changes with `pnpm db:generate`
 

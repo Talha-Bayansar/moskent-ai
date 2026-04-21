@@ -16,6 +16,8 @@
   "sign_in_eyebrow": "Authenticatie",
   "sign_in_title": "Inloggen",
   "sign_in_description": "Deze route is gereserveerd voor de toekomstige inlogflow. De auth-UI-koppeling is nog `TBD`.",
+  "auth_checking_title": "Je sessie wordt gecontroleerd",
+  "auth_checking_description": "Even geduld terwijl we je authenticatiestatus verifiëren.",
   "sign_out_eyebrow": "Authenticatie",
   "sign_out_title": "Uitloggen",
   "sign_out_description": "Deze route is gereserveerd voor de toekomstige uitlogflow. De auth-actiekoppeling is nog `TBD`.",

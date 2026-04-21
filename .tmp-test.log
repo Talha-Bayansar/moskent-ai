@@ -1,0 +1,25 @@
+
+> moskent-ai@ pretest C:\Users\talha\Documents\personal\projects\moskent-ai
+> pnpm paraglide:compile
+
+
+> moskent-ai@ paraglide:compile C:\Users\talha\Documents\personal\projects\moskent-ai
+> node ./scripts/compile-paraglide.mjs
+
+
+> moskent-ai@ test C:\Users\talha\Documents\personal\projects\moskent-ai
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mC:/Users/talha/Documents/personal/projects/moskent-ai[39m
+
+ [32m✓[39m src/shared/query/query-client.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/shared/auth/env.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/shared/database/env.server.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/shared/auth/permissions.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/shared/database/client.server.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/shared/i18n/i18n.server.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m src/shared/auth/auth-client.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/shared/auth/auth.server.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 6147[2mms[22m[39m
+   [33m[2m✓[22m[39m createAuth[2m > [22mcreates a Better Auth instance with organization plugin APIs [33m 6143[2mms[22m[39m
+ [32m✓[39m src/app/create-router.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m

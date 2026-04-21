@@ -16,6 +16,8 @@
   "sign_in_eyebrow": "Authentication",
   "sign_in_title": "Sign in",
   "sign_in_description": "This route is reserved for the future sign-in flow. Auth UI wiring is still TBD.",
+  "auth_checking_title": "Checking your session",
+  "auth_checking_description": "Please wait while we verify your authentication state.",
   "sign_out_eyebrow": "Authentication",
   "sign_out_title": "Sign out",
   "sign_out_description": "This route is reserved for the future sign-out flow. Auth action wiring is still TBD.",

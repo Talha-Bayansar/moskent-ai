@@ -4,6 +4,7 @@ import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
 
 import { authClient } from "@/shared/auth/auth-client"
+import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
@@ -19,22 +20,22 @@ const signUpSchema = z
     name: z
       .string()
       .trim()
-      .min(2, "Name must be at least 2 characters.")
-      .max(80, "Name must be at most 80 characters."),
+      .min(2, m.validation_name_min({ count: 2 }))
+      .max(80, m.validation_name_max({ count: 80 })),
     email: z
       .string()
       .trim()
-      .min(1, "Email is required.")
-      .email("Enter a valid email address."),
+      .min(1, m.validation_email_required())
+      .email(m.validation_email_invalid()),
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters.")
-      .max(256, "Password must be at most 256 characters."),
-    confirmPassword: z.string().min(1, "Confirm your password."),
+      .min(8, m.validation_password_min({ count: 8 }))
+      .max(256, m.validation_password_max({ count: 256 })),
+    confirmPassword: z.string().min(1, m.validation_confirm_password_required()),
   })
   .refine((value) => value.password === value.confirmPassword, {
     path: ["confirmPassword"],
-    message: "Passwords must match.",
+    message: m.validation_passwords_must_match(),
   })
 
 export type SignUpFormCopy = {

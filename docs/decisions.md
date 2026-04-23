@@ -104,6 +104,15 @@ Use this template for new entries:
 - Impact: Better Auth config changes should be followed by `pnpm auth:generate`, and resulting schema changes should be turned into committed Drizzle migrations with `pnpm db:generate`.
 - Follow-up: add session access patterns, organization-aware route protection conventions, and auth UI once authenticated application flows exist.
 
+## 2026-04-23 - Organization creation uses a TanStack Query mutation around the Better Auth client API
+
+- Status: accepted
+- Context: the project needed a first organization workflow, and the repo direction now prefers TanStack Query for data access while avoiding Better Auth hooks for queries.
+- Decision: implement organization creation in a dedicated feature slice, call `authClient.organization.create(...)` directly from a TanStack Query mutation, and use TanStack Form for the UI state and validation.
+- Why: this keeps write logic explicit, avoids introducing Better Auth hooks as the data-access layer, and fits the repo's intended query/mutation boundaries.
+- Impact: organization creation should be modeled as a client mutation with TanStack Query, while future Better Auth or Drizzle reads should use client/server calls wrapped by TanStack Query rather than Better Auth hooks.
+- Follow-up: define the read-side organization query pattern when the UI needs organization listings or selection.
+
 ## 2026-04-21 - Paraglide JS is the initial i18n solution with English at the root URL
 
 - Status: accepted

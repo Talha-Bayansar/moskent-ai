@@ -69,6 +69,7 @@ Current intended boundaries:
 - shared auth bootstrap lives in `src/shared/auth/`
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
+- organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route
 
 Current dependency direction:
 
@@ -144,8 +145,9 @@ Current auth environment requirements:
 Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
-- Better Auth's organization plugin is enabled as shared infrastructure only; organization management UI remains `TBD`
-- app-owned auth entry routes now exist at `/sign-in`, `/sign-up`, and `/sign-out`; sign-in and sign-up use reusable TanStack Form UI while sign-out remains a placeholder
+- Better Auth's organization plugin is enabled as shared infrastructure, and the first app-owned organization workflow now creates organizations through the client mutation API wrapped by TanStack Query
+- app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI
+- organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
 - current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves and redirects unauthenticated users to `/sign-in?redirectTo=...`
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource

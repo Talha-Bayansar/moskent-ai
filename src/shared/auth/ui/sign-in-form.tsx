@@ -4,6 +4,7 @@ import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
 
 import { authClient } from "@/shared/auth/auth-client"
+import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
 import {
@@ -18,9 +19,9 @@ const signInSchema = z.object({
   email: z
     .string()
     .trim()
-    .min(1, "Email is required.")
-    .email("Enter a valid email address."),
-  password: z.string().min(1, "Password is required."),
+    .min(1, m.validation_email_required())
+    .email(m.validation_email_invalid()),
+  password: z.string().min(1, m.validation_password_required()),
 })
 
 export type SignInFormCopy = {

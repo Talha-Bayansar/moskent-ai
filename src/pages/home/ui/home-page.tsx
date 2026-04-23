@@ -12,10 +12,6 @@ const quickLinks = [
     label: () => m.home_sign_in_label(),
     to: "/sign-in",
   },
-  {
-    label: () => m.home_sign_out_label(),
-    to: "/sign-out",
-  },
 ] as const
 
 export function HomePage() {

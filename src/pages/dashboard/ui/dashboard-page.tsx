@@ -1,5 +1,9 @@
+import { Link } from "@tanstack/react-router"
+
 import { LocaleSwitcher } from "@/shared/i18n/locale-switcher"
 import { m } from "@/shared/i18n"
+import { buttonVariants } from "@/shared/ui/button"
+import { cn } from "@/shared/lib/utils"
 
 export function DashboardPage() {
   return (
@@ -15,6 +19,12 @@ export function DashboardPage() {
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
           {m.dashboard_description()}
         </p>
+        <Link
+          to="/organizations/new"
+          className={cn(buttonVariants({ variant: "default" }), "w-fit")}
+        >
+          {m.organization_create_submit()}
+        </Link>
       </div>
     </main>
   )

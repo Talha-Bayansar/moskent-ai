@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Home01Icon } from "@hugeicons/core-free-icons"
 import type { ReactNode } from "react"
 
+import { OrganizationSwitcher } from "@/features/organizations/ui/organization-switcher"
 import { LocaleSwitcher } from "@/shared/i18n/locale-switcher"
 import { m } from "@/shared/i18n"
 import { Separator } from "@/shared/ui/separator"
@@ -27,19 +28,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
     <SidebarProvider>
       <Sidebar variant="inset" collapsible="offcanvas">
         <SidebarHeader className="border-b border-sidebar-border/70 px-3 py-3">
-          <div className="flex items-center gap-3 px-1 py-1">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">
-              MA
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm leading-none font-medium text-sidebar-foreground">
-                {m.app_title()}
-              </p>
-              <p className="truncate text-xs text-sidebar-foreground/70">
-                {m.home_dashboard_label()}
-              </p>
-            </div>
-          </div>
+          <OrganizationSwitcher />
         </SidebarHeader>
 
         <SidebarContent className="px-2 py-2">

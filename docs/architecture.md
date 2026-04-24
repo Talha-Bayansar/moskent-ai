@@ -71,6 +71,7 @@ Current intended boundaries:
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route
+- organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
 
 Current dependency direction:
 
@@ -107,6 +108,7 @@ Current auth setup:
 - `src/shared/auth/ui/sign-in-form.tsx`: reusable sign-in form built with TanStack Form and Zod
 - `src/shared/auth/ui/sign-up-form.tsx`: reusable sign-up form built with TanStack Form and Zod
 - `src/shared/auth/ui/authenticated-route.tsx`: shared client-side protected-route wrapper for authenticated pages
+- `src/shared/auth/organization-session.ts`: shared organization session query and active-organization mutation helpers used by authenticated bootstrap and re-exported by the organizations feature
 - `src/shared/auth/permissions.ts`: shared access-control statements and baseline organization roles reused by server and client auth setup
 - `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
 - `src/routes/api/auth/$.ts`: TanStack Start route that forwards `GET` and `POST` requests to Better Auth
@@ -135,7 +137,8 @@ Current server-state setup:
 
 Current server-state workflow notes:
 
-- TanStack Query is installed as shared infrastructure only; feature query keys and hooks are still `TBD`
+- organization list state is loaded through TanStack Query after authentication and before protected dashboard UI renders
+- organization feature query keys and mutations wrap Better Auth organization client APIs rather than using Better Auth hooks as the app data-access layer
 - query clients are created per router instance to stay compatible with SSR and future request-scoped rendering
 - route modules and pages should start consuming TanStack Query only when real server-state behavior is introduced
 
@@ -147,10 +150,11 @@ Current auth environment requirements:
 Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
-- Better Auth's organization plugin is enabled as shared infrastructure, and the first app-owned organization workflow now creates organizations through the client mutation API wrapped by TanStack Query
+- Better Auth's organization plugin is enabled as shared infrastructure, and app-owned organization workflows use client APIs wrapped by TanStack Query
 - app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI
 - organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
-- current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves and redirects unauthenticated users to `/sign-in?redirectTo=...`
+- current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves, redirects unauthenticated users to `/sign-in?redirectTo=...`, loads the current user's organizations, redirects users without organizations to `/organizations/new`, and ensures a Better Auth active organization is set before rendering protected dashboard UI
+- the dashboard sidebar header uses the organization switcher instead of the application name
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource
 - verification emails, password reset, and server-first protected-route conventions are still `TBD`

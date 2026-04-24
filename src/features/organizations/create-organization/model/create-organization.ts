@@ -1,5 +1,7 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { z } from "zod"
+
+import { organizationKeys } from "../../model/organizations"
 
 import { authClient } from "@/shared/auth/auth-client"
 import { m } from "@/shared/i18n"
@@ -66,6 +68,8 @@ type CreateOrganizationMutationOptions = {
 export function useCreateOrganizationMutation(
   options?: CreateOrganizationMutationOptions
 ) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: async (input: CreateOrganizationInput) => {
       const parsed = createOrganizationSchema.parse({
@@ -76,6 +80,7 @@ export function useCreateOrganizationMutation(
       const { data, error } = await authClient.organization.create({
         name: parsed.name,
         slug: parsed.slug,
+        keepCurrentActiveOrganization: false,
       })
 
       if (error) {
@@ -84,6 +89,12 @@ export function useCreateOrganizationMutation(
 
       return data
     },
-    onSuccess: options?.onSuccess,
+    onSuccess: async (organization) => {
+      await queryClient.invalidateQueries({
+        queryKey: organizationKeys.list(),
+      })
+
+      options?.onSuccess?.(organization)
+    },
   })
 }

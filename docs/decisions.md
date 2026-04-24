@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-24 - Active organization is bootstrapped before dashboard render
+
+- Status: accepted
+- Context: protected dashboard UI needs app-wide organization context immediately after authentication.
+- Decision: load the authenticated user's Better Auth organizations through TanStack Query, redirect users without organizations to `/organizations/new`, and set the first returned organization as the Better Auth active organization when the session has none.
+- Why: this keeps organization context available before dashboard children render without introducing app-owned organization state separate from Better Auth.
+- Impact: protected dashboard flows should read active organization from the Better Auth session and use the organizations feature query/mutation wrappers for list and switch behavior.
+- Follow-up: define route structure and authorization behavior for organization-scoped product pages once those workflows exist.
+
 ## 2026-04-21 - Organization roles and permissions are owned by Better Auth's organization plugin
 
 - Status: accepted

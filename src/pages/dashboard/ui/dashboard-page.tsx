@@ -1,24 +1,33 @@
 import { Link } from "@tanstack/react-router"
 
-import { LocaleSwitcher } from "@/shared/i18n/locale-switcher"
 import { m } from "@/shared/i18n"
-import { buttonVariants } from "@/shared/ui/button"
 import { cn } from "@/shared/lib/utils"
+import { buttonVariants } from "@/shared/ui/button"
 
 export function DashboardPage() {
   return (
-    <main className="min-h-svh bg-muted/20 px-6 py-10">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 rounded-3xl border border-border/70 bg-background p-8 shadow-sm">
-        <LocaleSwitcher />
-        <span className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+    <section className="flex flex-col gap-8">
+      <div className="flex max-w-3xl flex-col gap-3">
+        <span className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
           {m.dashboard_eyebrow()}
         </span>
-        <h1 className="text-3xl font-semibold tracking-tight">
+        <h1 className="text-4xl font-semibold tracking-tight text-foreground">
           {m.dashboard_title()}
         </h1>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+        <p className="max-w-2xl text-base leading-7 text-muted-foreground">
           {m.dashboard_description()}
         </p>
+      </div>
+
+      <div className="flex flex-col gap-6 border-t border-border pt-6 md:flex-row md:items-start md:justify-between">
+        <div className="max-w-2xl">
+          <h2 className="text-sm font-medium text-foreground">
+            {m.organization_create_title()}
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {m.organization_create_description()}
+          </p>
+        </div>
         <Link
           to="/organizations/new"
           className={cn(buttonVariants({ variant: "default" }), "w-fit")}
@@ -26,6 +35,6 @@ export function DashboardPage() {
           {m.organization_create_submit()}
         </Link>
       </div>
-    </main>
+    </section>
   )
 }

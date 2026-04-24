@@ -32,6 +32,7 @@ Current routing structure rules:
 - nested routes use nested folders under `src/routes/`
 - dynamic segments use TanStack param folders such as `$organizationId`
 - framework-required/generated exceptions remain allowed, including `__root.tsx` and `routeTree.gen.ts`
+- authenticated dashboard routes now use `src/routes/dashboard.tsx` as a parent sidebar layout route, with `src/routes/dashboard/index.tsx` remaining the dashboard landing page and future child routes rendering through the parent `Outlet`
 
 Current file naming convention:
 

@@ -7,11 +7,12 @@
   "home_eyebrow": "Minimale werkruimte",
   "home_title": "Moskent AI voor organisaties.",
   "home_description": "Een eenvoudig startpunt om door de app te navigeren terwijl het productsurface nog vorm krijgt.",
-  "home_dashboard_label": "Dashboard",
+  "home_dashboard_label": "Werkruimte",
   "home_sign_in_label": "Inloggen",
-  "dashboard_eyebrow": "routes/dashboard/index.tsx",
-  "dashboard_title": "Dashboard",
-  "dashboard_description": "Deze pagina bestaat vooral om de map-per-route-conventie van TanStack Router te bevestigen. Het routebestand is een dunne adapter en de page-UI leeft in de pages-laag.",
+  "dashboard_eyebrow": "Werkruimteoverzicht",
+  "dashboard_title": "Welkom terug",
+  "dashboard_description": "Houd het belangrijkste werk in beeld en ga vanaf hier naar de volgende stap.",
+  "dashboard_navigation_label": "Overzicht",
   "sign_in_eyebrow": "Authenticatie",
   "sign_in_title": "Inloggen",
   "sign_in_description": "Gebruik je accountgegevens om verder te gaan naar de werkruimte.",
@@ -65,5 +66,5 @@
   "organization_create_submitting": "Organisatie wordt aangemaakt...",
   "organization_create_error_title": "Aanmaken van organisatie mislukt",
   "organization_create_generic_error": "We konden deze organisatie niet aanmaken. Probeer het opnieuw.",
-  "organization_create_back_dashboard": "Terug naar dashboard"
+  "organization_create_back_dashboard": "Terug naar werkruimte"
 }

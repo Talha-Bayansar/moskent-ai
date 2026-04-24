@@ -1,5 +1,6 @@
 "use client"
 
+import { useNavigate } from "@tanstack/react-router"
 import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
 
@@ -45,6 +46,8 @@ export function SignInForm({
   redirectTo = "/dashboard",
   className,
 }: SignInFormProps) {
+  const navigate = useNavigate()
+  const sessionState = authClient.useSession()
   const form = useForm({
     defaultValues: {
       email: "",
@@ -62,7 +65,15 @@ export function SignInForm({
 
       if (error) {
         console.error(error.message ?? copy.genericError)
+        return
       }
+
+      await sessionState.refetch()
+
+      await navigate({
+        href: redirectTo,
+        replace: true,
+      })
     },
   })
 

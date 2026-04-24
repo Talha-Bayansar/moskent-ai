@@ -1,5 +1,10 @@
-import { locales, m, setLocale, type Locale } from "@/shared/i18n"
-import { Button } from "@/shared/ui/button"
+"use client"
+
+import type { ComponentPropsWithoutRef } from "react"
+
+import type { Locale } from "@/shared/i18n"
+import { getLocale, locales, m, setLocale } from "@/shared/i18n"
+import { NativeSelect, NativeSelectOption } from "@/shared/ui/native-select"
 
 const localeLabelByLocale: Record<Locale, () => string> = {
   en: () => m.locale_en(),
@@ -7,27 +12,34 @@ const localeLabelByLocale: Record<Locale, () => string> = {
   tr: () => m.locale_tr(),
 }
 
-export function LocaleSwitcher() {
+type LocaleSwitcherProps = Omit<
+  ComponentPropsWithoutRef<typeof NativeSelect>,
+  "value" | "defaultValue" | "onChange" | "children" | "aria-label"
+>
+
+export function LocaleSwitcher({
+  className,
+  size = "default",
+  ...props
+}: LocaleSwitcherProps) {
+  const currentLocale = getLocale()
+
   return (
-    <nav
+    <NativeSelect
       aria-label={m.locale_switcher_label()}
-      className="flex flex-wrap items-center gap-2"
+      className={className}
+      size={size}
+      value={currentLocale}
+      onChange={(event) => {
+        void setLocale(event.currentTarget.value as Locale)
+      }}
+      {...props}
     >
-      {locales.map((locale) => {
-        return (
-          <Button
-            key={locale}
-            nativeButton={false}
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              void setLocale(locale)
-            }}
-          >
-            {localeLabelByLocale[locale]()}
-          </Button>
-        )
-      })}
-    </nav>
+      {locales.map((locale) => (
+        <NativeSelectOption key={locale} value={locale}>
+          {localeLabelByLocale[locale]()}
+        </NativeSelectOption>
+      ))}
+    </NativeSelect>
   )
 }

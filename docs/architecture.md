@@ -118,6 +118,7 @@ Current i18n setup:
 - `src/paraglide/`: generated Paraglide runtime, server middleware, and message modules
 - `scripts/paraglide-options.mjs`: shared Paraglide compiler/plugin options
 - `server.ts`: TanStack Start server entry wrapped with `paraglideMiddleware`
+- `src/shared/i18n/locale-switcher.tsx`: reusable select-based locale switcher used across page shells and other locale-aware UI
 
 Current i18n workflow notes:
 

@@ -6,7 +6,7 @@ import type { ReactNode } from "react"
 import { LocaleSwitcher } from "@/shared/i18n/locale-switcher"
 
 type AuthPageShellProps = {
-  eyebrow: string
+  eyebrow?: string
   title: string
   description: string
   footer?: ReactNode
@@ -38,9 +38,11 @@ export function AuthPageShell({
         <div className="flex flex-1 items-center justify-center py-10 sm:py-12">
           <div className="w-full max-w-xl space-y-8">
             <div className="space-y-3 text-center">
-              <span className="inline-flex items-center rounded-full border border-border/70 bg-background/80 px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground shadow-sm">
-                {eyebrow}
-              </span>
+              {eyebrow ? (
+                <span className="inline-flex items-center rounded-full border border-border/70 bg-background/80 px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground shadow-sm">
+                  {eyebrow}
+                </span>
+              ) : null}
               <div className="space-y-4">
                 <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
                   {title}

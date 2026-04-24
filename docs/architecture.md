@@ -21,6 +21,7 @@ Current known repository structure:
 - `src/routes/`: TanStack Start file-based route adapters only
 - `src/app/`: app-wide bootstrapping and root document composition
 - `src/pages/`: page-level UI owned outside the routing layer
+- `src/pages/not-found/ui/not-found-page.tsx`: localized 404 page rendered from the root route's `notFoundComponent`
 - `src/widgets/`: reusable page sections when they emerge
 - `src/features/`: user-facing feature slices when they emerge
 - `src/entities/`: domain slices, including entity-owned persistence code
@@ -51,7 +52,7 @@ Current high-level expectation:
 - application logic coordinates structured actions
 - persistence flows through Postgres via Drizzle
 - auth/session state is managed through Better Auth mounted at `/api/auth/*`
-- locale detection flows through Paraglide using URL, cookie, preferred language, then base locale fallback
+- locale detection flows through Paraglide using cookie, URL, preferred language, then base locale fallback
 - AI-driven workflows will translate natural-language input into structured application operations
 
 Concrete request, mutation, and orchestration flows: `TBD`
@@ -126,7 +127,7 @@ Current i18n workflow notes:
 
 - English is the base locale and stays unprefixed
 - Dutch and Turkish use URL prefixes such as `/nl/...` and `/tr/...`
-- locale detection order is URL, cookie, preferred language, then base locale fallback
+- locale detection order is cookie, URL, preferred language, then base locale fallback
 - `/api/*` is excluded from locale routing behavior
 - regenerate the committed Paraglide runtime with `pnpm paraglide:compile` after changing locale settings or message files
 

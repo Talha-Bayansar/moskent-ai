@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "@tanstack/react-router"
+import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
 import {
@@ -17,6 +17,7 @@ type AuthenticatedRouteProps = {
 
 export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
   const location = useLocation()
+  const navigate = useNavigate()
   const sessionState = authClient.useSession()
   const session = sessionState.data
   const activeOrganizationId = session?.session.activeOrganizationId ?? null
@@ -38,12 +39,43 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
     typeof window === "undefined"
       ? `${location.pathname}${location.searchStr}${location.hash}`
       : `${window.location.pathname}${window.location.search}${window.location.hash}`
+  const shouldRedirectToCreateOrganization =
+    session &&
+    organizations.length === 0 &&
+    !isCreateOrganizationRoute &&
+    !organizationsQuery.isPending
+  const shouldRedirectToSignIn = !session && !sessionState.isPending
 
   useEffect(() => {
     if (activeOrganizationId) {
       setBootstrappedOrganizationId(null)
     }
   }, [activeOrganizationId])
+
+  useEffect(() => {
+    if (!shouldRedirectToCreateOrganization) {
+      return
+    }
+
+    void navigate({
+      to: "/organizations/new",
+      replace: true,
+    })
+  }, [navigate, shouldRedirectToCreateOrganization])
+
+  useEffect(() => {
+    if (!shouldRedirectToSignIn) {
+      return
+    }
+
+    void navigate({
+      to: "/sign-in",
+      search: {
+        redirectTo,
+      },
+      replace: true,
+    })
+  }, [navigate, redirectTo, shouldRedirectToSignIn])
 
   useEffect(() => {
     if (
@@ -117,25 +149,18 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
     )
   }
 
-  if (
-    session &&
-    organizations.length === 0 &&
-    !isCreateOrganizationRoute &&
-    !organizationsQuery.isPending
-  ) {
-    return <Navigate to="/organizations/new" replace />
+  if (shouldRedirectToCreateOrganization || shouldRedirectToSignIn) {
+    return (
+      <main className="flex min-h-svh items-center justify-center bg-muted/20 px-6 py-10">
+        <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-3xl border border-border/70 bg-background p-8 text-center shadow-sm">
+          <Spinner className="size-6" />
+        </div>
+      </main>
+    )
   }
 
   if (!session) {
-    return (
-      <Navigate
-        to="/sign-in"
-        search={{
-          redirectTo,
-        }}
-        replace
-      />
-    )
+    return null
   }
 
   return children

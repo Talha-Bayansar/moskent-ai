@@ -11,7 +11,6 @@ type SignUpPageProps = {
 export function SignUpPage({ redirectTo }: SignUpPageProps) {
   return (
     <AuthPageShell
-      eyebrow={m.sign_up_eyebrow()}
       title={m.sign_up_title()}
       description={m.sign_up_description()}
       footer={
@@ -26,12 +25,6 @@ export function SignUpPage({ redirectTo }: SignUpPageProps) {
               {m.sign_up_switch_action()}
             </Link>
           </p>
-          <Link
-            to="/"
-            className="font-medium text-foreground/75 transition-colors hover:text-foreground"
-          >
-            {m.auth_back_home()}
-          </Link>
         </div>
       }
     >

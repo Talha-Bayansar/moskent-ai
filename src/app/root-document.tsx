@@ -9,6 +9,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { ReactNode } from "react"
 import type { QueryClient } from "@tanstack/react-query"
 
+import { NotFoundPage } from "@/pages/not-found/ui/not-found-page"
 import { getLocale, m } from "@/shared/i18n"
 import appCss from "@/styles.css?url"
 
@@ -39,6 +40,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
   }),
   shellComponent: RootDocument,
   component: Outlet,
+  notFoundComponent: NotFoundPage,
 })
 
 export function RootDocument({ children }: { children: ReactNode }) {
@@ -46,11 +48,11 @@ export function RootDocument({ children }: { children: ReactNode }) {
     typeof navigator !== "undefined" && navigator.userAgent.includes("jsdom")
 
   return (
-    <html lang={getLocale()}>
+    <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         {isTestEnvironment ? null : (
           <TanStackDevtools

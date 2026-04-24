@@ -3,7 +3,7 @@ export const paraglideOptions = {
   outdir: "./src/paraglide",
   outputStructure: "message-modules",
   cookieName: "PARAGLIDE_LOCALE",
-  strategy: ["url", "cookie", "preferredLanguage", "baseLocale"],
+  strategy: ["cookie", "url", "preferredLanguage", "baseLocale"],
   routeStrategies: [
     {
       match: "/api/:path(.*)?",

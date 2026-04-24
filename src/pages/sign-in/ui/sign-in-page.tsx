@@ -11,7 +11,6 @@ type SignInPageProps = {
 export function SignInPage({ redirectTo }: SignInPageProps) {
   return (
     <AuthPageShell
-      eyebrow={m.sign_in_eyebrow()}
       title={m.sign_in_title()}
       description={m.sign_in_description()}
       footer={
@@ -26,12 +25,6 @@ export function SignInPage({ redirectTo }: SignInPageProps) {
               {m.sign_in_switch_action()}
             </Link>
           </p>
-          <Link
-            to="/"
-            className="font-medium text-foreground/75 transition-colors hover:text-foreground"
-          >
-            {m.auth_back_home()}
-          </Link>
         </div>
       }
     >

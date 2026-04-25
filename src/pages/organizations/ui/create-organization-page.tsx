@@ -13,7 +13,6 @@ export function CreateOrganizationPage() {
 
   return (
     <AuthPageShell
-      eyebrow={m.organization_create_eyebrow()}
       title={m.organization_create_title()}
       description={m.organization_create_description()}
       footer={

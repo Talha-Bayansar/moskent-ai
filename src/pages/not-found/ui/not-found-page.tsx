@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowLeft02Icon, Home01Icon, Search01Icon } from "@hugeicons/core-free-icons"
+import { ArrowLeft02Icon, Home01Icon } from "@hugeicons/core-free-icons"
 
 import { LocaleSwitcher } from "@/shared/i18n/locale-switcher"
 import { m } from "@/shared/i18n"
@@ -29,11 +29,6 @@ export function NotFoundPage() {
             <CardContent className="grid gap-10 p-6 sm:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-0 lg:p-12">
               <div className="relative flex flex-col justify-between gap-10">
                 <div className="space-y-5">
-                  <p className="inline-flex w-fit items-center gap-2 rounded-full border border-border/70 bg-muted/70 px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground shadow-sm">
-                    <HugeiconsIcon icon={Search01Icon} strokeWidth={2} className="size-3.5" />
-                    {m.not_found_eyebrow()}
-                  </p>
-
                   <div className="space-y-4">
                     <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                       {m.not_found_title()}

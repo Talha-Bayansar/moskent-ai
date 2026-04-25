@@ -14,9 +14,6 @@ export function SettingsPage() {
   return (
     <section className="flex flex-col gap-5 md:gap-8">
       <div className="flex max-w-3xl flex-col gap-3">
-        <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground sm:tracking-[0.22em]">
-          {m.settings_preferences_title()}
-        </span>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           {m.settings_title()}
         </h1>

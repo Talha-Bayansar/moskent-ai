@@ -26,6 +26,7 @@ Current known repository structure:
 - `src/features/`: user-facing feature slices when they emerge
 - `src/entities/`: domain slices, including entity-owned persistence code
 - `src/shared/`: shared UI primitives, utilities, and database infrastructure
+- `src/shared/ui/infinite-scroll-list.tsx`: reusable infinite-scroll list shell driven by `IntersectionObserver`
 
 Current routing structure rules:
 
@@ -73,6 +74,7 @@ Current intended boundaries:
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route
 - organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
+- organization members are loaded through a feature-slice TanStack Query infinite list backed by Better Auth's `organization.listMembers` endpoint and rendered from `/dashboard/members`
 - authenticated `/dashboard` currently hosts the chat-like AI workspace shell; AI orchestration, persistence, and action execution remain `TBD`
 - authenticated app surfaces are designed mobile-first with PWA-conscious safe-area spacing, drawer navigation on small screens, and desktop sidebar behavior on larger screens
 

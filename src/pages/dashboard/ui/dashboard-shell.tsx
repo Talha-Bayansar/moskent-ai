@@ -1,6 +1,6 @@
 import { Link, useMatchRoute } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Home01Icon } from "@hugeicons/core-free-icons"
+import { Home01Icon, UserGroupIcon } from "@hugeicons/core-free-icons"
 import type { ReactNode } from "react"
 
 import { OrganizationSwitcher } from "@/features/organizations/ui/organization-switcher"
@@ -27,6 +27,7 @@ type DashboardShellProps = {
 export function DashboardShell({ children }: DashboardShellProps) {
   const matchRoute = useMatchRoute()
   const isDashboardActive = Boolean(matchRoute({ to: "/dashboard" }))
+  const isMembersActive = Boolean(matchRoute({ to: "/dashboard/members" }))
 
   return (
     <SidebarProvider>
@@ -51,6 +52,20 @@ export function DashboardShell({ children }: DashboardShellProps) {
                 <span>{m.dashboard_navigation_label()}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={isMembersActive}
+                tooltip={m.dashboard_members_label()}
+                render={<Link to="/dashboard/members" />}
+              >
+                <HugeiconsIcon
+                  icon={UserGroupIcon}
+                  strokeWidth={2}
+                  data-icon="inline-start"
+                />
+                <span>{m.dashboard_members_label()}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
 
@@ -63,14 +78,6 @@ export function DashboardShell({ children }: DashboardShellProps) {
         <header className="sticky top-0 z-20 flex min-h-14 items-center gap-2 border-b border-border/70 bg-background/90 px-3 pt-[env(safe-area-inset-top)] backdrop-blur lg:min-h-16 lg:gap-3 lg:px-6 lg:pt-0">
           <SidebarTrigger className="-ml-1 size-9" />
           <Separator orientation="vertical" className="my-auto hidden h-5 sm:block" />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm leading-none font-medium">
-              {m.dashboard_eyebrow()}
-            </p>
-            <p className="hidden truncate text-xs text-muted-foreground sm:block">
-              {m.dashboard_description()}
-            </p>
-          </div>
           <ProfileMenu
             showDisplayName={false}
             className="border-border bg-background text-foreground hover:bg-muted lg:hidden"

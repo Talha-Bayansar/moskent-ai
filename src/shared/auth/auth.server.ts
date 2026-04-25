@@ -1,5 +1,6 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { betterAuth } from "better-auth"
+import { organization } from "better-auth/plugins/organization"
 import { tanstackStartCookies } from "better-auth/tanstack-start"
 
 import {
@@ -9,6 +10,7 @@ import {
 import { getDatabaseEnv, type DatabaseEnv } from "../database/env.server"
 
 import { getAuthEnv, type AuthEnv } from "./env.server"
+import { ac, roles } from "./permissions"
 import * as schema from "./schema"
 
 type CreateAuthOptions = {
@@ -33,7 +35,16 @@ export function createAuth(options?: CreateAuthOptions) {
     emailAndPassword: {
       enabled: true,
     },
-    plugins: [tanstackStartCookies()],
+    plugins: [
+      organization({
+        ac,
+        roles,
+        dynamicAccessControl: {
+          enabled: true,
+        },
+      }),
+      tanstackStartCookies(),
+    ],
   })
 }
 

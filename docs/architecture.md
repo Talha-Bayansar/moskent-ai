@@ -10,7 +10,7 @@ This file records the current technical shape of the application. It must be upd
 - Server-state layer: TanStack Query
 - Intended forms layer: TanStack Form
 - Database layer: Neon Postgres with Drizzle ORM
-- Authentication layer: Better Auth with email/password enabled and no auth UI yet
+- Authentication layer: Better Auth with email/password enabled and reusable auth UI now present
 
 Where code and this file disagree, update this file or resolve the implementation mismatch in the same change.
 
@@ -21,6 +21,7 @@ Current known repository structure:
 - `src/routes/`: TanStack Start file-based route adapters only
 - `src/app/`: app-wide bootstrapping and root document composition
 - `src/pages/`: page-level UI owned outside the routing layer
+- `src/pages/not-found/ui/not-found-page.tsx`: localized 404 page rendered from the root route's `notFoundComponent`
 - `src/widgets/`: reusable page sections when they emerge
 - `src/features/`: user-facing feature slices when they emerge
 - `src/entities/`: domain slices, including entity-owned persistence code
@@ -32,6 +33,7 @@ Current routing structure rules:
 - nested routes use nested folders under `src/routes/`
 - dynamic segments use TanStack param folders such as `$organizationId`
 - framework-required/generated exceptions remain allowed, including `__root.tsx` and `routeTree.gen.ts`
+- authenticated dashboard routes now use `src/routes/dashboard.tsx` as a parent sidebar layout route, with `src/routes/dashboard/index.tsx` remaining the dashboard landing page and future child routes rendering through the parent `Outlet`
 
 Current file naming convention:
 
@@ -50,7 +52,7 @@ Current high-level expectation:
 - application logic coordinates structured actions
 - persistence flows through Postgres via Drizzle
 - auth/session state is managed through Better Auth mounted at `/api/auth/*`
-- locale detection flows through Paraglide using URL, cookie, preferred language, then base locale fallback
+- locale detection flows through Paraglide using cookie, URL, preferred language, then base locale fallback
 - AI-driven workflows will translate natural-language input into structured application operations
 
 Concrete request, mutation, and orchestration flows: `TBD`
@@ -69,6 +71,10 @@ Current intended boundaries:
 - shared auth bootstrap lives in `src/shared/auth/`
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
+- organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route
+- organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
+- authenticated `/dashboard` currently hosts the chat-like AI workspace shell; AI orchestration, persistence, and action execution remain `TBD`
+- authenticated app surfaces are designed mobile-first with PWA-conscious safe-area spacing, drawer navigation on small screens, and desktop sidebar behavior on larger screens
 
 Current dependency direction:
 
@@ -82,7 +88,9 @@ Current dependency direction:
 Use this section for short forward-looking notes that are grounded in active work, not speculation.
 
 - AI orchestration boundary: `TBD`
-- organization and membership model: `TBD`
+- authenticated AI interaction surface starts at `/dashboard`; current implementation is a UI shell only
+- mobile is the primary layout baseline for authenticated workspace UI; future dashboard routes should preserve app-like mobile navigation and avoid desktop-only page composition
+- organization and membership auth foundation now uses Better Auth's organization plugin with dynamic per-organization roles; product workflows on top remain `TBD`
 - action execution model for structured AI operations: `TBD`
 - observability and audit strategy for AI actions: `TBD`
 
@@ -101,6 +109,14 @@ Current auth setup:
 - `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
 - `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
 - `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/ui/auth-page-shell.tsx`: centered auth page chrome shared by sign-in and sign-up pages
+- `src/shared/auth/ui/sign-in-form.tsx`: reusable sign-in form built with TanStack Form and Zod
+- `src/shared/auth/ui/sign-up-form.tsx`: reusable sign-up form built with TanStack Form and Zod
+- `src/shared/auth/ui/sign-out-button.tsx`: reusable sign-out trigger with confirmation dialog
+- `src/shared/auth/ui/profile-menu.tsx`: authenticated-user dropdown that surfaces the current signed-in user and reuses the sign-out button
+- `src/shared/auth/ui/authenticated-route.tsx`: shared client-side protected-route wrapper for authenticated pages
+- `src/shared/auth/organization-session.ts`: shared organization session query and active-organization mutation helpers used by authenticated bootstrap and re-exported by the organizations feature
+- `src/shared/auth/permissions.ts`: shared access-control statements and baseline organization roles reused by server and client auth setup
 - `src/shared/auth/schema.ts`: generated Better Auth Drizzle schema committed into the repo
 - `src/routes/api/auth/$.ts`: TanStack Start route that forwards `GET` and `POST` requests to Better Auth
 
@@ -111,12 +127,14 @@ Current i18n setup:
 - `src/paraglide/`: generated Paraglide runtime, server middleware, and message modules
 - `scripts/paraglide-options.mjs`: shared Paraglide compiler/plugin options
 - `server.ts`: TanStack Start server entry wrapped with `paraglideMiddleware`
+- `src/shared/i18n/locale-switcher.tsx`: reusable select-based locale switcher used across page shells and other locale-aware UI
+- `src/routes/dashboard/settings/index.tsx`: authenticated dashboard settings route for user preferences such as locale
 
 Current i18n workflow notes:
 
 - English is the base locale and stays unprefixed
 - Dutch and Turkish use URL prefixes such as `/nl/...` and `/tr/...`
-- locale detection order is URL, cookie, preferred language, then base locale fallback
+- locale detection order is cookie, URL, preferred language, then base locale fallback
 - `/api/*` is excluded from locale routing behavior
 - regenerate the committed Paraglide runtime with `pnpm paraglide:compile` after changing locale settings or message files
 
@@ -127,7 +145,8 @@ Current server-state setup:
 
 Current server-state workflow notes:
 
-- TanStack Query is installed as shared infrastructure only; feature query keys and hooks are still `TBD`
+- organization list state is loaded through TanStack Query after authentication and before protected dashboard UI renders
+- organization feature query keys and mutations wrap Better Auth organization client APIs rather than using Better Auth hooks as the app data-access layer
 - query clients are created per router instance to stay compatible with SSR and future request-scoped rendering
 - route modules and pages should start consuming TanStack Query only when real server-state behavior is introduced
 
@@ -139,7 +158,16 @@ Current auth environment requirements:
 Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
-- verification emails, password reset, protected routes, and auth UI are still `TBD`
+- Better Auth's organization plugin is enabled as shared infrastructure, and app-owned organization workflows use client APIs wrapped by TanStack Query
+- app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the Better Auth client session after successful submission, and then explicitly navigate to their `redirectTo` target
+- authenticated dashboard chrome now exposes the current signed-in user in a sidebar footer profile menu, includes a settings link in that menu, and uses a reusable sign-out confirmation button for session termination
+- organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
+- current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves, redirects unauthenticated users to `/sign-in?redirectTo=...`, loads the current user's organizations, redirects users without organizations to `/organizations/new`, and ensures a Better Auth active organization is set before rendering protected dashboard UI
+- the dashboard sidebar header uses the organization switcher instead of the application name
+- locale selection now lives on `/dashboard/settings` instead of the dashboard header
+- dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
+- shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource
+- verification emails, password reset, and server-first protected-route conventions are still `TBD`
 - regenerate the committed auth schema with `pnpm auth:generate` when Better Auth config or plugins change
 - generate SQL migrations for committed schema changes with `pnpm db:generate`
 

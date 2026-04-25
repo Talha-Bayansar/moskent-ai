@@ -1,14 +1,10 @@
-import { useLocation } from "@tanstack/react-router"
+"use client"
 
-import {
-  deLocalizeHref,
-  locales,
-  localizeHref,
-  m,
-  setLocale,
-  type Locale,
-} from "@/shared/i18n"
-import { Button } from "@/shared/ui/button"
+import type { ComponentPropsWithoutRef } from "react"
+
+import type { Locale } from "@/shared/i18n"
+import { getLocale, locales, m, setLocale } from "@/shared/i18n"
+import { NativeSelect, NativeSelectOption } from "@/shared/ui/native-select"
 
 const localeLabelByLocale: Record<Locale, () => string> = {
   en: () => m.locale_en(),
@@ -16,41 +12,34 @@ const localeLabelByLocale: Record<Locale, () => string> = {
   tr: () => m.locale_tr(),
 }
 
-export function LocaleSwitcher() {
-  const location = useLocation()
-  const canonicalHref = deLocalizeHref(
-    `${location.pathname}${location.searchStr}${location.hash}`
-  )
+type LocaleSwitcherProps = Omit<
+  ComponentPropsWithoutRef<typeof NativeSelect>,
+  "value" | "defaultValue" | "onChange" | "children" | "aria-label"
+>
+
+export function LocaleSwitcher({
+  className,
+  size = "default",
+  ...props
+}: LocaleSwitcherProps) {
+  const currentLocale = getLocale()
 
   return (
-    <nav
+    <NativeSelect
       aria-label={m.locale_switcher_label()}
-      className="flex flex-wrap items-center gap-2"
+      className={className}
+      size={size}
+      value={currentLocale}
+      onChange={(event) => {
+        void setLocale(event.currentTarget.value as Locale)
+      }}
+      {...props}
     >
-      {locales.map((locale) => {
-        const href = localizeHref(canonicalHref, { locale }) || "/"
-
-        return (
-          <Button
-            key={locale}
-            nativeButton={false}
-            variant="outline"
-            size="sm"
-            render={
-              <a
-                href={href}
-                hrefLang={locale}
-                lang={locale}
-                onClick={() => {
-                  void setLocale(locale, { reload: false })
-                }}
-              />
-            }
-          >
-            {localeLabelByLocale[locale]()}
-          </Button>
-        )
-      })}
-    </nav>
+      {locales.map((locale) => (
+        <NativeSelectOption key={locale} value={locale}>
+          {localeLabelByLocale[locale]()}
+        </NativeSelectOption>
+      ))}
+    </NativeSelect>
   )
 }

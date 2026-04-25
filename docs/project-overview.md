@@ -19,6 +19,7 @@ This description should stay minimal and factual. It must reflect reality, not a
 - MVP boundaries are not fully defined
 - Product workflows and domain model are still evolving
 - Current repository still resembles a starter application in some areas
+- The authenticated dashboard is now a chat-oriented starting point for future organization-aware AI interaction
 
 ## Current Technical Foundation
 

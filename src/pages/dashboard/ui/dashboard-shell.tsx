@@ -59,21 +59,25 @@ export function DashboardShell({ children }: DashboardShellProps) {
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset className="bg-muted/20">
-        <header className="flex h-16 items-center gap-3 border-b border-border/70 bg-background/80 px-4 backdrop-blur md:px-6">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="my-auto h-5" />
+      <SidebarInset className="min-h-svh bg-muted/20">
+        <header className="sticky top-0 z-20 flex min-h-14 items-center gap-2 border-b border-border/70 bg-background/90 px-3 pt-[env(safe-area-inset-top)] backdrop-blur lg:min-h-16 lg:gap-3 lg:px-6 lg:pt-0">
+          <SidebarTrigger className="-ml-1 size-9" />
+          <Separator orientation="vertical" className="my-auto hidden h-5 sm:block" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm leading-none font-medium">
               {m.dashboard_eyebrow()}
             </p>
-            <p className="truncate text-xs text-muted-foreground">
+            <p className="hidden truncate text-xs text-muted-foreground sm:block">
               {m.dashboard_description()}
             </p>
           </div>
+          <ProfileMenu
+            showDisplayName={false}
+            className="border-border bg-background text-foreground hover:bg-muted lg:hidden"
+          />
         </header>
 
-        <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 md:px-6">
+        <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-3 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-4 lg:px-6 lg:py-8">
           {children}
         </div>
       </SidebarInset>

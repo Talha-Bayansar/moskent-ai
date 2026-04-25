@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
 import { Button } from "@/shared/ui/button"
+import { cn } from "@/shared/lib/utils"
 
 function getInitials(value: string) {
   const parts = value
@@ -36,7 +37,15 @@ function getInitials(value: string) {
   return (initials || value.trim().slice(0, 2) || "U").toUpperCase()
 }
 
-export function ProfileMenu() {
+type ProfileMenuProps = {
+  className?: string
+  showDisplayName?: boolean
+}
+
+export function ProfileMenu({
+  className,
+  showDisplayName = true,
+}: ProfileMenuProps) {
   const sessionState = authClient.useSession()
   const session = sessionState.data
   const user = session?.user
@@ -55,7 +64,11 @@ export function ProfileMenu() {
         render={
           <Button
             variant="outline"
-            className="h-auto w-full min-w-0 gap-2 rounded-3xl border-sidebar-border bg-sidebar-accent/40 px-2.5 py-2 text-left text-sidebar-foreground hover:bg-sidebar-accent focus-visible:ring-sidebar-ring"
+            className={cn(
+              "h-auto w-full min-w-0 gap-2 rounded-3xl border-sidebar-border bg-sidebar-accent/40 px-2.5 py-2 text-left text-sidebar-foreground hover:bg-sidebar-accent focus-visible:ring-sidebar-ring",
+              !showDisplayName && "size-9 justify-center rounded-full p-0",
+              className
+            )}
           />
         }
       >
@@ -64,18 +77,22 @@ export function ProfileMenu() {
           <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
 
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium">
-            {displayName}
+        {showDisplayName ? (
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-medium">
+              {displayName}
+            </span>
           </span>
-        </span>
+        ) : null}
 
-        <HugeiconsIcon
-          icon={ArrowDown01Icon}
-          strokeWidth={2}
-          className="pointer-events-none text-muted-foreground"
-          aria-hidden="true"
-        />
+        {showDisplayName ? (
+          <HugeiconsIcon
+            icon={ArrowDown01Icon}
+            strokeWidth={2}
+            className="pointer-events-none text-muted-foreground"
+            aria-hidden="true"
+          />
+        ) : null}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="min-w-72 p-2">

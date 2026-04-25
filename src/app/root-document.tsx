@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import type { ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import type { QueryClient } from "@tanstack/react-query"
 
 import { NotFoundPage } from "@/pages/not-found/ui/not-found-page"
@@ -54,21 +54,49 @@ export function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body suppressHydrationWarning>
         {children}
-        {isTestEnvironment ? null : (
-          <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "TanStack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
-        )}
+        {isTestEnvironment ? null : <AppDevtools />}
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function AppDevtools() {
+  const [canRenderDevtools, setCanRenderDevtools] = useState(false)
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) {
+      return
+    }
+
+    const mediaQuery = window.matchMedia("(min-width: 1024px)")
+    const updateCanRender = () => setCanRenderDevtools(mediaQuery.matches)
+
+    if (window.localStorage.getItem("moskent:devtools") !== "true") {
+      return
+    }
+
+    updateCanRender()
+    mediaQuery.addEventListener("change", updateCanRender)
+
+    return () => mediaQuery.removeEventListener("change", updateCanRender)
+  }, [])
+
+  if (!canRenderDevtools) {
+    return null
+  }
+
+  return (
+    <TanStackDevtools
+      config={{
+        position: "bottom-right",
+      }}
+      plugins={[
+        {
+          name: "TanStack Router",
+          render: <TanStackRouterDevtoolsPanel />,
+        },
+      ]}
+    />
   )
 }

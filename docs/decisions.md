@@ -32,6 +32,24 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-25 - Authenticated workspace UI is mobile-first
+
+- Status: accepted
+- Context: the application is expected to be used mainly on mobile and may become installable as a PWA later.
+- Decision: treat mobile as the primary layout baseline for authenticated workspace surfaces, with drawer navigation, compact app headers, safe-area-aware spacing, and desktop sidebar behavior only as the larger-screen adaptation.
+- Why: the core AI workspace should feel like an app on phones instead of a desktop dashboard scaled down to a narrow viewport.
+- Impact: future dashboard routes and shared authenticated chrome should be checked against phone-sized viewports first and avoid interactions that require laptop-width layout.
+- Follow-up: real PWA installation behavior remains `TBD`.
+
+## 2026-04-25 - Authenticated dashboard is the initial AI interaction surface
+
+- Status: accepted
+- Context: the product direction centers on organization-aware natural-language interaction, and authenticated dashboard routes already bootstrap the active organization before rendering protected UI.
+- Decision: use `/dashboard` as the first chat-like AI workspace surface instead of making the public root page the primary interaction point.
+- Why: future AI requests depend on signed-in user identity, active organization context, and permission-aware behavior, which belong behind the authenticated application shell.
+- Impact: the dashboard landing page should evolve toward the connected AI workflow while AI orchestration, action execution, persistence, and detailed permission behavior remain explicit `TBD` boundaries.
+- Follow-up: define the AI orchestration contract and action execution model before enabling message submission.
+
 ## 2026-04-24 - Active organization is bootstrapped before dashboard render
 
 - Status: accepted

@@ -18,7 +18,7 @@ Keep entries high-level. Do not invent detailed product scope here.
 | Organization and user foundation | in progress | Better Auth backend foundation now includes email/password, the organization plugin, dynamic per-organization roles, organization creation at `/organizations/new`, authenticated organization bootstrap, a dashboard organization switcher, an authenticated profile menu with reusable sign-out confirmation, and a dashboard settings page for user preferences. Broader organization management workflows and UI are still `TBD`. |
 | Authentication entry UI | implemented | Reusable sign-in and sign-up routes now use TanStack Form with Zod validation and minimal centered page shells. |
 | Multilingual interface | implemented | Paraglide JS now provides English, Dutch, and Turkish UI copy with locale-aware routing. The locale picker is surfaced from authenticated user settings instead of the dashboard header. Localized route slugs beyond the locale prefix are still `TBD`. |
-| Natural-language AI interaction | proposed | AI interaction is central to the product direction. Exact interaction model is `TBD`. |
+| Natural-language AI interaction | in progress | The authenticated `/dashboard` route now presents a chat-like AI workspace shell. Real AI orchestration, message persistence, and interaction model are still `TBD`. |
 | Structured action execution | proposed | AI is expected to perform structured application actions. Exact action catalog is `TBD`. |
 | Activity and relationship management | proposed | Example direction includes activities and linked contacts, but concrete scope is `TBD`. |
 

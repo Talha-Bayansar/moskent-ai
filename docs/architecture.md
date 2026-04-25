@@ -73,6 +73,8 @@ Current intended boundaries:
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route
 - organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
+- authenticated `/dashboard` currently hosts the chat-like AI workspace shell; AI orchestration, persistence, and action execution remain `TBD`
+- authenticated app surfaces are designed mobile-first with PWA-conscious safe-area spacing, drawer navigation on small screens, and desktop sidebar behavior on larger screens
 
 Current dependency direction:
 
@@ -86,6 +88,8 @@ Current dependency direction:
 Use this section for short forward-looking notes that are grounded in active work, not speculation.
 
 - AI orchestration boundary: `TBD`
+- authenticated AI interaction surface starts at `/dashboard`; current implementation is a UI shell only
+- mobile is the primary layout baseline for authenticated workspace UI; future dashboard routes should preserve app-like mobile navigation and avoid desktop-only page composition
 - organization and membership auth foundation now uses Better Auth's organization plugin with dynamic per-organization roles; product workflows on top remain `TBD`
 - action execution model for structured AI operations: `TBD`
 - observability and audit strategy for AI actions: `TBD`

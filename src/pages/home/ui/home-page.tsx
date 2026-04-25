@@ -16,18 +16,18 @@ const quickLinks = [
 
 export function HomePage() {
   return (
-    <main className="min-h-svh bg-background px-6 py-10">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-12">
-        <section className="flex flex-col gap-6">
+    <main className="min-h-svh bg-background px-4 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:px-6 sm:py-10">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 sm:gap-12">
+        <section className="flex flex-col gap-5 sm:gap-6">
           <LocaleSwitcher />
-          <span className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+          <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground sm:tracking-[0.22em]">
             {m.home_eyebrow()}
           </span>
           <div className="space-y-4">
-            <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="max-w-2xl text-3xl leading-tight font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
               {m.home_title()}
             </h1>
-            <p className="max-w-xl text-base leading-7 text-muted-foreground">
+            <p className="max-w-xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
               {m.home_description()}
             </p>
           </div>

@@ -27,7 +27,7 @@ export function CreateOrganizationPage() {
         </div>
       }
     >
-      <Card>
+      <Card size="sm" className="sm:py-6">
         <CardHeader>
           <CardTitle>{m.organization_create_card_title()}</CardTitle>
           <CardDescription>{m.organization_create_card_description()}</CardDescription>

@@ -12,20 +12,20 @@ import {
 
 export function SettingsPage() {
   return (
-    <section className="flex flex-col gap-8">
+    <section className="flex flex-col gap-5 md:gap-8">
       <div className="flex max-w-3xl flex-col gap-3">
-        <span className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+        <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground sm:tracking-[0.22em]">
           {m.settings_preferences_title()}
         </span>
-        <h1 className="text-4xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           {m.settings_title()}
         </h1>
-        <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+        <p className="max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
           {m.settings_description()}
         </p>
       </div>
 
-      <Card className="max-w-2xl">
+      <Card size="sm" className="max-w-2xl sm:py-6">
         <CardHeader>
           <CardTitle>{m.settings_preferences_title()}</CardTitle>
           <CardDescription>{m.settings_preferences_description()}</CardDescription>

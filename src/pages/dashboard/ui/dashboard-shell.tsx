@@ -1,6 +1,10 @@
 import { Link, useMatchRoute } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Home01Icon, UserGroupIcon } from "@hugeicons/core-free-icons"
+import {
+  Home01Icon,
+  UserTimeIcon,
+  UserGroupIcon,
+} from "@hugeicons/core-free-icons"
 import type { ReactNode } from "react"
 
 import { OrganizationSwitcher } from "@/features/organizations/ui/organization-switcher"
@@ -27,6 +31,7 @@ type DashboardShellProps = {
 export function DashboardShell({ children }: DashboardShellProps) {
   const matchRoute = useMatchRoute()
   const isDashboardActive = Boolean(matchRoute({ to: "/dashboard" }))
+  const isInvitationsActive = Boolean(matchRoute({ to: "/dashboard/invitations" }))
   const isMembersActive = Boolean(matchRoute({ to: "/dashboard/members" }))
 
   return (
@@ -50,6 +55,20 @@ export function DashboardShell({ children }: DashboardShellProps) {
                   data-icon="inline-start"
                 />
                 <span>{m.dashboard_navigation_label()}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={isInvitationsActive}
+                tooltip={m.dashboard_invitations_label()}
+                render={<Link to="/dashboard/invitations" />}
+              >
+                <HugeiconsIcon
+                  icon={UserTimeIcon}
+                  strokeWidth={2}
+                  data-icon="inline-start"
+                />
+                <span>{m.dashboard_invitations_label()}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>

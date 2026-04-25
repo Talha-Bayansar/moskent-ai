@@ -13,33 +13,49 @@ import { Spinner } from "@/shared/ui/spinner"
 
 type AuthenticatedRouteProps = {
   children: ReactNode
+  requireOrganization?: boolean
+  redirectIfHasOrganizationsTo?: string
 }
 
-export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
+export function AuthenticatedRoute({
+  children,
+  requireOrganization = true,
+  redirectIfHasOrganizationsTo,
+}: AuthenticatedRouteProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const sessionState = authClient.useSession()
   const session = sessionState.data
   const activeOrganizationId = session?.session.activeOrganizationId ?? null
+  const shouldCheckOrganizations =
+    requireOrganization || Boolean(redirectIfHasOrganizationsTo)
   const organizationsQuery = useOrganizationsQuery({
-    enabled: Boolean(session),
+    enabled: shouldCheckOrganizations && Boolean(session),
   })
   const setActiveOrganizationMutation = useSetActiveOrganizationMutation()
   const [bootstrappedOrganizationId, setBootstrappedOrganizationId] = useState<
     string | null
   >(null)
-  const organizations = organizationsQuery.data ?? []
+  const organizations = shouldCheckOrganizations
+    ? organizationsQuery.data ?? []
+    : []
   const firstOrganizationId = organizations[0]?.id ?? null
   const effectiveActiveOrganizationId =
     activeOrganizationId ?? bootstrappedOrganizationId
   const isCreateOrganizationRoute =
     location.pathname === "/organizations/new" ||
     location.pathname === "/organizations/new/"
+  const shouldRedirectToDashboardWithOrganizations =
+    Boolean(redirectIfHasOrganizationsTo) &&
+    Boolean(session) &&
+    (Boolean(activeOrganizationId) ||
+      (!organizationsQuery.isPending && organizations.length > 0))
   const redirectTo =
     typeof window === "undefined"
       ? `${location.pathname}${location.searchStr}${location.hash}`
       : `${window.location.pathname}${window.location.search}${window.location.hash}`
   const shouldRedirectToCreateOrganization =
+    requireOrganization &&
     session &&
     organizations.length === 0 &&
     !isCreateOrganizationRoute &&
@@ -47,10 +63,14 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
   const shouldRedirectToSignIn = !session && !sessionState.isPending
 
   useEffect(() => {
+    if (!requireOrganization) {
+      return
+    }
+
     if (activeOrganizationId) {
       setBootstrappedOrganizationId(null)
     }
-  }, [activeOrganizationId])
+  }, [activeOrganizationId, requireOrganization])
 
   useEffect(() => {
     if (!shouldRedirectToCreateOrganization) {
@@ -58,10 +78,21 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
     }
 
     void navigate({
-      to: "/organizations/new",
+      to: "/organizations",
       replace: true,
     })
   }, [navigate, shouldRedirectToCreateOrganization])
+
+  useEffect(() => {
+    if (!shouldRedirectToDashboardWithOrganizations || !redirectIfHasOrganizationsTo) {
+      return
+    }
+
+    void navigate({
+      to: redirectIfHasOrganizationsTo,
+      replace: true,
+    })
+  }, [navigate, redirectIfHasOrganizationsTo, shouldRedirectToDashboardWithOrganizations])
 
   useEffect(() => {
     if (!shouldRedirectToSignIn) {
@@ -78,6 +109,10 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
   }, [navigate, redirectTo, shouldRedirectToSignIn])
 
   useEffect(() => {
+    if (!requireOrganization) {
+      return
+    }
+
     if (
       !session ||
       !firstOrganizationId ||
@@ -101,18 +136,25 @@ export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
     bootstrappedOrganizationId,
     firstOrganizationId,
     session,
+    requireOrganization,
     setActiveOrganizationMutation,
   ])
 
   const isPending =
     sessionState.isPending ||
-    (Boolean(session) && organizationsQuery.isPending) ||
-    (organizations.length > 0 &&
+    (requireOrganization && Boolean(session) && organizationsQuery.isPending) ||
+    (Boolean(redirectIfHasOrganizationsTo) &&
+      Boolean(session) &&
+      (shouldRedirectToDashboardWithOrganizations ||
+        organizationsQuery.isPending)) ||
+    (requireOrganization &&
+      organizations.length > 0 &&
       !effectiveActiveOrganizationId &&
       !setActiveOrganizationMutation.isError) ||
-    setActiveOrganizationMutation.isPending
-  const bootstrapError =
-    organizationsQuery.error ?? setActiveOrganizationMutation.error
+    (requireOrganization && setActiveOrganizationMutation.isPending)
+  const bootstrapError = requireOrganization
+    ? organizationsQuery.error ?? setActiveOrganizationMutation.error
+    : null
 
   if (isPending) {
     return (

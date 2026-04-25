@@ -59,14 +59,50 @@ Use this template for new entries:
 - Impact: the dashboard landing page should evolve toward the connected AI workflow while AI orchestration, action execution, persistence, and detailed permission behavior remain explicit `TBD` boundaries.
 - Follow-up: define the AI orchestration contract and action execution model before enabling message submission.
 
-## 2026-04-24 - Active organization is bootstrapped before dashboard render
+## 2026-04-25 - Organization-aware entry flows split by membership
 
 - Status: accepted
+- Context: the authenticated app needed separate entry surfaces for users with and without organizations, and the old single hub screen mixed onboarding with organization management.
+- Decision: send users without organizations to `/organizations`, expose invitations through a dedicated `/organizations/invitations` page, keep `/organizations/new` as the canonical create route, and send users with organizations to `/dashboard` or `/dashboard/invitations`.
+- Why: this keeps the no-organization path header-only and focused on onboarding, preserves the sidebar-based organization workspace, and makes the two entry modes explicit in the URL structure.
+- Impact: sign-in and sign-up now resolve their landing page from organization membership after session refresh, the organization selector exposes a create-organization action, and the `/organizations` hub no longer embeds the invitation browser.
+- Follow-up: decide later whether `/organizations/new` should expose an explicit return link back to the hub for no-organization users.
+
+## 2026-04-25 - Organization access lives on a dedicated hub route
+
+- Status: superseded
+- Context: signed-in users without an organization still need a place to continue, either by creating one or joining through pending invitations.
+- Decision: redirect organization-less authenticated users to `/organizations`, keep `/organizations/new` as the create-only route, and expose pending invitations on the hub itself.
+- Why: this was a useful first split while the no-organization experience still lived on one page.
+- Impact: replaced by the membership-aware split between `/organizations` and `/organizations/invitations`.
+- Follow-up: use the newer membership-aware routing decision instead.
+
+## 2026-04-25 - Organization-access pages use a shared non-dashboard shell
+
+- Status: accepted
+- Context: `/organizations`, `/organizations/new`, and `/dashboard/settings` are authenticated surfaces, but they are not part of the organization-scoped dashboard experience and should not inherit sidebar chrome.
+- Decision: render those pages inside a shared organization-access shell with padded full-width content, a brand/home link, locale switching, a settings link, and sign-out controls, while leaving `/dashboard` and other org-scoped routes on the dashboard shell.
+- Why: the access hub and settings page need utility navigation without presenting as cropped dashboard panels, and keeping them separate from the org-scoped shell preserves the dashboard layout contract.
+- Impact: session-only authenticated routes can share one chrome implementation, dashboard-specific navigation stays confined to org-scoped pages, and locale/settings/logout actions remain available before a user has joined an organization.
+- Follow-up: decide later whether additional pre-organization routes should reuse the same shell or get their own utility chrome.
+
+## 2026-04-25 - Dashboard settings bypasses the dashboard shell
+
+- Status: accepted
+- Context: `/dashboard/settings` needed to stay at its existing URL so links remain stable, but the page should not inherit the org-scoped sidebar shell.
+- Decision: keep the route nested under `/dashboard` for URL structure, but have the dashboard layout route render the outlet directly when the pathname is `/dashboard/settings`.
+- Why: this preserves the existing settings URL while allowing the session-only organization-access shell to own the page chrome and utility navigation.
+- Impact: the dashboard route tree now has one shell exception, and future dashboard children should be checked to ensure they still want org-scoped chrome before being nested under the dashboard layout.
+- Follow-up: reconsider the route layout if more session-only pages are added under `/dashboard`.
+
+## 2026-04-24 - Active organization is bootstrapped before dashboard render
+
+- Status: superseded
 - Context: protected dashboard UI needs app-wide organization context immediately after authentication.
 - Decision: load the authenticated user's Better Auth organizations through TanStack Query, redirect users without organizations to `/organizations/new`, and set the first returned organization as the Better Auth active organization when the session has none.
 - Why: this keeps organization context available before dashboard children render without introducing app-owned organization state separate from Better Auth.
 - Impact: protected dashboard flows should read active organization from the Better Auth session and use the organizations feature query/mutation wrappers for list and switch behavior.
-- Follow-up: define route structure and authorization behavior for organization-scoped product pages once those workflows exist.
+- Follow-up: replaced by the dedicated organization hub route and session-only create flow.
 
 ## 2026-04-21 - Organization roles and permissions are owned by Better Auth's organization plugin
 

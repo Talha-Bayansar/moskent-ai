@@ -9,7 +9,7 @@ export const Route = createFileRoute("/organizations/new/")({
 
 function CreateOrganizationPageRoute() {
   return (
-    <AuthenticatedRoute>
+    <AuthenticatedRoute requireOrganization={false}>
       <CreateOrganizationPage />
     </AuthenticatedRoute>
   )

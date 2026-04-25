@@ -72,10 +72,12 @@ Current intended boundaries:
 - shared auth bootstrap lives in `src/shared/auth/`
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
-- organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route
+- organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route, which renders either the header-only access shell or the dashboard shell depending on organization membership
 - organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
 - organization members are loaded through a feature-slice TanStack Query infinite list backed by Better Auth's `organization.listMembers` endpoint and rendered from `/dashboard/members`
-- organization invitations now live in a dedicated organizations feature slice and are exposed through the authenticated `/dashboard/members/invite` route
+- organization invitations now live in a dedicated organizations feature slice and are exposed through the authenticated `/dashboard/members/invite` route, while pending user invitations are surfaced from the session-only `/organizations/invitations` route and the authenticated `/dashboard/invitations` route
+- `/organizations` and `/organizations/invitations` use the shared organization-access shell with utility navigation instead of the dashboard sidebar layout, while `/organizations/new` switches shells based on membership and `/dashboard/invitations` uses the dashboard shell
+- the dashboard sidebar header includes an organization switcher with a dedicated create-organization action that links to `/organizations/new`
 - authenticated `/dashboard` currently hosts the chat-like AI workspace shell; AI orchestration, persistence, and action execution remain `TBD`
 - authenticated app surfaces are designed mobile-first with PWA-conscious safe-area spacing, drawer navigation on small screens, and desktop sidebar behavior on larger screens
 
@@ -152,6 +154,7 @@ Current server-state workflow notes:
 - organization feature query keys and mutations wrap Better Auth organization client APIs rather than using Better Auth hooks as the app data-access layer
 - query clients are created per router instance to stay compatible with SSR and future request-scoped rendering
 - route modules and pages should start consuming TanStack Query only when real server-state behavior is introduced
+- post-auth landing resolves from organization membership after session refresh, so sign-in and sign-up can send users with organizations to `/dashboard` and organization-less users to `/organizations`
 
 Current auth environment requirements:
 
@@ -162,12 +165,17 @@ Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
 - Better Auth's organization plugin is enabled as shared infrastructure, and app-owned organization workflows use client APIs wrapped by TanStack Query
-- app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the Better Auth client session after successful submission, and then explicitly navigate to their `redirectTo` target
-- authenticated dashboard chrome now exposes the current signed-in user in a sidebar footer profile menu, includes a settings link in that menu, and uses a reusable sign-out confirmation button for session termination
+- app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the Better Auth client session after successful submission, and resolve their landing page from organization membership plus any requested `redirectTo` target
+- authenticated dashboard chrome now exposes the current signed-in user in a sidebar footer profile menu, includes a settings link in that menu, exposes a dedicated invitations entry for org users, and uses a reusable sign-out confirmation button for session termination
 - organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
 - organization invitations are implemented as a reusable TanStack Form UI around `authClient.organization.inviteMember(...)`, with `/dashboard/members` linking into the dedicated invite page
-- current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves, redirects unauthenticated users to `/sign-in?redirectTo=...`, loads the current user's organizations, redirects users without organizations to `/organizations/new`, and ensures a Better Auth active organization is set before rendering protected dashboard UI
+- organization access now has a dedicated `/organizations` hub for users without organizations, a dedicated `/organizations/invitations` page for their pending invitations, and a dashboard `/dashboard/invitations` page for organization users; the invitation pages list pending user invitations through `authClient.organization.listUserInvitations()`, and accept/reject actions use confirmation dialogs before calling Better Auth invitation mutations
+- pending invitation rows prefer the organization name in the primary label and avoid exposing raw organization IDs in normal UI copy
+- current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves, redirects unauthenticated users to `/sign-in?redirectTo=...`, only performs organization bootstrap on organization-required routes, and redirects organization members away from `/organizations` to `/dashboard/invitations`
+- the organization-access shell provides the non-dashboard chrome for `/organizations` and `/organizations/invitations`, while `/organizations/new` switches between the access shell and dashboard shell based on organization membership; settings and sign-out stay exposed through the compact profile menu while locale selection stays on the settings page
+- `/dashboard/settings` remains nested under the dashboard route tree for URL structure, but `src/routes/dashboard/route.tsx` bypasses the dashboard shell for that pathname so the session-only settings page can render with the organization-access shell
 - the dashboard sidebar header uses the organization switcher instead of the application name
+- the dashboard sidebar now includes an `Invitations` entry that links to `/dashboard/invitations`
 - locale selection now lives on `/dashboard/settings` instead of the dashboard header
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource

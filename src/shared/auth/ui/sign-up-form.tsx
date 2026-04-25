@@ -5,6 +5,7 @@ import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
 
 import { authClient } from "@/shared/auth/auth-client"
+import { resolvePostAuthRedirect } from "@/shared/auth/post-auth-redirect"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
@@ -61,7 +62,7 @@ type SignUpFormProps = {
 
 export function SignUpForm({
   copy,
-  redirectTo = "/dashboard",
+  redirectTo,
   className,
 }: SignUpFormProps) {
   const navigate = useNavigate()
@@ -81,7 +82,7 @@ export function SignUpForm({
         email: value.email.trim(),
         password: value.password,
         name: value.name.trim(),
-        callbackURL: redirectTo,
+        ...(redirectTo ? { callbackURL: redirectTo } : {}),
       })
 
       if (error) {
@@ -91,8 +92,16 @@ export function SignUpForm({
 
       await sessionState.refetch()
 
+      const { data, error: organizationsError } =
+        await authClient.organization.list()
+      const hasOrganizations =
+        !organizationsError && Array.isArray(data) && data.length > 0
+
       await navigate({
-        href: redirectTo,
+        href: resolvePostAuthRedirect({
+          redirectTo,
+          hasOrganizations,
+        }),
         replace: true,
       })
     },

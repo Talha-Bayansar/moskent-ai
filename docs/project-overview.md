@@ -19,7 +19,9 @@ This description should stay minimal and factual. It must reflect reality, not a
 - MVP boundaries are not fully defined
 - Product workflows and domain model are still evolving
 - Current repository still resembles a starter application in some areas
-- The authenticated dashboard is now a chat-oriented starting point for future organization-aware AI interaction
+- The authenticated app now splits into a header-only organization-access flow for users without organizations and a sidebar dashboard flow for users with organizations
+- The organization-access hub is an onboarding entry point, while invitations now live on a dedicated `/organizations/invitations` route
+- The dashboard remains the starting point for organization users and includes a create-organization action in the organization selector
 
 ## Current Technical Foundation
 

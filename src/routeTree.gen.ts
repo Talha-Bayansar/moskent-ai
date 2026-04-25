@@ -13,10 +13,13 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SignUpIndexRouteImport } from './routes/sign-up/index'
 import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
+import { Route as OrganizationsIndexRouteImport } from './routes/organizations/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as OrganizationsNewIndexRouteImport } from './routes/organizations/new/index'
+import { Route as OrganizationsInvitationsIndexRouteImport } from './routes/organizations/invitations/index'
 import { Route as DashboardSettingsIndexRouteImport } from './routes/dashboard/settings/index'
 import { Route as DashboardMembersIndexRouteImport } from './routes/dashboard/members/index'
+import { Route as DashboardInvitationsIndexRouteImport } from './routes/dashboard/invitations/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DashboardMembersInviteIndexRouteImport } from './routes/dashboard/members/invite/index'
 
@@ -40,6 +43,11 @@ const SignInIndexRoute = SignInIndexRouteImport.update({
   path: '/sign-in/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrganizationsIndexRoute = OrganizationsIndexRouteImport.update({
+  id: '/organizations/',
+  path: '/organizations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -50,6 +58,12 @@ const OrganizationsNewIndexRoute = OrganizationsNewIndexRouteImport.update({
   path: '/organizations/new/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrganizationsInvitationsIndexRoute =
+  OrganizationsInvitationsIndexRouteImport.update({
+    id: '/organizations/invitations/',
+    path: '/organizations/invitations/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DashboardSettingsIndexRoute = DashboardSettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
@@ -60,6 +74,12 @@ const DashboardMembersIndexRoute = DashboardMembersIndexRouteImport.update({
   path: '/members/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardInvitationsIndexRoute =
+  DashboardInvitationsIndexRouteImport.update({
+    id: '/invitations/',
+    path: '/invitations/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -76,22 +96,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
+  '/organizations/': typeof OrganizationsIndexRoute
   '/sign-in/': typeof SignInIndexRoute
   '/sign-up/': typeof SignUpIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/invitations/': typeof DashboardInvitationsIndexRoute
   '/dashboard/members/': typeof DashboardMembersIndexRoute
   '/dashboard/settings/': typeof DashboardSettingsIndexRoute
+  '/organizations/invitations/': typeof OrganizationsInvitationsIndexRoute
   '/organizations/new/': typeof OrganizationsNewIndexRoute
   '/dashboard/members/invite/': typeof DashboardMembersInviteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/organizations': typeof OrganizationsIndexRoute
   '/sign-in': typeof SignInIndexRoute
   '/sign-up': typeof SignUpIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/invitations': typeof DashboardInvitationsIndexRoute
   '/dashboard/members': typeof DashboardMembersIndexRoute
   '/dashboard/settings': typeof DashboardSettingsIndexRoute
+  '/organizations/invitations': typeof OrganizationsInvitationsIndexRoute
   '/organizations/new': typeof OrganizationsNewIndexRoute
   '/dashboard/members/invite': typeof DashboardMembersInviteIndexRoute
 }
@@ -100,11 +126,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
+  '/organizations/': typeof OrganizationsIndexRoute
   '/sign-in/': typeof SignInIndexRoute
   '/sign-up/': typeof SignUpIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/invitations/': typeof DashboardInvitationsIndexRoute
   '/dashboard/members/': typeof DashboardMembersIndexRoute
   '/dashboard/settings/': typeof DashboardSettingsIndexRoute
+  '/organizations/invitations/': typeof OrganizationsInvitationsIndexRoute
   '/organizations/new/': typeof OrganizationsNewIndexRoute
   '/dashboard/members/invite/': typeof DashboardMembersInviteIndexRoute
 }
@@ -114,22 +143,28 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/dashboard/'
+    | '/organizations/'
     | '/sign-in/'
     | '/sign-up/'
     | '/api/auth/$'
+    | '/dashboard/invitations/'
     | '/dashboard/members/'
     | '/dashboard/settings/'
+    | '/organizations/invitations/'
     | '/organizations/new/'
     | '/dashboard/members/invite/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
+    | '/organizations'
     | '/sign-in'
     | '/sign-up'
     | '/api/auth/$'
+    | '/dashboard/invitations'
     | '/dashboard/members'
     | '/dashboard/settings'
+    | '/organizations/invitations'
     | '/organizations/new'
     | '/dashboard/members/invite'
   id:
@@ -137,11 +172,14 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/dashboard/'
+    | '/organizations/'
     | '/sign-in/'
     | '/sign-up/'
     | '/api/auth/$'
+    | '/dashboard/invitations/'
     | '/dashboard/members/'
     | '/dashboard/settings/'
+    | '/organizations/invitations/'
     | '/organizations/new/'
     | '/dashboard/members/invite/'
   fileRoutesById: FileRoutesById
@@ -149,9 +187,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  OrganizationsIndexRoute: typeof OrganizationsIndexRoute
   SignInIndexRoute: typeof SignInIndexRoute
   SignUpIndexRoute: typeof SignUpIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  OrganizationsInvitationsIndexRoute: typeof OrganizationsInvitationsIndexRoute
   OrganizationsNewIndexRoute: typeof OrganizationsNewIndexRoute
 }
 
@@ -185,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignInIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/organizations/': {
+      id: '/organizations/'
+      path: '/organizations'
+      fullPath: '/organizations/'
+      preLoaderRoute: typeof OrganizationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -199,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationsNewIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/organizations/invitations/': {
+      id: '/organizations/invitations/'
+      path: '/organizations/invitations'
+      fullPath: '/organizations/invitations/'
+      preLoaderRoute: typeof OrganizationsInvitationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/settings/': {
       id: '/dashboard/settings/'
       path: '/settings'
@@ -211,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/members'
       fullPath: '/dashboard/members/'
       preLoaderRoute: typeof DashboardMembersIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/invitations/': {
+      id: '/dashboard/invitations/'
+      path: '/invitations'
+      fullPath: '/dashboard/invitations/'
+      preLoaderRoute: typeof DashboardInvitationsIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/api/auth/$': {
@@ -232,6 +293,7 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardInvitationsIndexRoute: typeof DashboardInvitationsIndexRoute
   DashboardMembersIndexRoute: typeof DashboardMembersIndexRoute
   DashboardSettingsIndexRoute: typeof DashboardSettingsIndexRoute
   DashboardMembersInviteIndexRoute: typeof DashboardMembersInviteIndexRoute
@@ -239,6 +301,7 @@ interface DashboardRouteRouteChildren {
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardInvitationsIndexRoute: DashboardInvitationsIndexRoute,
   DashboardMembersIndexRoute: DashboardMembersIndexRoute,
   DashboardSettingsIndexRoute: DashboardSettingsIndexRoute,
   DashboardMembersInviteIndexRoute: DashboardMembersInviteIndexRoute,
@@ -251,9 +314,11 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  OrganizationsIndexRoute: OrganizationsIndexRoute,
   SignInIndexRoute: SignInIndexRoute,
   SignUpIndexRoute: SignUpIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  OrganizationsInvitationsIndexRoute: OrganizationsInvitationsIndexRoute,
   OrganizationsNewIndexRoute: OrganizationsNewIndexRoute,
 }
 export const routeTree = rootRouteImport

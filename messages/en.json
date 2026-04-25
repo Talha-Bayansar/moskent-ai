@@ -28,6 +28,7 @@
   "auth_confirm_password_label": "Confirm password",
   "auth_confirm_password_description": "Re-enter the password to avoid typos.",
   "auth_profile_menu_label": "Open account menu",
+  "auth_settings_label": "Settings",
   "auth_sign_out_label": "Sign out",
   "auth_sign_out_title": "Sign out of your account?",
   "auth_sign_out_description": "You will need to sign in again to keep working in the workspace.",
@@ -83,5 +84,9 @@
   "organization_create_submitting": "Creating organization...",
   "organization_create_error_title": "Organization creation failed",
   "organization_create_generic_error": "We could not create this organization. Please try again.",
-  "organization_create_back_dashboard": "Back to workspace"
+  "organization_create_back_dashboard": "Back to workspace",
+  "settings_title": "Settings",
+  "settings_description": "Adjust the preferences that belong to your account.",
+  "settings_preferences_title": "Preferences",
+  "settings_preferences_description": "Choose the display language you want to use in the app."
 }

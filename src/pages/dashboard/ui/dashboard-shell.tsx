@@ -1,19 +1,18 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useMatchRoute } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Home01Icon } from "@hugeicons/core-free-icons"
 import type { ReactNode } from "react"
 
 import { OrganizationSwitcher } from "@/features/organizations/ui/organization-switcher"
-import { LocaleSwitcher } from "@/shared/i18n/locale-switcher"
 import { m } from "@/shared/i18n"
 import { Separator } from "@/shared/ui/separator"
 import { ProfileMenu } from "@/shared/auth/ui/profile-menu"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarInset,
-  SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -26,6 +25,9 @@ type DashboardShellProps = {
 }
 
 export function DashboardShell({ children }: DashboardShellProps) {
+  const matchRoute = useMatchRoute()
+  const isDashboardActive = Boolean(matchRoute({ to: "/dashboard" }))
+
   return (
     <SidebarProvider>
       <Sidebar variant="inset" collapsible="offcanvas">
@@ -37,7 +39,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
-                isActive
+                isActive={isDashboardActive}
                 tooltip={m.dashboard_navigation_label()}
                 render={<Link to="/dashboard" />}
               >
@@ -69,7 +71,6 @@ export function DashboardShell({ children }: DashboardShellProps) {
               {m.dashboard_description()}
             </p>
           </div>
-          <LocaleSwitcher />
         </header>
 
         <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 md:px-6">

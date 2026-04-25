@@ -28,6 +28,7 @@
   "auth_confirm_password_label": "Parolayı doğrula",
   "auth_confirm_password_description": "Yazım hatalarını önlemek için parolayı tekrar girin.",
   "auth_profile_menu_label": "Hesap menüsünü aç",
+  "auth_settings_label": "Ayarlar",
   "auth_sign_out_label": "Çıkış yap",
   "auth_sign_out_title": "Hesabınızdan çıkış yapılsın mı?",
   "auth_sign_out_description": "Çalışma alanında devam etmek için yeniden giriş yapmanız gerekir.",
@@ -83,5 +84,9 @@
   "organization_create_submitting": "Kuruluş oluşturuluyor...",
   "organization_create_error_title": "Kuruluş oluşturulamadı",
   "organization_create_generic_error": "Bu kuruluşu oluşturamadık. Lütfen tekrar deneyin.",
-  "organization_create_back_dashboard": "Çalışma alanına dön"
+  "organization_create_back_dashboard": "Çalışma alanına dön",
+  "settings_title": "Ayarlar",
+  "settings_description": "Hesabınıza ait tercihleri düzenleyin.",
+  "settings_preferences_title": "Tercihler",
+  "settings_preferences_description": "Uygulamada kullanmak istediğiniz görüntüleme dilini seçin."
 }

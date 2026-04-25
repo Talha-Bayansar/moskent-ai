@@ -1,7 +1,12 @@
 "use client"
 
+import { Link } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowDown01Icon, Logout01Icon } from "@hugeicons/core-free-icons"
+import {
+  AccountSetting02Icon,
+  ArrowDown01Icon,
+  Logout01Icon,
+} from "@hugeicons/core-free-icons"
 
 import { SignOutButton } from "./sign-out-button"
 import { authClient } from "@/shared/auth/auth-client"
@@ -14,6 +19,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
@@ -89,6 +95,20 @@ export function ProfileMenu() {
             ) : null}
           </div>
         </div>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          className="w-full justify-start gap-2 rounded-xl px-3 py-2"
+          render={<Link to="/dashboard/settings" />}
+        >
+          <HugeiconsIcon
+            icon={AccountSetting02Icon}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
+          <span>{m.auth_settings_label()}</span>
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 

@@ -28,6 +28,7 @@
   "auth_confirm_password_label": "Wachtwoord bevestigen",
   "auth_confirm_password_description": "Voer het wachtwoord opnieuw in om typefouten te vermijden.",
   "auth_profile_menu_label": "Accountmenu openen",
+  "auth_settings_label": "Instellingen",
   "auth_sign_out_label": "Uitloggen",
   "auth_sign_out_title": "Uitloggen uit je account?",
   "auth_sign_out_description": "Je moet opnieuw inloggen om verder te werken in de werkruimte.",
@@ -83,5 +84,9 @@
   "organization_create_submitting": "Organisatie wordt aangemaakt...",
   "organization_create_error_title": "Aanmaken van organisatie mislukt",
   "organization_create_generic_error": "We konden deze organisatie niet aanmaken. Probeer het opnieuw.",
-  "organization_create_back_dashboard": "Terug naar werkruimte"
+  "organization_create_back_dashboard": "Terug naar werkruimte",
+  "settings_title": "Instellingen",
+  "settings_description": "Pas de voorkeuren aan die bij je account horen.",
+  "settings_preferences_title": "Voorkeuren",
+  "settings_preferences_description": "Kies de weergavetaal die je in de app wilt gebruiken."
 }

@@ -15,7 +15,7 @@ Keep entries high-level. Do not invent detailed product scope here.
 
 | Feature Area | Status | Notes |
 | --- | --- | --- |
-| Organization and user foundation | in progress | Better Auth backend foundation now includes email/password, the organization plugin, dynamic per-organization roles, organization creation at `/organizations/new`, authenticated organization bootstrap, and a dashboard organization switcher. Broader organization management workflows and UI are still `TBD`. |
+| Organization and user foundation | in progress | Better Auth backend foundation now includes email/password, the organization plugin, dynamic per-organization roles, organization creation at `/organizations/new`, authenticated organization bootstrap, a dashboard organization switcher, and an authenticated profile menu with reusable sign-out confirmation. Broader organization management workflows and UI are still `TBD`. |
 | Authentication entry UI | implemented | Reusable sign-in and sign-up routes now use TanStack Form with Zod validation and minimal centered page shells. |
 | Multilingual interface | implemented | Paraglide JS now provides English, Dutch, and Turkish UI copy with locale-aware routing. Localized route slugs beyond the locale prefix are still `TBD`. |
 | Natural-language AI interaction | proposed | AI interaction is central to the product direction. Exact interaction model is `TBD`. |

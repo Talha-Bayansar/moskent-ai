@@ -108,6 +108,8 @@ Current auth setup:
 - `src/shared/auth/ui/auth-page-shell.tsx`: centered auth page chrome shared by sign-in and sign-up pages
 - `src/shared/auth/ui/sign-in-form.tsx`: reusable sign-in form built with TanStack Form and Zod
 - `src/shared/auth/ui/sign-up-form.tsx`: reusable sign-up form built with TanStack Form and Zod
+- `src/shared/auth/ui/sign-out-button.tsx`: reusable sign-out trigger with confirmation dialog
+- `src/shared/auth/ui/profile-menu.tsx`: authenticated-user dropdown that surfaces the current signed-in user and reuses the sign-out button
 - `src/shared/auth/ui/authenticated-route.tsx`: shared client-side protected-route wrapper for authenticated pages
 - `src/shared/auth/organization-session.ts`: shared organization session query and active-organization mutation helpers used by authenticated bootstrap and re-exported by the organizations feature
 - `src/shared/auth/permissions.ts`: shared access-control statements and baseline organization roles reused by server and client auth setup
@@ -153,6 +155,7 @@ Current auth workflow notes:
 - email/password auth is enabled as the first backend auth method
 - Better Auth's organization plugin is enabled as shared infrastructure, and app-owned organization workflows use client APIs wrapped by TanStack Query
 - app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the Better Auth client session after successful submission, and then explicitly navigate to their `redirectTo` target
+- authenticated dashboard chrome now exposes the current signed-in user in a sidebar footer profile menu and uses a reusable sign-out confirmation button for session termination
 - organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
 - current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves, redirects unauthenticated users to `/sign-in?redirectTo=...`, loads the current user's organizations, redirects users without organizations to `/organizations/new`, and ensures a Better Auth active organization is set before rendering protected dashboard UI
 - the dashboard sidebar header uses the organization switcher instead of the application name

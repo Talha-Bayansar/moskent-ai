@@ -7,11 +7,13 @@ import { OrganizationSwitcher } from "@/features/organizations/ui/organization-s
 import { LocaleSwitcher } from "@/shared/i18n/locale-switcher"
 import { m } from "@/shared/i18n"
 import { Separator } from "@/shared/ui/separator"
+import { ProfileMenu } from "@/shared/auth/ui/profile-menu"
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarInset,
+  SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -49,6 +51,10 @@ export function DashboardShell({ children }: DashboardShellProps) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
+
+        <SidebarFooter className="border-t border-sidebar-border/70 p-3">
+          <ProfileMenu />
+        </SidebarFooter>
       </Sidebar>
 
       <SidebarInset className="bg-muted/20">

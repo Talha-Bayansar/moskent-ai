@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-25 - Organization invites use a dedicated route page
+
+- Status: accepted
+- Context: the members overview needed an entry point for inviting users by email, and the project already has mobile-first authenticated workspace chrome.
+- Decision: implement organization invitations as a dedicated `/dashboard/members/invite` page rather than a dialog or drawer overlay.
+- Why: the invite form is reusable, bookmarkable, and easier to keep readable on mobile when it has its own route and page chrome.
+- Impact: the members overview should link to the invite page, and future organization-management actions should choose route pages when they benefit from a persistent URL.
+- Follow-up: decide later whether invite management should also expose list/cancel/reinvite flows in the UI.
+
 ## 2026-04-25 - Authenticated workspace UI is mobile-first
 
 - Status: accepted

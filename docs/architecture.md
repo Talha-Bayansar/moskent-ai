@@ -75,6 +75,7 @@ Current intended boundaries:
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route
 - organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
 - organization members are loaded through a feature-slice TanStack Query infinite list backed by Better Auth's `organization.listMembers` endpoint and rendered from `/dashboard/members`
+- organization invitations now live in a dedicated organizations feature slice and are exposed through the authenticated `/dashboard/members/invite` route
 - authenticated `/dashboard` currently hosts the chat-like AI workspace shell; AI orchestration, persistence, and action execution remain `TBD`
 - authenticated app surfaces are designed mobile-first with PWA-conscious safe-area spacing, drawer navigation on small screens, and desktop sidebar behavior on larger screens
 
@@ -164,6 +165,7 @@ Current auth workflow notes:
 - app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the Better Auth client session after successful submission, and then explicitly navigate to their `redirectTo` target
 - authenticated dashboard chrome now exposes the current signed-in user in a sidebar footer profile menu, includes a settings link in that menu, and uses a reusable sign-out confirmation button for session termination
 - organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
+- organization invitations are implemented as a reusable TanStack Form UI around `authClient.organization.inviteMember(...)`, with `/dashboard/members` linking into the dedicated invite page
 - current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves, redirects unauthenticated users to `/sign-in?redirectTo=...`, loads the current user's organizations, redirects users without organizations to `/organizations/new`, and ensures a Better Auth active organization is set before rendering protected dashboard UI
 - the dashboard sidebar header uses the organization switcher instead of the application name
 - locale selection now lives on `/dashboard/settings` instead of the dashboard header

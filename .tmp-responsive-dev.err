@@ -1,0 +1,87 @@
+Error: Failed to load url /src/paraglide/messages/auth_generic_error.js (resolved id: C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/auth_generic_error.js) in C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js. Does the file exist?
+    at loadAndTransform (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:22663:33)
+    ... 2 lines matching cause stack trace ...
+    at async listenerForInvokeHandler (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25892:13) {
+  cause: Error: Failed to load url /src/paraglide/messages/auth_generic_error.js (resolved id: C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/auth_generic_error.js) in C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js. Does the file exist?
+      at loadAndTransform (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:22663:33)
+      at async fetchModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:33997:15)
+      at async handleInvoke (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25837:21)
+      at async listenerForInvokeHandler (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25892:13) {
+    code: 'ERR_LOAD_URL',
+    runnerError: Error: RunnerError
+        at reviveInvokeError (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:476:64)
+        at Object.invoke (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:549:11)
+        at ModuleRunner.getModuleInformation (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1086:7)
+        at request (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1103:83)
+        at C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js:49:1
+        at ESModulesEvaluator.runInlinedModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:913:3)
+        at ModuleRunner.directRequest (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1146:59)
+        at ModuleRunner.cachedRequest (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1053:73)
+        at C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages.js:2:1
+        at ESModulesEvaluator.runInlinedModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:913:3)
+  },
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}
+Error: Failed to load url /src/paraglide/messages/auth_generic_error.js (resolved id: C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/auth_generic_error.js) in C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js. Does the file exist?
+    at loadAndTransform (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:22663:33)
+    ... 2 lines matching cause stack trace ...
+    at async listenerForInvokeHandler (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25892:13) {
+  cause: Error: Failed to load url /src/paraglide/messages/auth_generic_error.js (resolved id: C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/auth_generic_error.js) in C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js. Does the file exist?
+      at loadAndTransform (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:22663:33)
+      at async fetchModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:33997:15)
+      at async handleInvoke (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25837:21)
+      at async listenerForInvokeHandler (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25892:13) {
+    code: 'ERR_LOAD_URL',
+    runnerError: Error: RunnerError
+        at reviveInvokeError (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:476:64)
+        at Object.invoke (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:549:11)
+        at ModuleRunner.getModuleInformation (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1086:7)
+        at request (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1103:83)
+        at C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js:49:1
+        at ESModulesEvaluator.runInlinedModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:913:3)
+        at ModuleRunner.directRequest (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1146:59)
+        at ModuleRunner.cachedRequest (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1053:73)
+        at C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages.js:2:1
+        at ESModulesEvaluator.runInlinedModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:913:3)
+  },
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}
+Error: Failed to load url /src/paraglide/messages/auth_generic_error.js (resolved id: C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/auth_generic_error.js) in C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js. Does the file exist?
+    at loadAndTransform (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:22663:33)
+    ... 2 lines matching cause stack trace ...
+    at async listenerForInvokeHandler (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25892:13) {
+  cause: Error: Failed to load url /src/paraglide/messages/auth_generic_error.js (resolved id: C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/auth_generic_error.js) in C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js. Does the file exist?
+      at loadAndTransform (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:22663:33)
+      at async fetchModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:33997:15)
+      at async handleInvoke (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25837:21)
+      at async listenerForInvokeHandler (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/chunks/config.js:25892:13) {
+    code: 'ERR_LOAD_URL',
+    runnerError: Error: RunnerError
+        at reviveInvokeError (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:476:64)
+        at Object.invoke (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:549:11)
+        at ModuleRunner.getModuleInformation (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1086:7)
+        at request (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1103:83)
+        at C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages/_index.js:49:1
+        at ESModulesEvaluator.runInlinedModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:913:3)
+        at ModuleRunner.directRequest (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1146:59)
+        at ModuleRunner.cachedRequest (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:1053:73)
+        at C:/Users/talha/Documents/personal/projects/moskent-ai/src/paraglide/messages.js:2:1
+        at ESModulesEvaluator.runInlinedModule (file:///C:/Users/talha/Documents/personal/projects/moskent-ai/node_modules/.pnpm/vite@7.3.2_@types+node@22.1_ffe4277cf87465bba1449374e033820f/node_modules/vite/dist/node/module-runner.js:913:3)
+  },
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}

@@ -2,15 +2,18 @@
 
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
+  UserAdd01Icon,
   UserGroupIcon,
   UserSearchIcon,
   UserTimeIcon,
 } from "@hugeicons/core-free-icons"
+import { Link } from "@tanstack/react-router"
 
 import type { OrganizationMemberSummary } from "@/features/organizations/members/model/members"
 import { useOrganizationMembersInfiniteQuery } from "@/features/organizations/members/model/members"
 import { authClient } from "@/shared/auth/auth-client"
 import { m } from "@/shared/i18n"
+import { Button } from "@/shared/ui/button"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"
 import {
   Empty,
@@ -101,20 +104,34 @@ export function MembersPage() {
 
   return (
     <section className="flex flex-col gap-5 md:gap-8">
-      <div className="flex max-w-3xl flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex size-11 items-center justify-center rounded-2xl border border-border bg-background text-foreground shadow-xs">
-            <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              {m.members_title()}
-            </h1>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-              {m.members_description()}
-            </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+        <div className="flex max-w-3xl flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-11 items-center justify-center rounded-2xl border border-border bg-background text-foreground shadow-xs">
+              <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                {m.members_title()}
+              </h1>
+              <p className="max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                {m.members_description()}
+              </p>
+            </div>
           </div>
         </div>
+
+        <Button
+          className="w-full sm:w-auto"
+          render={<Link to="/dashboard/members/invite" />}
+        >
+          <HugeiconsIcon
+            icon={UserAdd01Icon}
+            strokeWidth={2}
+            data-icon="inline-start"
+          />
+          {m.members_invite_action()}
+        </Button>
       </div>
 
       <InfiniteScrollList<OrganizationMemberSummary>

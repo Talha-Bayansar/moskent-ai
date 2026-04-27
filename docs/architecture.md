@@ -136,6 +136,7 @@ Current i18n setup:
 - `server.ts`: TanStack Start server entry wrapped with `paraglideMiddleware`
 - `src/shared/i18n/locale-switcher.tsx`: reusable select-based locale switcher used across page shells and other locale-aware UI
 - `src/routes/dashboard/settings/index.tsx`: authenticated dashboard settings route for user preferences such as locale
+- `src/routes/settings/index.tsx`: authenticated organization-access settings route for the same shared settings page component
 
 Current i18n workflow notes:
 
@@ -169,18 +170,18 @@ Current auth workflow notes:
 - email/password auth is enabled as the first backend auth method
 - Better Auth's organization plugin is enabled as shared infrastructure, and app-owned organization workflows use client APIs wrapped by TanStack Query
 - app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the query-owned Better Auth session after successful submission, and resolve their landing page from organization membership plus any requested `redirectTo` target
-- auth transitions now clear the auth query namespace and rehydrate session and organization data through TanStack Query on sign in, sign up, sign out, and organization switch
+- auth transitions clear the auth query namespace on sign in, sign up, and sign out; organization changes invalidate and rehydrate the auth query namespace so org-scoped queries refetch against the new active organization
 - authenticated dashboard chrome now exposes the current signed-in user in a sidebar footer profile menu, includes a settings link in that menu, exposes a dedicated invitations entry for org users, and uses a reusable sign-out confirmation button for session termination
 - organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
 - organization invitations are implemented as a reusable TanStack Form UI around `authClient.organization.inviteMember(...)`, with `/dashboard/members` linking into the dedicated invite page
 - organization access now has a dedicated `/organizations` hub for users without organizations, a dedicated `/organizations/invitations` page for their pending invitations, and a dashboard `/dashboard/invitations` page for organization users; the invitation pages list pending user invitations through `authClient.organization.listUserInvitations()`, and accept/reject actions use confirmation dialogs before calling Better Auth invitation mutations
 - pending invitation rows prefer the organization name in the primary label and avoid exposing raw organization IDs in normal UI copy
 - current authenticated pages use a shared client-side `AuthenticatedRoute` wrapper that shows a loading state while `authClient.useSession()` resolves, redirects unauthenticated users to `/sign-in?redirectTo=...`, only performs organization bootstrap on organization-required routes, and redirects organization members away from `/organizations` to `/dashboard/invitations`
-- the organization-access shell provides the non-dashboard chrome for `/organizations` and `/organizations/invitations`, while `/organizations/new` switches between the access shell and dashboard shell based on organization membership; settings and sign-out stay exposed through the compact profile menu while locale selection stays on the settings page
-- `/dashboard/settings` remains nested under the dashboard route tree for URL structure, but `src/routes/dashboard/route.tsx` bypasses the dashboard shell for that pathname so the session-only settings page can render with the organization-access shell
+- the organization-access shell provides the non-dashboard chrome for `/organizations`, `/organizations/invitations`, and `/settings`, while `/organizations/new` switches between the access shell and dashboard shell based on organization membership; settings and sign-out stay exposed through the compact profile menu while locale selection stays on the settings page
+- `/dashboard/settings` remains nested under the dashboard route tree for URL structure and uses the dashboard shell, while `/settings` uses the organization-access shell for the same page component
 - the dashboard sidebar header uses the organization switcher instead of the application name
 - the dashboard sidebar now includes an `Invitations` entry that links to `/dashboard/invitations`
-- locale selection now lives on `/dashboard/settings` instead of the dashboard header
+- locale selection now lives on both `/dashboard/settings` and `/settings` instead of the dashboard header
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource
 - verification emails, password reset, and server-first protected-route conventions are still `TBD`

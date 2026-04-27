@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { z } from "zod"
 
 import { authKeys } from "@/shared/auth/query-keys"
-import { refreshSignedInAuthState } from "@/shared/auth/auth-cache"
+import { revalidateSignedInAuthState } from "@/shared/auth/auth-cache"
 import { authClient } from "@/shared/auth/auth-client"
 import { m } from "@/shared/i18n"
 
@@ -117,7 +117,7 @@ function useInvitationMutation(
   return useMutation({
     mutationFn,
     onSuccess: async (invitation) => {
-      await refreshSignedInAuthState(queryClient)
+      await revalidateSignedInAuthState(queryClient)
 
       options?.onSuccess?.(invitation)
     },

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { authClient } from "./auth-client"
 import { authKeys } from "./query-keys"
-import { refreshSignedInAuthState } from "./auth-cache"
+import { revalidateSignedInAuthState } from "./auth-cache"
 
 import { m } from "@/shared/i18n"
 
@@ -68,7 +68,7 @@ export function useSetActiveOrganizationMutation(
       return data
     },
     onSuccess: async (organization) => {
-      await refreshSignedInAuthState(queryClient)
+      await revalidateSignedInAuthState(queryClient)
 
       options?.onSuccess?.(organization)
     },

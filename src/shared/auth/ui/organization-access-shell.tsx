@@ -37,6 +37,7 @@ export function OrganizationAccessShell({
 
           <ProfileMenu
             showDisplayName={false}
+            settingsHref="/settings"
             className="size-10 shrink-0 border-border bg-background text-foreground hover:bg-muted"
           />
         </header>

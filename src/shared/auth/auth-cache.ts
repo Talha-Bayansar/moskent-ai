@@ -36,3 +36,36 @@ export async function refreshSignedInAuthState(queryClient: QueryClient) {
     session,
   }
 }
+
+export async function revalidateSignedInAuthState(queryClient: QueryClient) {
+  await queryClient.invalidateQueries({
+    queryKey: authKeys.all,
+  })
+
+  const session = await queryClient.fetchQuery(authSessionQueryOptions())
+
+  if (!session) {
+    return {
+      organizations: [],
+      session: null,
+    }
+  }
+
+  const organizations = await queryClient.fetchQuery<Array<OrganizationSummary>>({
+    queryKey: authKeys.organizations(),
+    queryFn: async () => {
+      const { data, error } = await authClient.organization.list()
+
+      if (error) {
+        throw new Error(error.message ?? m.organization_list_generic_error())
+      }
+
+      return data as Array<OrganizationSummary>
+    },
+  })
+
+  return {
+    organizations,
+    session,
+  }
+}

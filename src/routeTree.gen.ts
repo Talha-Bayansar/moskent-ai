@@ -13,6 +13,7 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SignUpIndexRouteImport } from './routes/sign-up/index'
 import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as OrganizationsIndexRouteImport } from './routes/organizations/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as OrganizationsNewIndexRouteImport } from './routes/organizations/new/index'
@@ -41,6 +42,11 @@ const SignUpIndexRoute = SignUpIndexRouteImport.update({
 const SignInIndexRoute = SignInIndexRouteImport.update({
   id: '/sign-in/',
   path: '/sign-in/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrganizationsIndexRoute = OrganizationsIndexRouteImport.update({
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
   '/organizations/': typeof OrganizationsIndexRoute
+  '/settings/': typeof SettingsIndexRoute
   '/sign-in/': typeof SignInIndexRoute
   '/sign-up/': typeof SignUpIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/organizations': typeof OrganizationsIndexRoute
+  '/settings': typeof SettingsIndexRoute
   '/sign-in': typeof SignInIndexRoute
   '/sign-up': typeof SignUpIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
   '/organizations/': typeof OrganizationsIndexRoute
+  '/settings/': typeof SettingsIndexRoute
   '/sign-in/': typeof SignInIndexRoute
   '/sign-up/': typeof SignUpIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/'
     | '/organizations/'
+    | '/settings/'
     | '/sign-in/'
     | '/sign-up/'
     | '/api/auth/$'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/organizations'
+    | '/settings'
     | '/sign-in'
     | '/sign-up'
     | '/api/auth/$'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/'
     | '/organizations/'
+    | '/settings/'
     | '/sign-in/'
     | '/sign-up/'
     | '/api/auth/$'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   OrganizationsIndexRoute: typeof OrganizationsIndexRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
   SignInIndexRoute: typeof SignInIndexRoute
   SignUpIndexRoute: typeof SignUpIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -223,6 +236,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in/'
       preLoaderRoute: typeof SignInIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/organizations/': {
@@ -315,6 +335,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   OrganizationsIndexRoute: OrganizationsIndexRoute,
+  SettingsIndexRoute: SettingsIndexRoute,
   SignInIndexRoute: SignInIndexRoute,
   SignUpIndexRoute: SignUpIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

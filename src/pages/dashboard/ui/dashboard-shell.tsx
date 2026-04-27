@@ -99,6 +99,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
           <Separator orientation="vertical" className="my-auto hidden h-5 sm:block" />
           <ProfileMenu
             showDisplayName={false}
+            settingsHref="/dashboard/settings"
             className="border-border bg-background text-foreground hover:bg-muted lg:hidden"
           />
         </header>

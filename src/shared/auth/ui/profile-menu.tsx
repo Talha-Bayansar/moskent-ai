@@ -40,11 +40,13 @@ function getInitials(value: string) {
 type ProfileMenuProps = {
   className?: string
   showDisplayName?: boolean
+  settingsHref?: "/dashboard/settings" | "/settings"
 }
 
 export function ProfileMenu({
   className,
   showDisplayName = true,
+  settingsHref = "/dashboard/settings",
 }: ProfileMenuProps) {
   const sessionState = useAuthSessionQuery()
   const session = sessionState.data
@@ -117,7 +119,7 @@ export function ProfileMenu({
 
         <DropdownMenuItem
           className="w-full justify-start gap-2 rounded-xl px-3 py-2"
-          render={<Link to="/dashboard/settings" />}
+          render={<Link to={settingsHref} />}
         >
           <HugeiconsIcon
             icon={AccountSetting02Icon}

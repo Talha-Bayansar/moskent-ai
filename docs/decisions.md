@@ -36,8 +36,8 @@ Use this template for new entries:
 
 - Status: accepted
 - Context: the app uses Better Auth APIs together with TanStack Query, and auth/session data was previously split between the Better Auth client store and query-owned org data.
-- Decision: route session, organization, invitation, and member reads through TanStack Query hooks, and clear the auth query namespace on sign in, sign up, sign out, and organization switch before rehydrating the current session state.
-- Why: this keeps Better Auth as the transport layer while making TanStack Query the cache boundary, so auth-related refreshes, redirects, and org changes can be managed from one consistent state layer.
+- Decision: route session, organization, invitation, and member reads through TanStack Query hooks, clear the auth query namespace on sign in, sign up, and sign out, and invalidate then rehydrate the auth query namespace on organization switch so org-scoped queries refetch against the new active organization.
+- Why: this keeps Better Auth as the transport layer while making TanStack Query the cache boundary, so auth-related refreshes, redirects, and org changes can be managed from one consistent state layer without leaving stale org data behind.
 - Impact: auth-sensitive UI should read from query-owned session data instead of `authClient.useSession()`, and any future Better Auth-backed read should be added as a query rather than as a direct component-level store read.
 - Follow-up: decide later whether additional non-auth server reads should follow the same auth namespace pattern or live in separate query namespaces.
 
@@ -89,20 +89,20 @@ Use this template for new entries:
 ## 2026-04-25 - Organization-access pages use a shared non-dashboard shell
 
 - Status: accepted
-- Context: `/organizations`, `/organizations/new`, and `/dashboard/settings` are authenticated surfaces, but they are not part of the organization-scoped dashboard experience and should not inherit sidebar chrome.
+- Context: `/organizations`, `/organizations/new`, and the standalone `/settings` route are authenticated surfaces, but they are not part of the organization-scoped dashboard experience and should not inherit sidebar chrome.
 - Decision: render those pages inside a shared organization-access shell with padded full-width content, a brand/home link, locale switching, a settings link, and sign-out controls, while leaving `/dashboard` and other org-scoped routes on the dashboard shell.
 - Why: the access hub and settings page need utility navigation without presenting as cropped dashboard panels, and keeping them separate from the org-scoped shell preserves the dashboard layout contract.
 - Impact: session-only authenticated routes can share one chrome implementation, dashboard-specific navigation stays confined to org-scoped pages, and locale/settings/logout actions remain available before a user has joined an organization.
 - Follow-up: decide later whether additional pre-organization routes should reuse the same shell or get their own utility chrome.
 
-## 2026-04-25 - Dashboard settings bypasses the dashboard shell
+## 2026-04-27 - Settings uses separate routes for dashboard and organization-access layouts
 
 - Status: accepted
-- Context: `/dashboard/settings` needed to stay at its existing URL so links remain stable, but the page should not inherit the org-scoped sidebar shell.
-- Decision: keep the route nested under `/dashboard` for URL structure, but have the dashboard layout route render the outlet directly when the pathname is `/dashboard/settings`.
-- Why: this preserves the existing settings URL while allowing the session-only organization-access shell to own the page chrome and utility navigation.
-- Impact: the dashboard route tree now has one shell exception, and future dashboard children should be checked to ensure they still want org-scoped chrome before being nested under the dashboard layout.
-- Follow-up: reconsider the route layout if more session-only pages are added under `/dashboard`.
+- Context: settings needs to be available from both the dashboard shell and the organization-access shell without duplicating the page content.
+- Decision: keep the shared page component in `src/pages/settings/ui/settings-page.tsx`, mount it under `/dashboard/settings` for the sidebar layout, and mount the same page under `/settings` for the organization-access layout.
+- Why: this keeps the settings content reusable while making the shell choice explicit in the route structure instead of relying on layout exceptions.
+- Impact: dashboard users keep the sidebar chrome on their settings page, organization-access users get the header layout on `/settings`, and shared settings content should continue to live in one page component.
+- Follow-up: keep the shared settings page focused on content only; any future shell-specific behavior should live in the route wrappers.
 
 ## 2026-04-24 - Active organization is bootstrapped before dashboard render
 

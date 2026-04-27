@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
 
-import { authClient } from "@/shared/auth/auth-client"
+import { useSignUpMutation } from "@/shared/auth/auth-mutations"
 import { resolvePostAuthRedirect } from "@/shared/auth/post-auth-redirect"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
@@ -66,7 +66,7 @@ export function SignUpForm({
   className,
 }: SignUpFormProps) {
   const navigate = useNavigate()
-  const sessionState = authClient.useSession()
+  const signUpMutation = useSignUpMutation()
   const form = useForm({
     defaultValues: {
       name: "",
@@ -78,32 +78,25 @@ export function SignUpForm({
       onSubmit: signUpSchema,
     },
     onSubmit: async ({ value }) => {
-      const { error } = await authClient.signUp.email({
-        email: value.email.trim(),
-        password: value.password,
-        name: value.name.trim(),
-        ...(redirectTo ? { callbackURL: redirectTo } : {}),
-      })
+      try {
+        const result = await signUpMutation.mutateAsync({
+          email: value.email.trim(),
+          password: value.password,
+          name: value.name.trim(),
+        })
 
-      if (error) {
-        console.error(error.message ?? copy.genericError)
-        return
+        await navigate({
+          href: resolvePostAuthRedirect({
+            redirectTo,
+            hasOrganizations: result.organizations.length > 0,
+          }),
+          replace: true,
+        })
+      } catch (error) {
+        console.error(
+          error instanceof Error ? error.message : copy.genericError
+        )
       }
-
-      await sessionState.refetch()
-
-      const { data, error: organizationsError } =
-        await authClient.organization.list()
-      const hasOrganizations =
-        !organizationsError && Array.isArray(data) && data.length > 0
-
-      await navigate({
-        href: resolvePostAuthRedirect({
-          redirectTo,
-          hasOrganizations,
-        }),
-        replace: true,
-      })
     },
   })
 
@@ -254,8 +247,14 @@ export function SignUpForm({
         })}
       >
         {({ canSubmit, isSubmitting }) => (
-          <Button type="submit" className="w-full" disabled={!canSubmit}>
-            {isSubmitting ? copy.submittingLabel : copy.submitLabel}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={!canSubmit || signUpMutation.isPending}
+          >
+            {isSubmitting || signUpMutation.isPending
+              ? copy.submittingLabel
+              : copy.submitLabel}
           </Button>
         )}
       </form.Subscribe>

@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
 
 import { authClient } from "@/shared/auth/auth-client"
+import { authKeys } from "@/shared/auth/query-keys"
 import { m } from "@/shared/i18n"
 
 export type OrganizationMemberUserSummary = {
@@ -24,13 +25,14 @@ export type OrganizationMemberSummary = {
 
 export type OrganizationMembersPage = {
   members: Array<OrganizationMemberSummary>
+  total: number
   nextCursor?: number
 }
 
 export const organizationMemberKeys = {
-  all: ["organization-members"] as const,
+  all: [...authKeys.all, "members"] as const,
   list: (organizationId: string | null, pageSize: number) =>
-    [...organizationMemberKeys.all, organizationId ?? "active", pageSize] as const,
+    authKeys.members(organizationId, pageSize),
 }
 
 type UseOrganizationMembersInfiniteQueryOptions = {
@@ -39,32 +41,58 @@ type UseOrganizationMembersInfiniteQueryOptions = {
   pageSize?: number
 }
 
-function normalizeMembersResponse(data: unknown): Array<OrganizationMemberSummary> {
-  if (Array.isArray(data)) {
-    return data as Array<OrganizationMemberSummary>
-  }
-
+function normalizeMembersResponse(data: unknown): {
+  members: Array<OrganizationMemberSummary>
+  total: number
+} {
   if (data && typeof data === "object") {
+    const maybeMembers = (data as { members?: unknown }).members
+    const maybeTotal = (data as { total?: unknown }).total
+
+    if (Array.isArray(maybeMembers)) {
+      return {
+        members: maybeMembers as Array<OrganizationMemberSummary>,
+        total: typeof maybeTotal === "number" ? maybeTotal : maybeMembers.length,
+      }
+    }
+
     const maybeData = (data as { data?: unknown }).data
 
-    if (Array.isArray(maybeData)) {
-      return maybeData as Array<OrganizationMemberSummary>
+    if (maybeData && typeof maybeData === "object") {
+      const nestedMembers = (maybeData as { members?: unknown }).members
+      const nestedTotal = (maybeData as { total?: unknown }).total
+
+      if (Array.isArray(nestedMembers)) {
+        return {
+          members: nestedMembers as Array<OrganizationMemberSummary>,
+          total:
+            typeof nestedTotal === "number"
+              ? nestedTotal
+              : nestedMembers.length,
+        }
+      }
     }
   }
 
-  return []
+  return {
+    members: [],
+    total: 0,
+  }
 }
 
 function getNextCursor(
   pageParam: number,
   members: Array<OrganizationMemberSummary>,
+  total: number,
   pageSize: number
 ) {
-  if (members.length < pageSize) {
+  const nextCursor = pageParam + members.length
+
+  if (members.length < pageSize || nextCursor >= total) {
     return undefined
   }
 
-  return pageParam + members.length
+  return nextCursor
 }
 
 export function useOrganizationMembersInfiniteQuery({
@@ -93,11 +121,12 @@ export function useOrganizationMembersInfiniteQuery({
         throw new Error(error.message ?? m.organization_members_generic_error())
       }
 
-      const members = normalizeMembersResponse(data)
+      const { members, total } = normalizeMembersResponse(data)
 
       return {
         members,
-        nextCursor: getNextCursor(offset, members, pageSize),
+        total,
+        nextCursor: getNextCursor(offset, members, total, pageSize),
       } satisfies OrganizationMembersPage
     },
     getNextPageParam: (lastPage) => lastPage.nextCursor,

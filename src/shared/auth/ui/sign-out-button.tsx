@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import type { ComponentProps, ReactNode } from "react"
 
-import { authClient } from "@/shared/auth/auth-client"
+import { useSignOutMutation } from "@/shared/auth/auth-mutations"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
@@ -37,8 +37,8 @@ export function SignOutButton({
   triggerSize = "default",
 }: SignOutButtonProps) {
   const navigate = useNavigate()
+  const signOutMutation = useSignOutMutation()
   const [open, setOpen] = useState(false)
-  const [isSigningOut, setIsSigningOut] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const triggerContent = children ?? m.auth_sign_out_label()
@@ -77,15 +77,9 @@ export function SignOutButton({
             variant="destructive"
             onClick={async () => {
               setError(null)
-              setIsSigningOut(true)
 
               try {
-                const { error: signOutError } = await authClient.signOut()
-
-                if (signOutError) {
-                  setError(signOutError.message ?? m.auth_sign_out_error())
-                  return
-                }
+                await signOutMutation.mutateAsync()
 
                 setOpen(false)
                 await navigate({
@@ -93,16 +87,12 @@ export function SignOutButton({
                   replace: true,
                 })
               } catch {
-                setError(
-                  m.auth_sign_out_error()
-                )
-              } finally {
-                setIsSigningOut(false)
+                setError(m.auth_sign_out_error())
               }
             }}
-            disabled={isSigningOut}
+            disabled={signOutMutation.isPending}
           >
-            {isSigningOut
+            {signOutMutation.isPending
               ? m.auth_sign_out_submitting()
               : m.auth_sign_out_confirm()}
           </Button>

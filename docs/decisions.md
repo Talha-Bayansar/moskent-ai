@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-27 - Better Auth reads are query-owned and auth transitions reset the auth cache
+
+- Status: accepted
+- Context: the app uses Better Auth APIs together with TanStack Query, and auth/session data was previously split between the Better Auth client store and query-owned org data.
+- Decision: route session, organization, invitation, and member reads through TanStack Query hooks, and clear the auth query namespace on sign in, sign up, sign out, and organization switch before rehydrating the current session state.
+- Why: this keeps Better Auth as the transport layer while making TanStack Query the cache boundary, so auth-related refreshes, redirects, and org changes can be managed from one consistent state layer.
+- Impact: auth-sensitive UI should read from query-owned session data instead of `authClient.useSession()`, and any future Better Auth-backed read should be added as a query rather than as a direct component-level store read.
+- Follow-up: decide later whether additional non-auth server reads should follow the same auth namespace pattern or live in separate query namespaces.
+
 ## 2026-04-25 - Organization invites use a dedicated route page
 
 - Status: accepted

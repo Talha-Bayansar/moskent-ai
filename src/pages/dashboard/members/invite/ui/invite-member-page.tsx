@@ -5,12 +5,12 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
 
 import { InviteOrganizationForm } from "@/features/organizations/invitations/ui/invite-organization-form"
-import { authClient } from "@/shared/auth/auth-client"
+import { useAuthSessionQuery } from "@/shared/auth/session"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"
 
 export function InviteMemberPage() {
-  const sessionState = authClient.useSession()
+  const sessionState = useAuthSessionQuery()
   const organizationId = sessionState.data?.session.activeOrganizationId ?? null
 
   return (

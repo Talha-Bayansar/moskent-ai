@@ -16,7 +16,7 @@ import {
 } from "../model/invitations"
 import { InvitationActionDialog } from "./invitation-action-dialog"
 import { OrganizationInvitationItem } from "./organization-invitation-item"
-import { authClient } from "@/shared/auth/auth-client"
+import { useAuthSessionQuery } from "@/shared/auth/session"
 import { m } from "@/shared/i18n"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"
@@ -97,7 +97,7 @@ function InvitationsErrorState({ error }: { error: Error }) {
 
 export function OrganizationInvitationsPageContent() {
   const navigate = useNavigate()
-  const sessionState = authClient.useSession()
+  const sessionState = useAuthSessionQuery()
   const invitationsQuery = useUserOrganizationInvitationsQuery({
     enabled: Boolean(sessionState.data),
   })
@@ -194,7 +194,6 @@ export function OrganizationInvitationsPageContent() {
               await acceptInvitationMutation.mutateAsync(
                 actionState.invitation.id
               )
-              await sessionState.refetch()
               await navigate({
                 to: "/dashboard",
                 replace: true,

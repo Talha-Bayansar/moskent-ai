@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { authClient } from "./auth-client"
+import { authKeys } from "./query-keys"
+import { refreshSignedInAuthState } from "./auth-cache"
 
 import { m } from "@/shared/i18n"
 
@@ -14,16 +16,16 @@ export type OrganizationSummary = {
 }
 
 export const organizationKeys = {
-  all: ["organizations"] as const,
-  list: () => [...organizationKeys.all, "list"] as const,
+  all: authKeys.organizations(),
+  list: () => organizationKeys.all,
 }
 
 type OrganizationsQueryOptions = {
   enabled?: boolean
 }
 
-export function useOrganizationsQuery(options?: OrganizationsQueryOptions) {
-  return useQuery({
+export function organizationListQueryOptions() {
+  return {
     queryKey: organizationKeys.list(),
     queryFn: async () => {
       const { data, error } = await authClient.organization.list()
@@ -34,6 +36,12 @@ export function useOrganizationsQuery(options?: OrganizationsQueryOptions) {
 
       return data as Array<OrganizationSummary>
     },
+  }
+}
+
+export function useOrganizationsQuery(options?: OrganizationsQueryOptions) {
+  return useQuery({
+    ...organizationListQueryOptions(),
     enabled: options?.enabled ?? true,
   })
 }
@@ -60,9 +68,7 @@ export function useSetActiveOrganizationMutation(
       return data
     },
     onSuccess: async (organization) => {
-      await queryClient.invalidateQueries({
-        queryKey: organizationKeys.list(),
-      })
+      await refreshSignedInAuthState(queryClient)
 
       options?.onSuccess?.(organization)
     },

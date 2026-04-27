@@ -5,9 +5,9 @@ import {
   useOrganizationsQuery,
   useSetActiveOrganizationMutation,
 } from "../organization-session"
+import { useAuthSessionQuery } from "../session"
 import type { ReactNode } from "react"
 
-import { authClient } from "@/shared/auth/auth-client"
 import { m } from "@/shared/i18n"
 import { Spinner } from "@/shared/ui/spinner"
 
@@ -24,7 +24,7 @@ export function AuthenticatedRoute({
 }: AuthenticatedRouteProps) {
   const location = useLocation()
   const navigate = useNavigate()
-  const sessionState = authClient.useSession()
+  const sessionState = useAuthSessionQuery()
   const session = sessionState.data
   const activeOrganizationId = session?.session.activeOrganizationId ?? null
   const shouldCheckOrganizations =

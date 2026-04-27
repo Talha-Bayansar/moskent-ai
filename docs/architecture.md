@@ -114,6 +114,8 @@ Current auth setup:
 - `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
 - `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
 - `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/session.ts`: TanStack Query session query owned by the app, replacing direct client-store reads in route and page logic
+- `src/shared/auth/auth-cache.ts`: auth query cache reset and hydration helpers used after auth and organization transitions
 - `src/shared/auth/ui/auth-page-shell.tsx`: centered auth page chrome shared by sign-in and sign-up pages
 - `src/shared/auth/ui/sign-in-form.tsx`: reusable sign-in form built with TanStack Form and Zod
 - `src/shared/auth/ui/sign-up-form.tsx`: reusable sign-up form built with TanStack Form and Zod
@@ -152,6 +154,7 @@ Current server-state workflow notes:
 
 - organization list state is loaded through TanStack Query after authentication and before protected dashboard UI renders
 - organization feature query keys and mutations wrap Better Auth organization client APIs rather than using Better Auth hooks as the app data-access layer
+- Better Auth-backed reads for session, organizations, invitations, and members are query-owned through TanStack Query so cache resets and refetches can be coordinated from one place
 - query clients are created per router instance to stay compatible with SSR and future request-scoped rendering
 - route modules and pages should start consuming TanStack Query only when real server-state behavior is introduced
 - post-auth landing resolves from organization membership after session refresh, so sign-in and sign-up can send users with organizations to `/dashboard` and organization-less users to `/organizations`
@@ -165,7 +168,8 @@ Current auth workflow notes:
 
 - email/password auth is enabled as the first backend auth method
 - Better Auth's organization plugin is enabled as shared infrastructure, and app-owned organization workflows use client APIs wrapped by TanStack Query
-- app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the Better Auth client session after successful submission, and resolve their landing page from organization membership plus any requested `redirectTo` target
+- app-owned auth entry routes now exist at `/sign-in` and `/sign-up`; sign-in and sign-up use reusable TanStack Form UI, refresh the query-owned Better Auth session after successful submission, and resolve their landing page from organization membership plus any requested `redirectTo` target
+- auth transitions now clear the auth query namespace and rehydrate session and organization data through TanStack Query on sign in, sign up, sign out, and organization switch
 - authenticated dashboard chrome now exposes the current signed-in user in a sidebar footer profile menu, includes a settings link in that menu, exposes a dedicated invitations entry for org users, and uses a reusable sign-out confirmation button for session termination
 - organization creation is implemented at `/organizations/new` with a TanStack Form UI and a Better Auth organization create mutation
 - organization invitations are implemented as a reusable TanStack Form UI around `authClient.organization.inviteMember(...)`, with `/dashboard/members` linking into the dedicated invite page

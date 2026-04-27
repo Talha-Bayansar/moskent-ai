@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { z } from "zod"
 
-import { organizationKeys } from "@/shared/auth/organization-session"
+import { authKeys } from "@/shared/auth/query-keys"
+import { refreshSignedInAuthState } from "@/shared/auth/auth-cache"
 import { authClient } from "@/shared/auth/auth-client"
 import { m } from "@/shared/i18n"
 
@@ -53,7 +54,7 @@ export type OrganizationInvitationSummary = {
 }
 
 export const organizationInvitationKeys = {
-  all: ["organization-invitations"] as const,
+  all: authKeys.invitations(),
   list: () => [...organizationInvitationKeys.all, "list"] as const,
 }
 
@@ -116,13 +117,7 @@ function useInvitationMutation(
   return useMutation({
     mutationFn,
     onSuccess: async (invitation) => {
-      await queryClient.invalidateQueries({
-        queryKey: organizationInvitationKeys.list(),
-      })
-
-      await queryClient.invalidateQueries({
-        queryKey: organizationKeys.list(),
-      })
+      await refreshSignedInAuthState(queryClient)
 
       options?.onSuccess?.(invitation)
     },

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
 
 import { useOrganizationsQuery, useSetActiveOrganizationMutation } from "@/shared/auth/organization-session"
-import { authClient } from "@/shared/auth/auth-client"
+import { useAuthSessionQuery } from "@/shared/auth/session"
 import { DashboardShell } from "@/pages/dashboard/ui/dashboard-shell"
 import { OrganizationAccessShell } from "@/shared/auth/ui/organization-access-shell"
 import { m } from "@/shared/i18n"
@@ -55,7 +55,7 @@ function OrganizationAccessErrorState({ error }: { error: Error }) {
 
 function CreateOrganizationPageContent() {
   const navigate = useNavigate()
-  const sessionState = authClient.useSession()
+  const sessionState = useAuthSessionQuery()
   const organizationsQuery = useOrganizationsQuery({
     enabled: Boolean(sessionState.data),
   })

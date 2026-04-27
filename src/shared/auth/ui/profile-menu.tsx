@@ -9,7 +9,7 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import { SignOutButton } from "./sign-out-button"
-import { authClient } from "@/shared/auth/auth-client"
+import { useAuthSessionQuery } from "@/shared/auth/session"
 import { m } from "@/shared/i18n"
 import {
   Avatar,
@@ -46,7 +46,7 @@ export function ProfileMenu({
   className,
   showDisplayName = true,
 }: ProfileMenuProps) {
-  const sessionState = authClient.useSession()
+  const sessionState = useAuthSessionQuery()
   const session = sessionState.data
   const user = session?.user
   const displayName = user

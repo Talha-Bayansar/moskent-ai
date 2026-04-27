@@ -4,12 +4,12 @@ import {
   useOrganizationsQuery,
   useSetActiveOrganizationMutation,
 } from "../model/organizations"
+import { useAuthSessionQuery } from "@/shared/auth/session"
 
 import { Link } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { UserAdd01Icon } from "@hugeicons/core-free-icons"
 
-import { authClient } from "@/shared/auth/auth-client"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
@@ -27,7 +27,7 @@ type OrganizationSwitcherProps = {
 }
 
 export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
-  const sessionState = authClient.useSession()
+  const sessionState = useAuthSessionQuery()
   const activeOrganizationId =
     sessionState.data?.session.activeOrganizationId ?? null
   const organizationsQuery = useOrganizationsQuery({

@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
 
-import { authClient } from "@/shared/auth/auth-client"
+import { useSignInMutation } from "@/shared/auth/auth-mutations"
 import { resolvePostAuthRedirect } from "@/shared/auth/post-auth-redirect"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
@@ -48,7 +48,7 @@ export function SignInForm({
   className,
 }: SignInFormProps) {
   const navigate = useNavigate()
-  const sessionState = authClient.useSession()
+  const signInMutation = useSignInMutation()
   const form = useForm({
     defaultValues: {
       email: "",
@@ -58,31 +58,24 @@ export function SignInForm({
       onSubmit: signInSchema,
     },
     onSubmit: async ({ value }) => {
-      const { error } = await authClient.signIn.email({
-        email: value.email.trim(),
-        password: value.password,
-        ...(redirectTo ? { callbackURL: redirectTo } : {}),
-      })
+      try {
+        const result = await signInMutation.mutateAsync({
+          email: value.email.trim(),
+          password: value.password,
+        })
 
-      if (error) {
-        console.error(error.message ?? copy.genericError)
-        return
+        await navigate({
+          href: resolvePostAuthRedirect({
+            redirectTo,
+            hasOrganizations: result.organizations.length > 0,
+          }),
+          replace: true,
+        })
+      } catch (error) {
+        console.error(
+          error instanceof Error ? error.message : copy.genericError
+        )
       }
-
-      await sessionState.refetch()
-
-      const { data, error: organizationsError } =
-        await authClient.organization.list()
-      const hasOrganizations =
-        !organizationsError && Array.isArray(data) && data.length > 0
-
-      await navigate({
-        href: resolvePostAuthRedirect({
-          redirectTo,
-          hasOrganizations,
-        }),
-        replace: true,
-      })
     },
   })
 
@@ -168,8 +161,14 @@ export function SignInForm({
         })}
       >
         {({ canSubmit, isSubmitting }) => (
-          <Button type="submit" className="w-full" disabled={!canSubmit}>
-            {isSubmitting ? copy.submittingLabel : copy.submitLabel}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={!canSubmit || signInMutation.isPending}
+          >
+            {isSubmitting || signInMutation.isPending
+              ? copy.submittingLabel
+              : copy.submitLabel}
           </Button>
         )}
       </form.Subscribe>

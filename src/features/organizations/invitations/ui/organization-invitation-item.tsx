@@ -1,6 +1,6 @@
 "use client"
 
-import type { OrganizationInvitationSummary } from "../model/invitations"
+import type { OrganizationInvitationSummary } from "../model/types"
 
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"

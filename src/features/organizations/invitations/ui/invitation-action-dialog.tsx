@@ -10,8 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog"
+import type { OrganizationInvitationSummary } from "../model/types"
 import { m } from "@/shared/i18n"
-import type { OrganizationInvitationSummary } from "../model/invitations"
 
 type InvitationActionDialogProps = {
   invitation: OrganizationInvitationSummary | null

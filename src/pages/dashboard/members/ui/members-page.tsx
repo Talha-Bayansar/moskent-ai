@@ -9,8 +9,8 @@ import {
 } from "@hugeicons/core-free-icons"
 import { Link } from "@tanstack/react-router"
 
-import type { OrganizationMemberSummary } from "@/features/organizations/members/model/members"
-import { useOrganizationMembersInfiniteQuery } from "@/features/organizations/members/model/members"
+import type { OrganizationMemberSummary } from "@/features/organizations/members/model/types"
+import { useOrganizationMembersInfiniteQuery } from "@/features/organizations/members/model/queries"
 import { useAuthSessionQuery } from "@/shared/auth/session"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"

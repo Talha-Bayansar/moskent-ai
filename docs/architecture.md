@@ -23,10 +23,19 @@ Current known repository structure:
 - `src/pages/`: page-level UI owned outside the routing layer
 - `src/pages/not-found/ui/not-found-page.tsx`: localized 404 page rendered from the root route's `notFoundComponent`
 - `src/widgets/`: reusable page sections when they emerge
-- `src/features/`: user-facing feature slices when they emerge
-- `src/entities/`: domain slices, including entity-owned persistence code
+- `src/features/`: user-facing feature slices
+- `src/entities/`: domain slices, including entity-owned persistence code and repository helpers
 - `src/shared/`: shared UI primitives, utilities, and database infrastructure
 - `src/shared/ui/infinite-scroll-list.tsx`: reusable infinite-scroll list shell driven by `IntersectionObserver`
+- organization-related feature slices currently split model concerns into `schema`, `queries`, `mutations`, and `types` files, with visual components kept under `ui/`
+
+Feature and entity slices should be grouped by responsibility instead of keeping every file type in one flat folder:
+
+- `model/`: state, query keys, hooks, schemas, derived types, and other non-visual logic
+- `ui/`: visual components only
+- `server/`: server functions, app use cases, and server-only orchestration
+- `repository/`: persistence helpers and database access when a slice owns data access directly
+- `lib/`: small pure helpers that do not fit the other buckets
 
 Current routing structure rules:
 
@@ -87,6 +96,14 @@ Current dependency direction:
 - `shared` must not depend on higher layers
 - `entities` may depend only on `shared`
 - `routes` are framework adapters over `app` and `pages`, not a general-purpose logic layer
+
+Current hook guidance:
+
+- avoid `useEffect` by default
+- prefer derived state, event handlers, TanStack Query state, router loaders, or explicit mutations when they can express the same behavior
+- use `useEffect` only when it is the only or most logical option for browser APIs, subscriptions, or other true side effects
+- keep unavoidable `useEffect` usage local and narrow so components do not accumulate hidden performance work
+- this is a performance-oriented convention: unnecessary effect chains can make future behavior harder to reason about and can lead to avoidable rendering cost
 
 ## Future Architecture Notes
 

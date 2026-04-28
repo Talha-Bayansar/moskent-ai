@@ -1,6 +1,6 @@
 "use client"
 
-import type { OrganizationMemberSummary } from "../model/members"
+import type { OrganizationMemberSummary } from "../model/types"
 
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"

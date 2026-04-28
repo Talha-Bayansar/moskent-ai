@@ -1,33 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
 
+import {
+  type OrganizationMemberSummary,
+  type OrganizationMembersPage,
+} from "./types"
 import { authClient } from "@/shared/auth/auth-client"
 import { authKeys } from "@/shared/auth/query-keys"
 import { m } from "@/shared/i18n"
-
-export type OrganizationMemberUserSummary = {
-  id?: string
-  name?: string | null
-  email?: string | null
-  image?: string | null
-}
-
-export type OrganizationMemberSummary = {
-  id: string
-  organizationId?: string
-  userId?: string
-  role?: string | Array<string> | null
-  createdAt?: string | Date | null
-  user?: OrganizationMemberUserSummary | null
-  name?: string | null
-  email?: string | null
-  image?: string | null
-}
-
-export type OrganizationMembersPage = {
-  members: Array<OrganizationMemberSummary>
-  total: number
-  nextCursor?: number
-}
 
 export const organizationMemberKeys = {
   all: [...authKeys.all, "members"] as const,

@@ -7,8 +7,8 @@ import {
   createOrganizationSchema,
   deriveOrganizationSlug,
   normalizeOrganizationSlug,
-  useCreateOrganizationMutation,
-} from "../model/create-organization"
+} from "../model/schema"
+import { useCreateOrganizationMutation } from "../model/mutation"
 
 import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert"
 import { Button } from "@/shared/ui/button"

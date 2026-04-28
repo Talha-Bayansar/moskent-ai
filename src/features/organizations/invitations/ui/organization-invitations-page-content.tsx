@@ -11,11 +11,11 @@ import {
 import {
   useAcceptOrganizationInvitationMutation,
   useRejectOrganizationInvitationMutation,
-  useUserOrganizationInvitationsQuery,
-  type OrganizationInvitationSummary,
-} from "../model/invitations"
+} from "../model/mutations"
+import { useUserOrganizationInvitationsQuery } from "../model/queries"
 import { InvitationActionDialog } from "./invitation-action-dialog"
 import { OrganizationInvitationItem } from "./organization-invitation-item"
+import type { OrganizationInvitationSummary } from "../model/types"
 import { useAuthSessionQuery } from "@/shared/auth/session"
 import { m } from "@/shared/i18n"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty"

@@ -9,8 +9,10 @@ import { Link } from "@tanstack/react-router"
 import {
   inviteOrganizationMemberSchema,
   normalizeOrganizationInvitationEmail,
+} from "../model/schema"
+import {
   useInviteOrganizationMemberMutation,
-} from "../model/invitations"
+} from "../model/mutations"
 
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"

@@ -1,15 +1,12 @@
 "use client"
 
-import {
-  useOrganizationsQuery,
-  useSetActiveOrganizationMutation,
-} from "../model/organizations"
-import { useAuthSessionQuery } from "@/shared/auth/session"
-
 import { Link } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { UserAdd01Icon } from "@hugeicons/core-free-icons"
 
+import { useOrganizationsQuery } from "../model/queries"
+import { useSetActiveOrganizationMutation } from "../model/mutations"
+import { useAuthSessionQuery } from "@/shared/auth/session"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"

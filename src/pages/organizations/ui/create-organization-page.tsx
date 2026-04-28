@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
 
-import { useOrganizationsQuery, useSetActiveOrganizationMutation } from "@/shared/auth/organization-session"
-import { useAuthSessionQuery } from "@/shared/auth/session"
 import { DashboardShell } from "@/pages/dashboard/ui/dashboard-shell"
 import { OrganizationAccessShell } from "@/shared/auth/ui/organization-access-shell"
+import { useAuthSessionQuery } from "@/shared/auth/session"
 import { m } from "@/shared/i18n"
 import {
   Card,
@@ -17,6 +16,8 @@ import {
 } from "@/shared/ui/card"
 import { Spinner } from "@/shared/ui/spinner"
 import { CreateOrganizationForm } from "@/features/organizations/create-organization/ui/create-organization-form"
+import { useOrganizationsQuery } from "@/features/organizations/model/queries"
+import { useSetActiveOrganizationMutation } from "@/features/organizations/model/mutations"
 
 function OrganizationAccessLoadingState() {
   return (

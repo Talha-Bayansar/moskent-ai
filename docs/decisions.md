@@ -32,6 +32,24 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-28 - Feature and entity slices are grouped by responsibility
+
+- Status: accepted
+- Context: some feature folders were becoming mixed buckets with UI, model logic, and server-facing code in the same directory, which made navigation harder.
+- Decision: organize `features` and future `entities` slices by responsibility, using subfolders such as `ui`, `model`, `server`, `repository`, and `lib` instead of keeping every file type in one flat slice folder.
+- Why: this makes server-only code visibly separate from client UI, keeps persistence helpers close to the domain they serve, and reduces the mental overhead of scanning large mixed folders.
+- Impact: new slices should start with responsibility-based subfolders, and existing slices should be split when they begin combining unrelated file roles.
+- Follow-up: apply the convention incrementally when a slice grows or is actively touched.
+
+## 2026-04-28 - `useEffect` is a fallback, not a default pattern
+
+- Status: accepted
+- Context: the codebase currently uses `useEffect` in a few places for state synchronization and browser integration, but overuse can hide data flow and add avoidable performance cost.
+- Decision: prefer derived state, event handlers, TanStack Query state, router loaders, and explicit mutations first; use `useEffect` only when it is the only or most logical option for browser APIs, subscriptions, or other true side effects.
+- Why: this keeps state changes explicit and reduces the chance that components accumulate effect chains that are harder to reason about and may create performance issues later.
+- Impact: new code should justify `useEffect` by necessity, and unavoidable effect logic should stay narrow and local.
+- Follow-up: revisit existing effect-heavy components when they are worked on again.
+
 ## 2026-04-27 - Better Auth reads are query-owned and auth transitions reset the auth cache
 
 - Status: accepted

@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-29 - Delete confirmations use a shared dialog component
+
+- Status: accepted
+- Context: member removal needed a destructive confirmation flow, and the repository already treats reusable UI primitives as shared infrastructure.
+- Decision: add a shared `DeleteConfirmationDialog` component in `src/shared/ui/` and use it for member removal instead of building a member-specific confirmation modal.
+- Why: destructive confirmations should look and behave consistently across the app, and a shared primitive reduces duplication for future delete-related flows.
+- Impact: organization member removal now uses the shared dialog, and future destructive actions should prefer the same component unless they need specialized behavior.
+- Follow-up: decide later whether additional destructive flows need tiny wrappers or can keep using the shared dialog directly.
+
 ## 2026-04-28 - Shared permission checks use a pure helper and a UI gate
 
 - Status: accepted

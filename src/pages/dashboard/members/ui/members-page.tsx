@@ -1,20 +1,20 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  UserAdd01Icon,
-  UserGroupIcon,
-  UserSearchIcon,
-  UserTimeIcon,
-} from "@hugeicons/core-free-icons"
-import { Link } from "@tanstack/react-router"
+import { UserAdd01Icon, UserGroupIcon, UserSearchIcon, UserTimeIcon } from "@hugeicons/core-free-icons"
+import { Link, useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
 
 import type { OrganizationMemberSummary } from "@/features/organizations/members/model/types"
 import { useOrganizationMembersInfiniteQuery } from "@/features/organizations/members/model/queries"
+import { useRemoveOrganizationMemberMutation } from "@/features/organizations/members/model/mutations"
+import { getMemberDisplayName } from "@/features/organizations/members/lib/member-labels"
 import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
+import { hasPermission } from "@/shared/auth/model/permission-checks"
 import { PermissionGate } from "@/shared/auth/ui/permission-gate"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"
+import { DeleteConfirmationDialog } from "@/shared/ui/delete-confirmation-dialog"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"
 import {
   Empty,
@@ -28,6 +28,10 @@ import { ItemGroup } from "@/shared/ui/item"
 import { Spinner } from "@/shared/ui/spinner"
 import { OrganizationMemberItem } from "@/features/organizations/members/ui/organization-member-item"
 import { Skeleton } from "@/shared/ui/skeleton"
+
+type RemoveMemberState = {
+  member: OrganizationMemberSummary
+}
 
 function MembersLoadingState() {
   return (
@@ -92,17 +96,28 @@ function MembersErrorState({ error }: { error: Error }) {
 }
 
 export function MembersPage() {
+  const navigate = useNavigate()
   const currentUserState = useCurrentUserQuery()
   const organizationId =
     currentUserState.data?.session.activeOrganizationId ?? null
+  const currentUserId = currentUserState.data?.user.id ?? null
+  const rolePermissions =
+    currentUserState.data?.activeOrganizationRole?.permission ?? null
+  const canUpdateMember = hasPermission(rolePermissions, "member", "update")
+  const canDeleteMember = hasPermission(rolePermissions, "member", "delete")
   const membersQuery = useOrganizationMembersInfiniteQuery({
     organizationId,
     enabled: Boolean(currentUserState.data),
   })
+  const removeMemberMutation = useRemoveOrganizationMemberMutation()
+  const [removeState, setRemoveState] = useState<RemoveMemberState | null>(null)
+  const [removeError, setRemoveError] = useState<string | null>(null)
 
   const members = membersQuery.data?.pages.flatMap((page) => page.members) ?? []
-
   const error = membersQuery.error
+  const removeMemberName = removeState
+    ? getMemberDisplayName(removeState.member)
+    : ""
 
   return (
     <section className="flex flex-col gap-5 md:gap-8">
@@ -141,7 +156,20 @@ export function MembersPage() {
       <InfiniteScrollList<OrganizationMemberSummary>
         items={members}
         keyExtractor={(member) => member.id}
-        renderItem={(member) => <OrganizationMemberItem member={member} />}
+        renderItem={(member) => (
+          <OrganizationMemberItem
+            member={member}
+            canEdit={canUpdateMember}
+            onRemove={
+              canDeleteMember
+                ? (nextMember) => {
+                    setRemoveError(null)
+                    setRemoveState({ member: nextMember })
+                  }
+                : undefined
+            }
+          />
+        )}
         hasNextPage={membersQuery.hasNextPage}
         isFetchingNextPage={membersQuery.isFetchingNextPage}
         isPending={membersQuery.isPending}
@@ -155,6 +183,67 @@ export function MembersPage() {
         loadingState={<MembersLoadingState />}
         emptyState={<MembersEmptyState />}
         errorState={error ? <MembersErrorState error={error} /> : null}
+      />
+
+      <DeleteConfirmationDialog
+        open={Boolean(removeState)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setRemoveState(null)
+            setRemoveError(null)
+            removeMemberMutation.reset()
+          }
+        }}
+        onConfirm={async () => {
+          if (!removeState || !organizationId) {
+            return
+          }
+
+          setRemoveError(null)
+
+          try {
+            await removeMemberMutation.mutateAsync({
+              organizationId,
+              memberIdOrEmail: removeState.member.id,
+            })
+
+            const removedMemberUserId =
+              removeState.member.userId ?? removeState.member.user?.id ?? null
+
+            setRemoveState(null)
+            removeMemberMutation.reset()
+
+            if (currentUserId && removedMemberUserId === currentUserId) {
+              await navigate({
+                to: "/organizations",
+                replace: true,
+              })
+            }
+          } catch (error) {
+            setRemoveError(
+              error instanceof Error ? error.message : m.members_remove_confirm_error()
+            )
+          }
+        }}
+        title={
+          removeState
+            ? m.members_remove_confirm_title({
+                member: removeMemberName,
+              })
+            : m.members_remove_confirm_title({ member: "" })
+        }
+        description={
+          removeState
+            ? m.members_remove_confirm_description({
+                member: removeMemberName,
+              })
+            : m.members_remove_confirm_description({ member: "" })
+        }
+        confirmLabel={m.members_remove_confirm_label()}
+        submittingLabel={m.members_remove_confirm_submitting()}
+        cancelLabel={m.organization_invitations_cancel()}
+        error={removeError}
+        isPending={removeMemberMutation.isPending}
       />
     </section>
   )

@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import {
   type OrganizationMemberSummary,
@@ -12,6 +13,8 @@ export const organizationMemberKeys = {
   all: [...authKeys.all, "members"] as const,
   list: (organizationId: string | null, pageSize: number) =>
     authKeys.members(organizationId, pageSize),
+  detail: (organizationId: string | null, memberId: string) =>
+    authKeys.member(organizationId, memberId),
 }
 
 type UseOrganizationMembersInfiniteQueryOptions = {
@@ -57,6 +60,17 @@ function normalizeMembersResponse(data: unknown): {
     members: [],
     total: 0,
   }
+}
+
+function findMemberInResponse(
+  data: unknown,
+  memberId: string
+): OrganizationMemberSummary | null {
+  const { members } = normalizeMembersResponse(data)
+
+  return (
+    members.find((member) => member.id === memberId) ?? null
+  )
 }
 
 function getNextCursor(
@@ -109,5 +123,76 @@ export function useOrganizationMembersInfiniteQuery({
       } satisfies OrganizationMembersPage
     },
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+  })
+}
+
+type UseOrganizationMemberQueryOptions = {
+  organizationId: string | null
+  memberId: string
+  enabled?: boolean
+  pageSize?: number
+}
+
+async function fetchOrganizationMemberById({
+  organizationId,
+  memberId,
+  pageSize,
+}: {
+  organizationId: string | null
+  memberId: string
+  pageSize: number
+}) {
+  let offset = 0
+
+  while (true) {
+    const { data, error } = await authClient.organization.listMembers({
+      query: {
+        organizationId: organizationId ?? undefined,
+        limit: pageSize,
+        offset,
+        sortBy: "createdAt",
+        sortDirection: "desc",
+      },
+    })
+
+    if (error) {
+      throw new Error(error.message ?? m.organization_members_generic_error())
+    }
+
+    const member = findMemberInResponse(data, memberId)
+
+    if (member) {
+      return member
+    }
+
+    const { members, total } = normalizeMembersResponse(data)
+    const nextOffset = offset + members.length
+
+    if (members.length < pageSize || nextOffset >= total) {
+      return null
+    }
+
+    offset = nextOffset
+  }
+}
+
+export function useOrganizationMemberQuery({
+  organizationId,
+  memberId,
+  enabled = true,
+  pageSize = 100,
+}: UseOrganizationMemberQueryOptions) {
+  return useQuery({
+    queryKey: organizationMemberKeys.detail(organizationId, memberId),
+    enabled: enabled && Boolean(organizationId) && Boolean(memberId),
+    queryFn: async () => {
+      const member = await fetchOrganizationMemberById({
+        organizationId,
+        memberId,
+        pageSize,
+      })
+
+      return member
+    },
   })
 }

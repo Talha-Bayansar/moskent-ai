@@ -26,6 +26,7 @@ Current known repository structure:
 - `src/features/`: user-facing feature slices
 - `src/entities/`: domain slices, including entity-owned persistence code and repository helpers
 - `src/shared/`: shared UI primitives, utilities, and database infrastructure
+- `src/shared/ui/delete-confirmation-dialog.tsx`: reusable destructive confirmation dialog for delete-oriented flows
 - `src/shared/ui/infinite-scroll-list.tsx`: reusable infinite-scroll list shell driven by `IntersectionObserver`
 - organization-related feature slices currently split model concerns into `schema`, `queries`, `mutations`, and `types` files, with visual components kept under `ui/`
 
@@ -84,7 +85,7 @@ Current intended boundaries:
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route, which renders either the header-only access shell or the dashboard shell depending on organization membership
 - organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
-- organization members are loaded through a feature-slice TanStack Query infinite list backed by Better Auth's `organization.listMembers` endpoint and rendered from `/dashboard/members`
+- organization members are loaded through a feature-slice TanStack Query infinite list backed by Better Auth's `organization.listMembers` endpoint and rendered from `/dashboard/members`; individual member edits now use `/dashboard/members/$memberId/edit` with Better Auth's `organization.updateMemberRole(...)`, and member removal uses `organization.removeMember(...)` behind a shared destructive confirmation dialog
 - organization roles are loaded through a feature-slice TanStack Query infinite list backed by the shared `organization_role` table and rendered from `/dashboard/roles`
 - organization role creation is exposed through `/dashboard/roles/new` and uses a TanStack Query mutation around Better Auth's `organization.createRole(...)` client API rather than a custom database write helper
 - organization invitations now live in a dedicated organizations feature slice and are exposed through the authenticated `/dashboard/members/invite` route, while pending user invitations are surfaced from the session-only `/organizations/invitations` route and the authenticated `/dashboard/invitations` route

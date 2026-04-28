@@ -1,13 +1,32 @@
 "use client"
 
-import type { OrganizationMemberSummary } from "../model/types"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { MoreHorizontalCircle01Icon } from "@hugeicons/core-free-icons"
+import { Link } from "@tanstack/react-router"
 
+import type { OrganizationMemberSummary } from "../model/types"
+import {
+  formatMemberRoleLabel,
+  getMemberAvatarFallback,
+  getMemberAvatarSource,
+  getMemberDisplayName,
+  getMemberEmail,
+} from "../lib/member-labels"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
+import { Button } from "@/shared/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu"
 import {
   Item,
+  ItemActions,
   ItemContent,
   ItemDescription,
   ItemFooter,
@@ -16,20 +35,10 @@ import {
   ItemTitle,
 } from "@/shared/ui/item"
 
-function getInitials(value: string) {
-  const parts = value.trim().split(/\s+/).filter(Boolean)
-
-  const initials = parts.slice(0, 2).map((part) => part[0]).join("")
-
-  return (initials || value.trim().slice(0, 2) || "M").toUpperCase()
-}
-
-function formatRoleLabel(role: OrganizationMemberSummary["role"]) {
-  if (Array.isArray(role)) {
-    return role.join(", ")
-  }
-
-  return role ?? "member"
+type OrganizationMemberItemProps = {
+  member: OrganizationMemberSummary
+  canEdit?: boolean
+  onRemove?: (member: OrganizationMemberSummary) => void
 }
 
 function formatJoinedDate(value?: string | Date | null) {
@@ -48,23 +57,17 @@ function formatJoinedDate(value?: string | Date | null) {
   }).format(date)
 }
 
-type OrganizationMemberItemProps = {
-  member: OrganizationMemberSummary
-}
-
-export function OrganizationMemberItem({ member }: OrganizationMemberItemProps) {
-  const user = member.user
-  const displayName =
-    user?.name?.trim() ||
-    user?.email?.split("@")[0]?.trim() ||
-    member.name?.trim() ||
-    member.email?.split("@")[0]?.trim() ||
-    member.userId ||
-    "Member"
-  const email = user?.email?.trim() || member.email?.trim() || null
-  const avatarSource = user?.image || member.image || null
-  const avatarFallback = getInitials(displayName)
+export function OrganizationMemberItem({
+  member,
+  canEdit = false,
+  onRemove,
+}: OrganizationMemberItemProps) {
+  const displayName = getMemberDisplayName(member)
+  const email = getMemberEmail(member)
+  const avatarSource = getMemberAvatarSource(member)
+  const avatarFallback = getMemberAvatarFallback(member)
   const joinedDate = formatJoinedDate(member.createdAt)
+  const hasActions = canEdit || Boolean(onRemove)
 
   return (
     <Item variant="outline" size="sm" className="items-start">
@@ -88,9 +91,62 @@ export function OrganizationMemberItem({ member }: OrganizationMemberItemProps) 
             )}
           </div>
 
-          <Badge variant="outline" className="uppercase">
-            {formatRoleLabel(member.role)}
-          </Badge>
+          <ItemActions className="shrink-0 items-center gap-2">
+            <Badge variant="outline" className="uppercase">
+              {formatMemberRoleLabel(member.role)}
+            </Badge>
+
+            {hasActions ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  aria-label={m.members_more_label()}
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      className="rounded-full"
+                    />
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={MoreHorizontalCircle01Icon}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end" className="min-w-48">
+                  {canEdit ? (
+                    <DropdownMenuItem
+                      className="w-full justify-start rounded-xl px-3 py-2"
+                      render={
+                        <Link
+                          to="/dashboard/members/$memberId/edit"
+                          params={{ memberId: member.id }}
+                        />
+                      }
+                    >
+                      <span>{m.members_edit_action()}</span>
+                    </DropdownMenuItem>
+                  ) : null}
+
+                  {canEdit && onRemove ? <DropdownMenuSeparator /> : null}
+
+                  {onRemove ? (
+                    <DropdownMenuItem
+                      variant="destructive"
+                      className="w-full justify-start rounded-xl px-3 py-2"
+                      onClick={() => {
+                        onRemove(member)
+                      }}
+                    >
+                      <span>{m.members_remove_action()}</span>
+                    </DropdownMenuItem>
+                  ) : null}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
+          </ItemActions>
         </ItemHeader>
 
         <ItemFooter className={cn("justify-start text-xs text-muted-foreground")}>

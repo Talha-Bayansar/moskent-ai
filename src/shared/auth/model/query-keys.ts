@@ -8,6 +8,8 @@ export const authKeys = {
   invitations: () => [...authKeys.all, "invitations"] as const,
   members: (organizationId: string | null, pageSize: number) =>
     [...authKeys.all, "members", organizationId ?? "active", pageSize] as const,
+  member: (organizationId: string | null, memberId: string) =>
+    [...authKeys.all, "members", organizationId ?? "active", memberId] as const,
   roles: (organizationId: string | null, pageSize: number) =>
     [...authKeys.all, "roles", organizationId ?? "active", pageSize] as const,
 }

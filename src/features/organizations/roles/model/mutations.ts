@@ -1,14 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { organizationRoleKeys } from "./queries"
-import {
-  type CreateRoleInput,
-  createRoleSchema,
-  normalizeRoleName,
-  normalizeRolePermissionMap,
-} from "./schema"
+import { createRoleSchema, normalizeRoleName, normalizeRolePermissionMap } from "./schema"
+import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { authClient } from "@/shared/auth/model/auth-client"
+import { hasPermission } from "@/shared/auth/model/permission-checks"
 import { m } from "@/shared/i18n"
+import type { CreateRoleInput } from "./schema"
 
 type CreateOrganizationRoleMutationOptions = {
   onSuccess?: () => void
@@ -19,6 +17,7 @@ export function useCreateOrganizationRoleMutation(
   options?: CreateOrganizationRoleMutationOptions
 ) {
   const queryClient = useQueryClient()
+  const currentUserState = useCurrentUserQuery()
 
   return useMutation({
     mutationFn: async (input: CreateRoleInput) => {
@@ -27,7 +26,10 @@ export function useCreateOrganizationRoleMutation(
         permission: normalizeRolePermissionMap(input.permission),
       })
 
-      if (!organizationId) {
+      const rolePermissions =
+        currentUserState.data?.activeOrganizationRole?.permission ?? null
+
+      if (!organizationId || !hasPermission(rolePermissions, "ac", "create")) {
         throw new Error(m.roles_create_no_access_description())
       }
 

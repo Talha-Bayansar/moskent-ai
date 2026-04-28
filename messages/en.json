@@ -207,6 +207,8 @@
   "organization_invite_success_body": "You can go back to the members overview or send another invitation.",
   "organization_invite_error_title": "Invitation failed",
   "organization_invite_generic_error": "We could not send this invitation. Please try again.",
+  "organization_invite_no_access_title": "You cannot invite members",
+  "organization_invite_no_access_description": "Your current role does not include the permission needed to invite new members.",
   "organization_invite_back_members": "Back to members",
   "organization_invite_invite_another": "Invite another person",
   "settings_title": "Settings",

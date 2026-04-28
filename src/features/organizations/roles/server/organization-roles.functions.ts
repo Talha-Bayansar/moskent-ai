@@ -3,6 +3,7 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 import { count, desc, eq } from "drizzle-orm"
 import { z } from "zod"
 
+import { hasPermission } from "@/shared/auth/model/permission-checks"
 import { findCurrentUser } from "@/shared/auth/server/current-user.server"
 import { organizationRole } from "@/shared/auth/server/schema"
 import { getDatabaseClient } from "@/shared/database/client.server"
@@ -32,9 +33,8 @@ export const getOrganizationRolesPage = createServerFn({ method: "GET" })
     }
 
     const rolePermissions = currentUser?.activeOrganizationRole?.permission ?? null
-    const canReadRoles = rolePermissions ? rolePermissions.ac.includes("read") : false
 
-    if (!canReadRoles) {
+    if (!hasPermission(rolePermissions, "ac", "read")) {
       throw new Error(
         "You do not have permission to read organization roles."
       )

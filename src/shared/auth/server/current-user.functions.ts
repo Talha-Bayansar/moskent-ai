@@ -6,7 +6,6 @@ export const getCurrentUser = createServerFn({ method: "GET" }).handler(
   async () => {
     const headers = getRequestHeaders()
     const user = await findCurrentUser(headers)
-    console.log(user)
 
     return user
   }

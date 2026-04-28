@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-28 - Shared permission checks use a pure helper and a UI gate
+
+- Status: accepted
+- Context: role-related UI and server checks needed the same authorization rule in multiple places, and the app was inlining `ac.read` logic against the current-user permission payload.
+- Decision: add a pure permission helper in shared auth model code and a shared `PermissionGate` component that reads the current-user query, uses the helper internally, and hides denied children by default.
+- Why: this keeps the authorization rule centralized, makes UI gating reusable across the dashboard, and avoids scattering permission-map access across pages and server helpers.
+- Impact: role management navigation and create actions, plus members invite actions, should use the shared gate, server-side permission checks should call the helper instead of reaching into the permission map directly, and future auth-sensitive UI can reuse the same pattern.
+- Follow-up: decide later whether additional resource-specific gates deserve dedicated wrappers or should continue to use the generic helper plus component.
+
 ## 2026-04-28 - Role creation uses Better Auth's organization createRole API
 
 - Status: accepted

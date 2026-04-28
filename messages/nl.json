@@ -207,6 +207,8 @@
   "organization_invite_success_body": "Je kunt teruggaan naar het ledenoverzicht of nog iemand uitnodigen.",
   "organization_invite_error_title": "Uitnodiging mislukt",
   "organization_invite_generic_error": "We konden deze uitnodiging niet verzenden. Probeer het opnieuw.",
+  "organization_invite_no_access_title": "Je kunt geen leden uitnodigen",
+  "organization_invite_no_access_description": "Je huidige rol bevat niet de machtiging die nodig is om nieuwe leden uit te nodigen.",
   "organization_invite_back_members": "Terug naar leden",
   "organization_invite_invite_another": "Nog iemand uitnodigen",
   "settings_title": "Instellingen",

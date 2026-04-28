@@ -12,6 +12,7 @@ import { Link } from "@tanstack/react-router"
 import type { OrganizationMemberSummary } from "@/features/organizations/members/model/types"
 import { useOrganizationMembersInfiniteQuery } from "@/features/organizations/members/model/queries"
 import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
+import { PermissionGate } from "@/shared/auth/ui/permission-gate"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"
@@ -122,17 +123,19 @@ export function MembersPage() {
           </div>
         </div>
 
-        <Button
-          className="w-full sm:w-auto"
-          render={<Link to="/dashboard/members/invite" />}
-        >
-          <HugeiconsIcon
-            icon={UserAdd01Icon}
-            strokeWidth={2}
-            data-icon="inline-start"
-          />
-          {m.members_invite_action()}
-        </Button>
+        <PermissionGate resource="invitation" action="create">
+          <Button
+            className="w-full sm:w-auto"
+            render={<Link to="/dashboard/members/invite" />}
+          >
+            <HugeiconsIcon
+              icon={UserAdd01Icon}
+              strokeWidth={2}
+              data-icon="inline-start"
+            />
+            {m.members_invite_action()}
+          </Button>
+        </PermissionGate>
       </div>
 
       <InfiniteScrollList<OrganizationMemberSummary>

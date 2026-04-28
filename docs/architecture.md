@@ -140,6 +140,7 @@ Current auth setup:
 - `src/shared/auth/permissions.ts`: shared Better Auth access-control statements, baseline role definitions, and permission maps reused by client setup and server-side role bootstrapping
 - `src/shared/auth/model/auth-client.ts`: Better Auth client helper for future UI work
 - `src/shared/auth/model/current-user.ts`: TanStack Query current-user query owned by the app, replacing direct client-store reads in route and page logic
+- `src/shared/auth/model/permission-checks.ts`: pure resource/action permission helper backed by the current-user active role permission map
 - `src/shared/auth/model/session.ts`: compatibility re-export for the current-user query during the migration away from session-only reads
 - `src/shared/auth/model/auth-cache.ts`: auth query cache reset and hydration helpers used after auth and organization transitions, including the current-user cache
 - `src/shared/auth/model/auth-mutations.ts`: auth sign-in, sign-up, and sign-out mutations
@@ -150,6 +151,7 @@ Current auth setup:
 - `src/shared/auth/ui/auth-page-shell.tsx`: centered auth page chrome shared by sign-in and sign-up pages
 - `src/shared/auth/ui/sign-in-form.tsx`: reusable sign-in form built with TanStack Form and Zod
 - `src/shared/auth/ui/sign-up-form.tsx`: reusable sign-up form built with TanStack Form and Zod
+- `src/shared/auth/ui/permission-gate.tsx`: client-side permission gate that reads the current-user query and hides denied children by default
 - `src/shared/auth/ui/sign-out-button.tsx`: reusable sign-out trigger with confirmation dialog
 - `src/shared/auth/ui/profile-menu.tsx`: authenticated-user dropdown that surfaces the current signed-in user and reuses the sign-out button
 - `src/shared/auth/ui/authenticated-route.tsx`: shared client-side protected-route wrapper for authenticated pages
@@ -212,6 +214,7 @@ Current auth workflow notes:
 - `/dashboard/settings` remains nested under the dashboard route tree for URL structure and uses the dashboard shell, while `/settings` uses the organization-access shell for the same page component
 - the dashboard sidebar header uses the organization switcher instead of the application name
 - the dashboard sidebar now includes an `Invitations` entry that links to `/dashboard/invitations`
+- role-aware dashboard navigation and members/role-management actions now use the shared permission helper and `PermissionGate` component instead of inlined permission conditionals
 - locale selection now lives on both `/dashboard/settings` and `/settings` instead of the dashboard header
 - dynamic per-organization custom roles are stored through Better Auth's `organization_role` table rather than app-owned role tables
 - shared baseline organization roles are `owner`, `admin`, and `member`, with additional runtime role management gated by the Better Auth `ac` permission resource; baseline roles are stored as dynamic `organization_role` rows, backfilled by migration, and lazily repaired during current-user role lookup

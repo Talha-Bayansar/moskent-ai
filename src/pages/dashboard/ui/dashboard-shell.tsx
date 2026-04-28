@@ -9,6 +9,7 @@ import {
 import type { ReactNode } from "react"
 
 import { OrganizationSwitcher } from "@/features/organizations/ui/organization-switcher"
+import { PermissionGate } from "@/shared/auth/ui/permission-gate"
 import { m } from "@/shared/i18n"
 import { Separator } from "@/shared/ui/separator"
 import { ProfileMenu } from "@/shared/auth/ui/profile-menu"
@@ -87,20 +88,22 @@ export function DashboardShell({ children }: DashboardShellProps) {
                 <span>{m.dashboard_members_label()}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                isActive={isRolesActive}
-                tooltip={m.dashboard_roles_label()}
-                render={<Link to="/dashboard/roles" />}
-              >
-                <HugeiconsIcon
-                  icon={UserShield01Icon}
-                  strokeWidth={2}
-                  data-icon="inline-start"
-                />
-                <span>{m.dashboard_roles_label()}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            <PermissionGate resource="ac" action="read">
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={isRolesActive}
+                  tooltip={m.dashboard_roles_label()}
+                  render={<Link to="/dashboard/roles" />}
+                >
+                  <HugeiconsIcon
+                    icon={UserShield01Icon}
+                    strokeWidth={2}
+                    data-icon="inline-start"
+                  />
+                  <span>{m.dashboard_roles_label()}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </PermissionGate>
           </SidebarMenu>
         </SidebarContent>
 

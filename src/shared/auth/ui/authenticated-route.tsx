@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import {
   useOrganizationsQuery,
   useSetActiveOrganizationMutation,
-} from "../organization-session"
-import { useAuthSessionQuery } from "../session"
+} from "../model/organization-session"
+import { useAuthSessionQuery } from "../model/session"
 import type { ReactNode } from "react"
 
 import { m } from "@/shared/i18n"

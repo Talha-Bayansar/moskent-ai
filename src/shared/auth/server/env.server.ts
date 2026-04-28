@@ -6,13 +6,11 @@ const authEnvSchema = z.object({
 })
 
 export type AuthEnv = {
-  baseUrl: string
   secret: string
+  baseUrl: string
 }
 
-export function parseAuthEnv(
-  input: Record<string, string | undefined>
-): AuthEnv {
+export function parseAuthEnv(input: Record<string, string | undefined>): AuthEnv {
   const parsed = authEnvSchema.safeParse(input)
 
   if (!parsed.success) {
@@ -24,8 +22,8 @@ export function parseAuthEnv(
   }
 
   return {
-    baseUrl: parsed.data.BETTER_AUTH_URL,
     secret: parsed.data.BETTER_AUTH_SECRET,
+    baseUrl: parsed.data.BETTER_AUTH_URL,
   }
 }
 

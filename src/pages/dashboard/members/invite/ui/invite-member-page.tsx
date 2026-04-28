@@ -5,7 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
 
 import { InviteOrganizationForm } from "@/features/organizations/invitations/ui/invite-organization-form"
-import { useAuthSessionQuery } from "@/shared/auth/session"
+import { useAuthSessionQuery } from "@/shared/auth/model/session"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"
 

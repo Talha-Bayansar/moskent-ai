@@ -4,8 +4,8 @@ import {
   type OrganizationMemberSummary,
   type OrganizationMembersPage,
 } from "./types"
-import { authClient } from "@/shared/auth/auth-client"
-import { authKeys } from "@/shared/auth/query-keys"
+import { authClient } from "@/shared/auth/model/auth-client"
+import { authKeys } from "@/shared/auth/model/query-keys"
 import { m } from "@/shared/i18n"
 
 export const organizationMemberKeys = {

@@ -9,7 +9,7 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import { SignOutButton } from "./sign-out-button"
-import { useAuthSessionQuery } from "@/shared/auth/session"
+import { useAuthSessionQuery } from "@/shared/auth/model/session"
 import { m } from "@/shared/i18n"
 import {
   Avatar,

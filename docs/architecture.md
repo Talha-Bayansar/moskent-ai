@@ -79,6 +79,7 @@ Current intended boundaries:
 - low-level database bootstrap lives in `src/shared/database/`
 - shared TanStack Query bootstrap lives in `src/shared/query/`
 - shared auth bootstrap lives in `src/shared/auth/`
+- shared auth code is split into `server/`, `model/`, and `ui/` buckets so server bootstrap, query/mutation logic, and components stay visually separated
 - entity tables and entity-specific persistence should live in `src/entities/<entity>/` once domain slices are added
 - auth, data access, and AI orchestration should remain explicit boundaries as they emerge
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route, which renders either the header-only access shell or the dashboard shell depending on organization membership
@@ -128,11 +129,17 @@ Current database setup:
 
 Current auth setup:
 
-- `src/shared/auth/env.server.ts`: runtime validation for Better Auth configuration
-- `src/shared/auth/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
-- `src/shared/auth/auth-client.ts`: Better Auth client helper for future UI work
-- `src/shared/auth/session.ts`: TanStack Query session query owned by the app, replacing direct client-store reads in route and page logic
-- `src/shared/auth/auth-cache.ts`: auth query cache reset and hydration helpers used after auth and organization transitions
+- `src/shared/auth/server/env.server.ts`: runtime validation for Better Auth configuration
+- `src/shared/auth/server/auth.server.ts`: Better Auth server instance backed by the shared Drizzle client
+- `src/shared/auth/server/schema.ts`: Better Auth Drizzle schema consumed by the shared database schema index
+- `src/shared/auth/model/auth-client.ts`: Better Auth client helper for future UI work
+- `src/shared/auth/model/session.ts`: TanStack Query session query owned by the app, replacing direct client-store reads in route and page logic
+- `src/shared/auth/model/auth-cache.ts`: auth query cache reset and hydration helpers used after auth and organization transitions
+- `src/shared/auth/model/auth-mutations.ts`: auth sign-in, sign-up, and sign-out mutations
+- `src/shared/auth/model/organization-session.ts`: organization query and active-organization mutation helpers
+- `src/shared/auth/model/query-keys.ts`: auth query-key helpers and cache clearing
+- `src/shared/auth/model/post-auth-redirect.ts`: shared post-auth redirect resolution rules
+- `src/shared/auth/model/permissions.ts`: shared Better Auth access-control statements and baseline roles
 - `src/shared/auth/ui/auth-page-shell.tsx`: centered auth page chrome shared by sign-in and sign-up pages
 - `src/shared/auth/ui/sign-in-form.tsx`: reusable sign-in form built with TanStack Form and Zod
 - `src/shared/auth/ui/sign-up-form.tsx`: reusable sign-up form built with TanStack Form and Zod

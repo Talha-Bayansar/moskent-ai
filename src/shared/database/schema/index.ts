@@ -1,1 +1,1 @@
-export * from "@/shared/auth/schema"
+export * from "@/shared/auth/server/schema"

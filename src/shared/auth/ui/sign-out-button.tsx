@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import type { ComponentProps, ReactNode } from "react"
 
-import { useSignOutMutation } from "@/shared/auth/auth-mutations"
+import { useSignOutMutation } from "@/shared/auth/model/auth-mutations"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"

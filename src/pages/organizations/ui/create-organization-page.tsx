@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router"
 
 import { DashboardShell } from "@/pages/dashboard/ui/dashboard-shell"
 import { OrganizationAccessShell } from "@/shared/auth/ui/organization-access-shell"
-import { useAuthSessionQuery } from "@/shared/auth/session"
+import { useAuthSessionQuery } from "@/shared/auth/model/session"
 import { m } from "@/shared/i18n"
 import {
   Card,

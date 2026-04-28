@@ -11,7 +11,7 @@ import { Link } from "@tanstack/react-router"
 
 import type { OrganizationMemberSummary } from "@/features/organizations/members/model/types"
 import { useOrganizationMembersInfiniteQuery } from "@/features/organizations/members/model/queries"
-import { useAuthSessionQuery } from "@/shared/auth/session"
+import { useAuthSessionQuery } from "@/shared/auth/model/session"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"

@@ -6,8 +6,8 @@ import { tanstackStartCookies } from "better-auth/tanstack-start"
 import {
   createDatabaseClient,
   getDatabaseClient,
-} from "../database/client.server"
-import { getDatabaseEnv, type DatabaseEnv } from "../database/env.server"
+} from "../../database/client.server"
+import { getDatabaseEnv, type DatabaseEnv } from "../../database/env.server"
 
 import { getAuthEnv, type AuthEnv } from "./env.server"
 import { ac, roles } from "./permissions"

@@ -5,8 +5,8 @@ import {
   inviteOrganizationMemberSchema,
   normalizeOrganizationInvitationEmail,
 } from "./schema"
-import { revalidateSignedInAuthState } from "@/shared/auth/auth-cache"
-import { authClient } from "@/shared/auth/auth-client"
+import { revalidateSignedInAuthState } from "@/shared/auth/model/auth-cache"
+import { authClient } from "@/shared/auth/model/auth-client"
 import { m } from "@/shared/i18n"
 
 type InvitationMutationOptions = {

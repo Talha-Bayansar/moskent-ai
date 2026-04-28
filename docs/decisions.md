@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-28 - Shared auth code is split by responsibility
+
+- Status: accepted
+- Context: the `shared/auth` folder had grown into a mixed bucket with server bootstrap, query hooks, mutations, redirect helpers, and UI components all living at the same level.
+- Decision: organize `shared/auth` into responsibility-based subfolders, with `server/` for Better Auth and schema bootstrap, `model/` for client auth/session/query logic, and `ui/` for auth components.
+- Why: auth is shared infrastructure, but it still benefits from the same readability rules as feature code, and the split makes server-only code, query state, and UI easier to find.
+- Impact: new auth code should live in the appropriate bucket, imports should target the new subpaths, and the old flat root-level auth files should not be expanded again.
+- Follow-up: apply the same pattern to any future auth additions before adding new root-level files.
+
 ## 2026-04-28 - Feature and entity slices are grouped by responsibility
 
 - Status: accepted

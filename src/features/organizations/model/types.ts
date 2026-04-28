@@ -1,1 +1,1 @@
-export type { OrganizationSummary } from "@/shared/auth/organization-session"
+export type { OrganizationSummary } from "@/shared/auth/model/organization-session"

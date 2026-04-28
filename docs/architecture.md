@@ -85,10 +85,11 @@ Current intended boundaries:
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route, which renders either the header-only access shell or the dashboard shell depending on organization membership
 - organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
 - organization members are loaded through a feature-slice TanStack Query infinite list backed by Better Auth's `organization.listMembers` endpoint and rendered from `/dashboard/members`
+- organization roles are loaded through a feature-slice TanStack Query infinite list backed by the shared `organization_role` table and rendered from `/dashboard/roles`
 - organization invitations now live in a dedicated organizations feature slice and are exposed through the authenticated `/dashboard/members/invite` route, while pending user invitations are surfaced from the session-only `/organizations/invitations` route and the authenticated `/dashboard/invitations` route
 - `/organizations` and `/organizations/invitations` use the shared organization-access shell with utility navigation instead of the dashboard sidebar layout, while `/organizations/new` switches shells based on membership and `/dashboard/invitations` uses the dashboard shell
 - the dashboard sidebar header includes an organization switcher with a dedicated create-organization action that links to `/organizations/new`
-- authenticated `/dashboard` currently hosts the chat-like AI workspace shell; AI orchestration, persistence, and action execution remain `TBD`
+- authenticated `/dashboard` currently hosts the chat-like AI workspace shell; AI orchestration, persistence, and action execution remain `TBD`, while `/dashboard/roles` adds the first organization-role browser
 - authenticated app surfaces are designed mobile-first with PWA-conscious safe-area spacing, drawer navigation on small screens, and desktop sidebar behavior on larger screens
 
 Current dependency direction:

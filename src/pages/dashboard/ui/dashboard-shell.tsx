@@ -2,8 +2,9 @@ import { Link, useMatchRoute } from "@tanstack/react-router"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Home01Icon,
-  UserTimeIcon,
   UserGroupIcon,
+  UserShield01Icon,
+  UserTimeIcon,
 } from "@hugeicons/core-free-icons"
 import type { ReactNode } from "react"
 
@@ -33,6 +34,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
   const isDashboardActive = Boolean(matchRoute({ to: "/dashboard" }))
   const isInvitationsActive = Boolean(matchRoute({ to: "/dashboard/invitations" }))
   const isMembersActive = Boolean(matchRoute({ to: "/dashboard/members" }))
+  const isRolesActive = Boolean(matchRoute({ to: "/dashboard/roles" }))
 
   return (
     <SidebarProvider>
@@ -83,6 +85,20 @@ export function DashboardShell({ children }: DashboardShellProps) {
                   data-icon="inline-start"
                 />
                 <span>{m.dashboard_members_label()}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={isRolesActive}
+                tooltip={m.dashboard_roles_label()}
+                render={<Link to="/dashboard/roles" />}
+              >
+                <HugeiconsIcon
+                  icon={UserShield01Icon}
+                  strokeWidth={2}
+                  data-icon="inline-start"
+                />
+                <span>{m.dashboard_roles_label()}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

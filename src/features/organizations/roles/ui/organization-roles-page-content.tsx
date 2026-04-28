@@ -6,6 +6,7 @@ import {
   UserShield01Icon,
   UserTime03Icon,
 } from "@hugeicons/core-free-icons"
+import type { ReactNode } from "react"
 
 import { useOrganizationRolesInfiniteQuery } from "../model/queries"
 import { OrganizationRoleItem } from "./organization-role-item"
@@ -89,7 +90,19 @@ function RolesErrorState({ error }: { error: Error }) {
   )
 }
 
-export function OrganizationRolesPageContent() {
+type OrganizationRolesPageContentInnerProps = {
+  headerAction?: ReactNode
+}
+
+export function OrganizationRolesPageContent({
+  headerAction,
+}: OrganizationRolesPageContentInnerProps) {
+  return <OrganizationRolesPageContentInner headerAction={headerAction} />
+}
+
+function OrganizationRolesPageContentInner({
+  headerAction,
+}: OrganizationRolesPageContentInnerProps) {
   const currentUserState = useCurrentUserQuery()
   const organizationId =
     currentUserState.data?.session.activeOrganizationId ?? null
@@ -97,6 +110,24 @@ export function OrganizationRolesPageContent() {
     organizationId,
     enabled: Boolean(currentUserState.data),
   })
+
+  if (currentUserState.isPending) {
+    return (
+      <section className="flex min-h-[50svh] items-center justify-center rounded-3xl border border-border/70 bg-background/70 px-6 py-12">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Spinner className="size-6" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-foreground">
+              {m.auth_checking_title()}
+            </p>
+            <p className="text-sm leading-6 text-muted-foreground">
+              {m.auth_checking_description()}
+            </p>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   const roles = rolesQuery.data?.pages.flatMap((page) => page.roles) ?? []
   const error = rolesQuery.error
@@ -119,6 +150,7 @@ export function OrganizationRolesPageContent() {
             </div>
           </div>
         </div>
+        {headerAction}
       </div>
 
       <InfiniteScrollList<OrganizationRoleSummary>

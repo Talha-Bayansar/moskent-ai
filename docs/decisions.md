@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-28 - Role creation uses Better Auth's organization createRole API
+
+- Status: accepted
+- Context: the roles browser needed a create flow, and the project already treats Better Auth client APIs as the shared auth data-access boundary.
+- Decision: implement organization role creation as a TanStack Query mutation around `authClient.organization.createRole(...)`, with the permission matrix built from the shared Better Auth access-control statements instead of a custom DB write function.
+- Why: this keeps role writes aligned with the Better Auth organization plugin, avoids duplicating persistence logic for `organization_role`, and lets the UI invalidate the roles query cache immediately after creation.
+- Impact: new role creation should go through the client mutation layer, route-level UI can stay thin, and future role management actions should follow the same Better Auth API-first pattern unless a stronger server-side orchestration need appears.
+- Follow-up: decide later whether role editing and deletion should stay client-side around Better Auth APIs or move behind server functions if orchestration becomes more complex.
+
 ## 2026-04-28 - Client auth state is driven by a server-backed current-user query
 
 - Status: accepted

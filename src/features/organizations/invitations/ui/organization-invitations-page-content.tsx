@@ -16,7 +16,7 @@ import { useUserOrganizationInvitationsQuery } from "../model/queries"
 import { InvitationActionDialog } from "./invitation-action-dialog"
 import { OrganizationInvitationItem } from "./organization-invitation-item"
 import type { OrganizationInvitationSummary } from "../model/types"
-import { useAuthSessionQuery } from "@/shared/auth/model/session"
+import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { m } from "@/shared/i18n"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"
@@ -97,9 +97,9 @@ function InvitationsErrorState({ error }: { error: Error }) {
 
 export function OrganizationInvitationsPageContent() {
   const navigate = useNavigate()
-  const sessionState = useAuthSessionQuery()
+  const currentUserState = useCurrentUserQuery()
   const invitationsQuery = useUserOrganizationInvitationsQuery({
-    enabled: Boolean(sessionState.data),
+    enabled: Boolean(currentUserState.data),
   })
   const acceptInvitationMutation = useAcceptOrganizationInvitationMutation()
   const rejectInvitationMutation = useRejectOrganizationInvitationMutation()

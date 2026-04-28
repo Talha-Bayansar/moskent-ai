@@ -5,13 +5,14 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
 
 import { InviteOrganizationForm } from "@/features/organizations/invitations/ui/invite-organization-form"
-import { useAuthSessionQuery } from "@/shared/auth/model/session"
+import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"
 
 export function InviteMemberPage() {
-  const sessionState = useAuthSessionQuery()
-  const organizationId = sessionState.data?.session.activeOrganizationId ?? null
+  const currentUserState = useCurrentUserQuery()
+  const organizationId =
+    currentUserState.data?.session.activeOrganizationId ?? null
 
   return (
     <section className="flex flex-col gap-5 md:gap-8">

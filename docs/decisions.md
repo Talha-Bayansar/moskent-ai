@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-28 - Client auth state is driven by a server-backed current-user query
+
+- Status: accepted
+- Context: client auth checks needed more than the bare session object. The app now needs active organization details and the current role permission payload in cache so UI authorization checks can happen without extra requests.
+- Decision: fetch a server-backed current-user payload through TanStack Start and TanStack Query, keep organization listing as a separate query, and refresh the current-user cache on sign-in, sign-up, sign-out, and organization switches.
+- Why: this keeps Better Auth as the source of identity and organization membership while making TanStack Query the cache boundary for the richer client auth object the UI needs.
+- Impact: auth-sensitive UI should read the current-user query instead of session-only reads, cache reset and revalidation flows must include the current-user namespace, and client-side permission checks can use the cached active role payload directly.
+- Follow-up: decide later whether more domain-specific authorization snapshots should be layered on top of the current-user payload or kept separate.
+
 ## 2026-04-28 - Shared auth code is split by responsibility
 
 - Status: accepted

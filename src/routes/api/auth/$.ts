@@ -1,15 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { getAuth } from "@/shared/auth/server/auth.server"
+import { auth } from "@/shared/auth/server/auth.server"
 
 export const Route = createFileRoute("/api/auth/$")({
   server: {
     handlers: {
       GET: async ({ request }: { request: Request }) => {
-        return getAuth().handler(request)
+        return await auth.handler(request)
       },
       POST: async ({ request }: { request: Request }) => {
-        return getAuth().handler(request)
+        return await auth.handler(request)
       },
     },
   },

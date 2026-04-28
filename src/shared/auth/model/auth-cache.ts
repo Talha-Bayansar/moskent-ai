@@ -2,19 +2,19 @@ import type { QueryClient } from "@tanstack/react-query"
 
 import { authClient } from "./auth-client"
 import { authKeys, clearAuthQueryCache } from "./query-keys"
-import { authSessionQueryOptions } from "./session"
+import { currentUserQueryOptions } from "./current-user"
 import type { OrganizationSummary } from "./organization-session"
 import { m } from "@/shared/i18n"
 
 export async function refreshSignedInAuthState(queryClient: QueryClient) {
   await clearAuthQueryCache(queryClient)
 
-  const session = await queryClient.fetchQuery(authSessionQueryOptions())
+  const currentUser = await queryClient.fetchQuery(currentUserQueryOptions())
 
-  if (!session) {
+  if (!currentUser) {
     return {
       organizations: [],
-      session: null,
+      currentUser: null,
     }
   }
 
@@ -33,7 +33,7 @@ export async function refreshSignedInAuthState(queryClient: QueryClient) {
 
   return {
     organizations,
-    session,
+    currentUser,
   }
 }
 
@@ -42,12 +42,12 @@ export async function revalidateSignedInAuthState(queryClient: QueryClient) {
     queryKey: authKeys.all,
   })
 
-  const session = await queryClient.fetchQuery(authSessionQueryOptions())
+  const currentUser = await queryClient.fetchQuery(currentUserQueryOptions())
 
-  if (!session) {
+  if (!currentUser) {
     return {
       organizations: [],
-      session: null,
+      currentUser: null,
     }
   }
 
@@ -66,6 +66,6 @@ export async function revalidateSignedInAuthState(queryClient: QueryClient) {
 
   return {
     organizations,
-    session,
+    currentUser,
   }
 }

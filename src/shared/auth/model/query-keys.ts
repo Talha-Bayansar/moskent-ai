@@ -2,7 +2,8 @@ import type { QueryClient } from "@tanstack/react-query"
 
 export const authKeys = {
   all: ["auth"] as const,
-  session: () => [...authKeys.all, "session"] as const,
+  currentUser: () => [...authKeys.all, "current-user"] as const,
+  session: () => authKeys.currentUser(),
   organizations: () => [...authKeys.all, "organizations"] as const,
   invitations: () => [...authKeys.all, "invitations"] as const,
   members: (organizationId: string | null, pageSize: number) =>

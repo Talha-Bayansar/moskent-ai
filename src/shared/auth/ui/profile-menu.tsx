@@ -9,7 +9,7 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import { SignOutButton } from "./sign-out-button"
-import { useAuthSessionQuery } from "@/shared/auth/model/session"
+import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { m } from "@/shared/i18n"
 import {
   Avatar,
@@ -48,9 +48,9 @@ export function ProfileMenu({
   showDisplayName = true,
   settingsHref = "/dashboard/settings",
 }: ProfileMenuProps) {
-  const sessionState = useAuthSessionQuery()
-  const session = sessionState.data
-  const user = session?.user
+  const currentUserState = useCurrentUserQuery()
+  const currentUser = currentUserState.data
+  const user = currentUser?.user
   const displayName = user
     ? user.name.trim() || user.email.split("@")[0]?.trim() || "Account"
     : "Account"

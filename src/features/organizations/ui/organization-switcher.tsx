@@ -6,7 +6,7 @@ import { UserAdd01Icon } from "@hugeicons/core-free-icons"
 
 import { useOrganizationsQuery } from "@/features/organizations/model/queries"
 import { useSetActiveOrganizationMutation } from "@/features/organizations/model/mutations"
-import { useAuthSessionQuery } from "@/shared/auth/model/session"
+import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Button } from "@/shared/ui/button"
@@ -24,11 +24,11 @@ type OrganizationSwitcherProps = {
 }
 
 export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
-  const sessionState = useAuthSessionQuery()
+  const currentUserState = useCurrentUserQuery()
   const activeOrganizationId =
-    sessionState.data?.session.activeOrganizationId ?? null
+    currentUserState.data?.session.activeOrganizationId ?? null
   const organizationsQuery = useOrganizationsQuery({
-    enabled: Boolean(sessionState.data),
+    enabled: Boolean(currentUserState.data),
   })
   const setActiveOrganizationMutation = useSetActiveOrganizationMutation()
 

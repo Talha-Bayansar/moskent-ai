@@ -15,6 +15,13 @@
       "when": 1776770338633,
       "tag": "0001_needy_deathbird",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777386312032,
+      "tag": "0002_true_scream",
+      "breakpoints": true
     }
   ]
 }

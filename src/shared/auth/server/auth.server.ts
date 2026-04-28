@@ -52,7 +52,3 @@ export const auth = createAuth({
   auth: getAuthEnv(),
   database: getDatabaseEnv(),
 })
-
-export function getAuth() {
-  return auth
-}

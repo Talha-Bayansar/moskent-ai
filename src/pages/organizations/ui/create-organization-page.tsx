@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router"
 
 import { DashboardShell } from "@/pages/dashboard/ui/dashboard-shell"
 import { OrganizationAccessShell } from "@/shared/auth/ui/organization-access-shell"
-import { useAuthSessionQuery } from "@/shared/auth/model/session"
+import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { m } from "@/shared/i18n"
 import {
   Card,
@@ -56,17 +56,17 @@ function OrganizationAccessErrorState({ error }: { error: Error }) {
 
 function CreateOrganizationPageContent() {
   const navigate = useNavigate()
-  const sessionState = useAuthSessionQuery()
+  const currentUserState = useCurrentUserQuery()
   const organizationsQuery = useOrganizationsQuery({
-    enabled: Boolean(sessionState.data),
+    enabled: Boolean(currentUserState.data),
   })
   const setActiveOrganizationMutation = useSetActiveOrganizationMutation()
   const [bootstrappedOrganizationId, setBootstrappedOrganizationId] = useState<
     string | null
   >(null)
 
-  const session = sessionState.data
-  const activeOrganizationId = session?.session.activeOrganizationId ?? null
+  const currentUser = currentUserState.data
+  const activeOrganizationId = currentUser?.session.activeOrganizationId ?? null
   const organizations = organizationsQuery.data ?? []
   const hasOrganizations = organizations.length > 0
   const firstOrganizationId = organizations[0]?.id ?? null
@@ -84,7 +84,7 @@ function CreateOrganizationPageContent() {
     }
 
     if (
-      !session ||
+      !currentUser ||
       !firstOrganizationId ||
       bootstrappedOrganizationId === firstOrganizationId ||
       setActiveOrganizationMutation.isPending
@@ -105,13 +105,13 @@ function CreateOrganizationPageContent() {
     bootstrappedOrganizationId,
     firstOrganizationId,
     hasOrganizations,
-    session,
+    currentUser,
     setActiveOrganizationMutation,
   ])
 
   const isPending =
-    sessionState.isPending ||
-    (Boolean(session) && organizationsQuery.isPending) ||
+    currentUserState.isPending ||
+    (Boolean(currentUser) && organizationsQuery.isPending) ||
     (hasOrganizations &&
       !effectiveActiveOrganizationId &&
       !setActiveOrganizationMutation.isError) ||

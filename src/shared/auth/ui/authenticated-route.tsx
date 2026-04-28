@@ -5,7 +5,7 @@ import {
   useOrganizationsQuery,
   useSetActiveOrganizationMutation,
 } from "../model/organization-session"
-import { useAuthSessionQuery } from "../model/session"
+import { useCurrentUserQuery } from "../model/current-user"
 import type { ReactNode } from "react"
 
 import { m } from "@/shared/i18n"
@@ -24,13 +24,13 @@ export function AuthenticatedRoute({
 }: AuthenticatedRouteProps) {
   const location = useLocation()
   const navigate = useNavigate()
-  const sessionState = useAuthSessionQuery()
-  const session = sessionState.data
-  const activeOrganizationId = session?.session.activeOrganizationId ?? null
+  const currentUserState = useCurrentUserQuery()
+  const currentUser = currentUserState.data
+  const activeOrganizationId = currentUser?.session.activeOrganizationId ?? null
   const shouldCheckOrganizations =
     requireOrganization || Boolean(redirectIfHasOrganizationsTo)
   const organizationsQuery = useOrganizationsQuery({
-    enabled: shouldCheckOrganizations && Boolean(session),
+    enabled: shouldCheckOrganizations && Boolean(currentUser),
   })
   const setActiveOrganizationMutation = useSetActiveOrganizationMutation()
   const [bootstrappedOrganizationId, setBootstrappedOrganizationId] = useState<
@@ -47,7 +47,7 @@ export function AuthenticatedRoute({
     location.pathname === "/organizations/new/"
   const shouldRedirectToDashboardWithOrganizations =
     Boolean(redirectIfHasOrganizationsTo) &&
-    Boolean(session) &&
+    Boolean(currentUser) &&
     (Boolean(activeOrganizationId) ||
       (!organizationsQuery.isPending && organizations.length > 0))
   const redirectTo =
@@ -56,11 +56,12 @@ export function AuthenticatedRoute({
       : `${window.location.pathname}${window.location.search}${window.location.hash}`
   const shouldRedirectToCreateOrganization =
     requireOrganization &&
-    session &&
+    currentUser &&
     organizations.length === 0 &&
     !isCreateOrganizationRoute &&
     !organizationsQuery.isPending
-  const shouldRedirectToSignIn = !session && !sessionState.isPending
+  const shouldRedirectToSignIn =
+    !currentUser && !currentUserState.isPending
 
   useEffect(() => {
     if (!requireOrganization) {
@@ -114,7 +115,7 @@ export function AuthenticatedRoute({
     }
 
     if (
-      !session ||
+      !currentUser ||
       !firstOrganizationId ||
       activeOrganizationId ||
       bootstrappedOrganizationId === firstOrganizationId ||
@@ -135,16 +136,16 @@ export function AuthenticatedRoute({
     activeOrganizationId,
     bootstrappedOrganizationId,
     firstOrganizationId,
-    session,
+    currentUser,
     requireOrganization,
     setActiveOrganizationMutation,
   ])
 
   const isPending =
-    sessionState.isPending ||
-    (requireOrganization && Boolean(session) && organizationsQuery.isPending) ||
+    currentUserState.isPending ||
+    (requireOrganization && Boolean(currentUser) && organizationsQuery.isPending) ||
     (Boolean(redirectIfHasOrganizationsTo) &&
-      Boolean(session) &&
+      Boolean(currentUser) &&
       (shouldRedirectToDashboardWithOrganizations ||
         organizationsQuery.isPending)) ||
     (requireOrganization &&
@@ -201,7 +202,7 @@ export function AuthenticatedRoute({
     )
   }
 
-  if (!session) {
+  if (!currentUser) {
     return null
   }
 

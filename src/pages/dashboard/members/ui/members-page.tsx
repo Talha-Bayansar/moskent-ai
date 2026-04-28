@@ -11,7 +11,7 @@ import { Link } from "@tanstack/react-router"
 
 import type { OrganizationMemberSummary } from "@/features/organizations/members/model/types"
 import { useOrganizationMembersInfiniteQuery } from "@/features/organizations/members/model/queries"
-import { useAuthSessionQuery } from "@/shared/auth/model/session"
+import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { m } from "@/shared/i18n"
 import { Button } from "@/shared/ui/button"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"
@@ -91,11 +91,12 @@ function MembersErrorState({ error }: { error: Error }) {
 }
 
 export function MembersPage() {
-  const sessionState = useAuthSessionQuery()
-  const organizationId = sessionState.data?.session.activeOrganizationId ?? null
+  const currentUserState = useCurrentUserQuery()
+  const organizationId =
+    currentUserState.data?.session.activeOrganizationId ?? null
   const membersQuery = useOrganizationMembersInfiniteQuery({
     organizationId,
-    enabled: Boolean(sessionState.data),
+    enabled: Boolean(currentUserState.data),
   })
 
   const members = membersQuery.data?.pages.flatMap((page) => page.members) ?? []

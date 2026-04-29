@@ -11,8 +11,8 @@ import { m } from "@/shared/i18n"
 
 export const organizationRoleKeys = {
   all: [...authKeys.all, "roles"] as const,
-  list: (organizationId: string | null, pageSize: number) =>
-    authKeys.roles(organizationId, pageSize),
+  list: (organizationId: string | null, pageSize: number, search: string) =>
+    authKeys.roles(organizationId, pageSize, search),
   detail: (organizationId: string | null, roleId: string) =>
     [...organizationRoleKeys.all, organizationId ?? "active", roleId] as const,
 }
@@ -21,6 +21,7 @@ type UseOrganizationRolesInfiniteQueryOptions = {
   organizationId: string | null
   enabled?: boolean
   pageSize?: number
+  search?: string
 }
 
 function normalizeRolesResponse(data: unknown): {
@@ -139,9 +140,12 @@ export function useOrganizationRolesInfiniteQuery({
   organizationId,
   enabled = true,
   pageSize = 20,
+  search = "",
 }: UseOrganizationRolesInfiniteQueryOptions) {
+  const normalizedSearch = search.trim()
+
   return useInfiniteQuery({
-    queryKey: organizationRoleKeys.list(organizationId, pageSize),
+    queryKey: organizationRoleKeys.list(organizationId, pageSize, normalizedSearch),
     initialPageParam: 0,
     enabled: enabled && Boolean(organizationId),
     queryFn: async ({ pageParam }) => {
@@ -153,6 +157,7 @@ export function useOrganizationRolesInfiniteQuery({
             organizationId: organizationId ?? undefined,
             limit: pageSize,
             offset,
+            search: normalizedSearch || undefined,
           },
         })
 

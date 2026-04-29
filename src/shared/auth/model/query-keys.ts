@@ -10,8 +10,18 @@ export const authKeys = {
     [...authKeys.all, "members", organizationId ?? "active", pageSize] as const,
   member: (organizationId: string | null, memberId: string) =>
     [...authKeys.all, "members", organizationId ?? "active", memberId] as const,
-  roles: (organizationId: string | null, pageSize: number) =>
-    [...authKeys.all, "roles", organizationId ?? "active", pageSize] as const,
+  roles: (
+    organizationId: string | null,
+    pageSize: number,
+    search: string
+  ) =>
+    [
+      ...authKeys.all,
+      "roles",
+      organizationId ?? "active",
+      pageSize,
+      search.trim(),
+    ] as const,
 }
 
 export async function clearAuthQueryCache(queryClient: QueryClient) {

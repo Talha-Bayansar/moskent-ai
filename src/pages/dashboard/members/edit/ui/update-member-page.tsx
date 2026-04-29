@@ -6,7 +6,6 @@ import { Link, useNavigate } from "@tanstack/react-router"
 
 import { UpdateMemberForm } from "@/features/organizations/members/ui/update-member-form"
 import { useOrganizationMemberQuery } from "@/features/organizations/members/model/queries"
-import { useOrganizationRolesInfiniteQuery } from "@/features/organizations/roles/model/queries"
 import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { PermissionGate } from "@/shared/auth/ui/permission-gate"
 import { m } from "@/shared/i18n"
@@ -140,15 +139,9 @@ function UpdateMemberPageContent({ memberId }: UpdateMemberPageProps) {
     memberId,
     enabled: Boolean(currentUserState.data),
   })
-  const rolesQuery = useOrganizationRolesInfiniteQuery({
-    organizationId,
-    enabled: Boolean(currentUserState.data),
-  })
 
-  const isPending =
-    currentUserState.isPending || memberQuery.isPending || rolesQuery.isPending
+  const isPending = currentUserState.isPending || memberQuery.isPending
   const member = memberQuery.data
-  const roles = rolesQuery.data?.pages.flatMap((page) => page.roles) ?? []
 
   if (isPending) {
     return <UpdateMemberLoadingState />
@@ -156,10 +149,6 @@ function UpdateMemberPageContent({ memberId }: UpdateMemberPageProps) {
 
   if (memberQuery.error) {
     return <UpdateMemberErrorState error={memberQuery.error} />
-  }
-
-  if (rolesQuery.error) {
-    return <UpdateMemberErrorState error={rolesQuery.error} />
   }
 
   if (!member) {
@@ -205,7 +194,6 @@ function UpdateMemberPageContent({ memberId }: UpdateMemberPageProps) {
       <UpdateMemberForm
         member={member}
         organizationId={organizationId}
-        roles={roles}
         onSuccess={async () => {
           await navigate({
             to: "/dashboard/members",
@@ -217,6 +205,10 @@ function UpdateMemberPageContent({ memberId }: UpdateMemberPageProps) {
           cardDescription: m.members_edit_card_description(),
           roleLabel: m.members_edit_role_label(),
           roleDescription: m.members_edit_role_description(),
+          roleSelectPlaceholder: m.members_edit_role_placeholder(),
+          roleSelectSearchPlaceholder: m.members_edit_role_search_placeholder(),
+          roleSelectLoadingLabel: m.members_edit_role_loading(),
+          roleSelectEmptyLabel: m.members_edit_role_empty(),
           submitLabel: m.members_edit_submit(),
           submittingLabel: m.members_edit_submitting(),
           errorTitle: m.members_edit_error_title(),

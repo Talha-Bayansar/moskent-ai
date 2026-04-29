@@ -28,6 +28,7 @@ Current known repository structure:
 - `src/shared/`: shared UI primitives, utilities, and database infrastructure
 - `src/shared/ui/delete-confirmation-dialog.tsx`: reusable destructive confirmation dialog for delete-oriented flows
 - `src/shared/ui/infinite-scroll-list.tsx`: reusable infinite-scroll list shell driven by `IntersectionObserver`
+- `src/shared/ui/async-select.tsx`: reusable query-driven searchable combobox with infinite scrolling and optional chip-based multi-select
 - organization-related feature slices currently split model concerns into `schema`, `queries`, `mutations`, and `types` files, with visual components kept under `ui/`
 
 Feature and entity slices should be grouped by responsibility instead of keeping every file type in one flat folder:
@@ -86,6 +87,7 @@ Current intended boundaries:
 - organization creation now lives in a dedicated feature slice and is exposed through the authenticated `/organizations/new` route, which renders either the header-only access shell or the dashboard shell depending on organization membership
 - organization list and active-organization switching are exposed through the organizations feature slice and consumed during authenticated app bootstrap
 - organization members are loaded through a feature-slice TanStack Query infinite list backed by Better Auth's `organization.listMembers` endpoint and rendered from `/dashboard/members`; individual member edits now use `/dashboard/members/$memberId/edit` with Better Auth's `organization.updateMemberRole(...)`, and member removal uses `organization.removeMember(...)` behind a shared destructive confirmation dialog
+- organization member role editing now uses the shared async searchable select component backed by the organization roles infinite query, so the update-member form can search and page roles without hard-coding a static list
 - organization roles are loaded through a feature-slice TanStack Query infinite list backed by the shared `organization_role` table and rendered from `/dashboard/roles`; individual role edits now use `/dashboard/roles/$roleId/edit` with Better Auth's `organization.getRole(...)` and `organization.updateRole(...)`, while non-default role deletion stays on the overview menu and uses `organization.deleteRole(...)` behind the shared destructive confirmation dialog
 - organization role creation is exposed through `/dashboard/roles/new` and uses a TanStack Query mutation around Better Auth's `organization.createRole(...)` client API rather than a custom database write helper
 - organization invitations now live in a dedicated organizations feature slice and are exposed through the authenticated `/dashboard/members/invite` route, while pending user invitations are surfaced from the session-only `/organizations/invitations` route and the authenticated `/dashboard/invitations` route
@@ -178,7 +180,7 @@ Current i18n workflow notes:
 - Dutch and Turkish use URL prefixes such as `/nl/...` and `/tr/...`
 - locale detection order is cookie, URL, preferred language, then base locale fallback
 - `/api/*` is excluded from locale routing behavior
-- regenerate the committed Paraglide runtime with `pnpm paraglide:compile` after changing locale settings or message files
+- regenerate the committed Paraglide runtime with `pnpm exec paraglide-js compile` after changing locale settings or message files
 
 Current server-state setup:
 

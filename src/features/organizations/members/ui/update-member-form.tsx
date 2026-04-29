@@ -1,11 +1,10 @@
 "use client"
 
+import { useDeferredValue, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { UserEdit01Icon } from "@hugeicons/core-free-icons"
 
-import type { OrganizationMemberSummary } from "../model/types"
-import type { OrganizationRoleSummary } from "@/features/organizations/roles/model/types"
 import { useUpdateOrganizationMemberMutation } from "../model/mutations"
 import { updateMemberRoleSchema } from "../model/schema"
 import {
@@ -16,7 +15,11 @@ import {
   getMemberEmail,
   normalizeMemberRoleValue,
 } from "../lib/member-labels"
+import type { OrganizationMemberSummary } from "../model/types"
+import { useOrganizationRolesInfiniteQuery } from "@/features/organizations/roles/model/queries"
 import { cn } from "@/shared/lib/utils"
+import { AsyncSelect } from "@/shared/ui/async-select"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
@@ -27,19 +30,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/shared/ui/field"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/shared/ui/avatar"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/ui/select"
 import { Spinner } from "@/shared/ui/spinner"
 
 type UpdateMemberFormCopy = {
@@ -47,6 +37,10 @@ type UpdateMemberFormCopy = {
   cardDescription: string
   roleLabel: string
   roleDescription: string
+  roleSelectPlaceholder: string
+  roleSelectSearchPlaceholder: string
+  roleSelectLoadingLabel: string
+  roleSelectEmptyLabel: string
   submitLabel: string
   submittingLabel: string
   errorTitle: string
@@ -56,7 +50,6 @@ type UpdateMemberFormCopy = {
 type UpdateMemberFormProps = {
   member: OrganizationMemberSummary
   organizationId: string | null
-  roles: Array<OrganizationRoleSummary>
   copy: UpdateMemberFormCopy
   className?: string
   onSuccess?: () => void
@@ -65,19 +58,25 @@ type UpdateMemberFormProps = {
 export function UpdateMemberForm({
   member,
   organizationId,
-  roles,
   copy,
   className,
   onSuccess,
 }: UpdateMemberFormProps) {
+  const defaultRole = normalizeMemberRoleValue(member.role)
+  const [roleSearchValue, setRoleSearchValue] = useState(defaultRole)
+  const deferredRoleSearchValue = useDeferredValue(roleSearchValue)
+
   const updateMemberMutation = useUpdateOrganizationMemberMutation({
     onSuccess: () => {
       onSuccess?.()
     },
   })
-
-  const defaultRole =
-    normalizeMemberRoleValue(member.role) || roles[0]?.role?.trim() || ""
+  const rolesQuery = useOrganizationRolesInfiniteQuery({
+    organizationId,
+    search: deferredRoleSearchValue,
+    enabled: Boolean(organizationId),
+  })
+  const roles = rolesQuery.data?.pages.flatMap((page) => page.roles) ?? []
 
   const form = useForm({
     defaultValues: {
@@ -105,7 +104,6 @@ export function UpdateMemberForm({
   const avatarFallback = getMemberAvatarFallback(member)
   const currentRole = formatMemberRoleLabel(member.role)
   const isBusy = form.state.isSubmitting || updateMemberMutation.isPending
-  const hasRoles = roles.length > 0
 
   return (
     <Card className={cn("bg-card/80", className)}>
@@ -153,54 +151,60 @@ export function UpdateMemberForm({
                 const showError =
                   field.state.meta.errors.length > 0 &&
                   (field.state.meta.isTouched || form.state.isSubmitted)
-                const selectedRoleLabel =
-                  roles.find((role) => role.role === field.state.value)?.role ||
-                  field.state.value ||
-                  copy.roleDescription
 
                 return (
                   <Field data-invalid={showError}>
                     <FieldLabel htmlFor={field.name}>{copy.roleLabel}</FieldLabel>
-                    <Select
+                    <AsyncSelect
+                      id={field.name}
                       value={field.state.value}
                       onValueChange={(role) => {
-                        if (typeof role !== "string") {
-                          return
-                        }
-
-                        field.handleChange(role)
+                        field.handleChange(role ?? "")
 
                         if (updateMemberMutation.isError) {
                           updateMemberMutation.reset()
                         }
                       }}
-                      disabled={isBusy || !hasRoles}
-                    >
-                      <SelectTrigger
-                        id={field.name}
-                        aria-label={copy.roleLabel}
-                        className="w-full"
-                      >
-                        <SelectValue placeholder={copy.roleDescription}>
-                          {() => <span className="truncate">{selectedRoleLabel}</span>}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent align="start" className="min-w-60">
-                        <SelectGroup>
-                          {roles.map((role) => (
-                            <SelectItem
-                              key={role.id}
-                              value={role.role}
-                              label={role.role}
-                            >
-                              <span className="truncate font-medium">
-                                {role.role}
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                      searchValue={roleSearchValue}
+                      onSearchValueChange={(value) => {
+                        setRoleSearchValue(value)
+
+                        if (updateMemberMutation.isError) {
+                          updateMemberMutation.reset()
+                        }
+                      }}
+                      items={roles}
+                      getItemKey={(role) => role.id}
+                      getItemValue={(role) => role.role}
+                      getItemLabel={(role) => role.role}
+                      getValueLabel={(value) =>
+                        roles.find((role) => role.role === value)?.role ?? value
+                      }
+                      renderItem={(role) => (
+                        <span className="truncate font-medium">{role.role}</span>
+                      )}
+                      placeholder={copy.roleSelectPlaceholder}
+                      searchPlaceholder={copy.roleSelectSearchPlaceholder}
+                      loadingLabel={copy.roleSelectLoadingLabel}
+                      emptyLabel={copy.roleSelectEmptyLabel}
+                      disabled={isBusy}
+                      hasNextPage={rolesQuery.hasNextPage}
+                      isFetchingNextPage={rolesQuery.isFetchingNextPage}
+                      isPending={rolesQuery.isPending}
+                      error={rolesQuery.error}
+                      onLoadMore={() => {
+                        if (rolesQuery.hasNextPage && !rolesQuery.isFetchingNextPage) {
+                          void rolesQuery.fetchNextPage()
+                        }
+                      }}
+                      errorState={
+                        <div className="px-3 py-4 text-center text-sm text-destructive">
+                          {rolesQuery.error?.message || copy.genericError}
+                        </div>
+                      }
+                      className="w-full"
+                      contentClassName="min-w-72"
+                    />
                     <FieldDescription>{copy.roleDescription}</FieldDescription>
                     <FieldError errors={field.state.meta.errors} />
                   </Field>
@@ -226,7 +230,7 @@ export function UpdateMemberForm({
           >
             {({ canSubmit, isSubmitting }) => {
               const isSubmitDisabled =
-                  !canSubmit || isSubmitting || updateMemberMutation.isPending
+                !canSubmit || isSubmitting || updateMemberMutation.isPending
 
               return (
                 <div className="flex justify-end">

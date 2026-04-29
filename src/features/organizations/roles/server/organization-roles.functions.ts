@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import { count, desc, eq } from "drizzle-orm"
+import { and, count, desc, eq, ilike } from "drizzle-orm"
 import { z } from "zod"
 
 import { hasPermission } from "@/shared/auth/model/permission-checks"
@@ -12,6 +12,7 @@ const organizationRolesPageInputSchema = z.object({
   organizationId: z.string().optional().nullable(),
   limit: z.number().int().positive().optional(),
   offset: z.number().int().nonnegative().optional(),
+  search: z.string().trim().optional(),
 })
 
 export const getOrganizationRolesPage = createServerFn({ method: "GET" })
@@ -23,6 +24,7 @@ export const getOrganizationRolesPage = createServerFn({ method: "GET" })
     const organizationId = data.organizationId ?? activeOrganizationId
     const pageSize = Math.min(Math.max(data.limit ?? 20, 1), 50)
     const offset = Math.max(data.offset ?? 0, 0)
+    const search = data.search?.trim() ?? ""
 
     if (!organizationId) {
       return {
@@ -41,7 +43,12 @@ export const getOrganizationRolesPage = createServerFn({ method: "GET" })
     }
 
     const db = getDatabaseClient()
-    const whereClause = eq(organizationRole.organizationId, organizationId)
+    const whereClause = search
+      ? and(
+          eq(organizationRole.organizationId, organizationId),
+          ilike(organizationRole.role, `%${escapeLikePattern(search)}%`)
+        )
+      : eq(organizationRole.organizationId, organizationId)
 
     const [{ total }] = await db
       .select({ total: count() })
@@ -75,6 +82,10 @@ export const getOrganizationRolesPage = createServerFn({ method: "GET" })
       nextCursor: nextCursor < totalCount ? nextCursor : undefined,
     }
   })
+
+function escapeLikePattern(value: string) {
+  return value.replace(/[\\%_]/g, "\\$&")
+}
 
 function parsePermission(value: string) {
   try {

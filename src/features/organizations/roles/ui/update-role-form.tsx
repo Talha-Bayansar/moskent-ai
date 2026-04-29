@@ -3,23 +3,23 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { UserShield01Icon } from "@hugeicons/core-free-icons"
-import { Link } from "@tanstack/react-router"
+import { UserEdit01Icon } from "@hugeicons/core-free-icons"
 
-import { useCreateOrganizationRoleMutation } from "../model/mutations"
+import { useUpdateOrganizationRoleMutation } from "../model/mutations"
 import {
-  createEmptyRolePermissionMap,
   createRoleNameDraftSchema,
   normalizeRoleName,
+  normalizeRolePermissionMap,
   rolePermissionEntries,
 } from "../model/schema"
+import type { OrganizationRoleSummary } from "../model/types"
 import { baselineOrganizationRoleNames } from "@/shared/auth/permissions"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert"
 import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Checkbox } from "@/shared/ui/checkbox"
 import {
   Field,
@@ -32,7 +32,7 @@ import {
 import { Input } from "@/shared/ui/input"
 import { Spinner } from "@/shared/ui/spinner"
 
-export type CreateRoleFormCopy = {
+export type UpdateRoleFormCopy = {
   cardTitle: string
   cardDescription: string
   roleLabel: string
@@ -42,19 +42,16 @@ export type CreateRoleFormCopy = {
   permissionsDescription: string
   submitLabel: string
   submittingLabel: string
-  successTitle: string
-  successDescription: string
-  successBody: string
-  createAnotherLabel: string
-  backLabel: string
   errorTitle: string
   genericError: string
 }
 
-type CreateRoleFormProps = {
-  copy: CreateRoleFormCopy
+type UpdateRoleFormProps = {
+  role: OrganizationRoleSummary
   organizationId: string | null
+  copy: UpdateRoleFormCopy
   className?: string
+  onSuccess?: () => void
 }
 
 function getPermissionLabel(resource: string) {
@@ -97,90 +94,68 @@ function isBaselineRole(roleName: string) {
   )
 }
 
-export function CreateRoleForm({
-  copy,
+export function UpdateRoleForm({
+  role,
   organizationId,
+  copy,
   className,
-}: CreateRoleFormProps) {
+  onSuccess,
+}: UpdateRoleFormProps) {
   const [permissionMap, setPermissionMap] = useState(
-    createEmptyRolePermissionMap()
+    normalizeRolePermissionMap(role.permission)
   )
-  const [createdRoleName, setCreatedRoleName] = useState<string | null>(null)
-  const createRoleMutation = useCreateOrganizationRoleMutation(organizationId)
+  const updateRoleMutation = useUpdateOrganizationRoleMutation({
+    onSuccess: () => {
+      onSuccess?.()
+    },
+  })
 
   const form = useForm({
     defaultValues: {
-      role: "",
+      role: role.role,
     },
     validators: {
       onSubmit: createRoleNameDraftSchema,
     },
     onSubmit: async ({ value }) => {
       try {
-        const normalizedRoleName = normalizeRoleName(value.role)
-
-        await createRoleMutation.mutateAsync({
-          role: normalizedRoleName,
+        await updateRoleMutation.mutateAsync({
+          organizationId,
+          roleId: role.id,
+          roleName: normalizeRoleName(value.role),
           permission: permissionMap,
         })
-
-        setCreatedRoleName(normalizedRoleName)
-        form.reset()
-        setPermissionMap(createEmptyRolePermissionMap())
       } catch {
         // The mutation error is surfaced inline.
       }
     },
   })
 
-  if (createdRoleName) {
-    return (
-      <Card className={cn("bg-card/80", className)}>
-        <CardHeader>
-          <div className="flex size-11 items-center justify-center rounded-2xl border border-border bg-background text-foreground shadow-xs">
-            <HugeiconsIcon icon={UserShield01Icon} strokeWidth={2} />
-          </div>
-          <CardTitle>{copy.successTitle}</CardTitle>
-          <CardDescription>{copy.successDescription}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border/70 bg-background px-4 py-3">
-            <span className="text-sm text-muted-foreground">
-              {copy.successBody}
-            </span>
-            <Badge variant={isBaselineRole(createdRoleName) ? "secondary" : "outline"} className="uppercase">
-              {createdRoleName}
-            </Badge>
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-2 sm:flex-row sm:justify-between">
-          <Button
-            variant="outline"
-            className="w-full sm:w-auto"
-            onClick={() => {
-              createRoleMutation.reset()
-              setCreatedRoleName(null)
-              setPermissionMap(createEmptyRolePermissionMap())
-              form.reset()
-            }}
-          >
-            {copy.createAnotherLabel}
-          </Button>
-          <Button className="w-full sm:w-auto" render={<Link to="/dashboard/roles" />}>
-            {copy.backLabel}
-          </Button>
-        </CardFooter>
-      </Card>
-    )
-  }
+  const isBusy = form.state.isSubmitting || updateRoleMutation.isPending
+  const currentRoleName = role.role.trim() || "member"
 
   return (
     <Card className={cn("bg-card/80", className)}>
       <CardHeader>
+        <div className="flex size-11 items-center justify-center rounded-2xl border border-border bg-background text-foreground shadow-xs">
+          <HugeiconsIcon icon={UserEdit01Icon} strokeWidth={2} />
+        </div>
         <CardTitle>{copy.cardTitle}</CardTitle>
         <CardDescription>{copy.cardDescription}</CardDescription>
       </CardHeader>
+
       <CardContent>
+        <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-border/70 bg-background px-4 py-3">
+          <span className="text-sm text-muted-foreground">
+            {isBaselineRole(currentRoleName)
+              ? m.roles_default_badge()
+              : m.roles_custom_badge()}
+          </span>
+          <Badge variant={isBaselineRole(currentRoleName) ? "secondary" : "outline"} className="uppercase">
+            {currentRoleName}
+          </Badge>
+        </div>
+
         <form
           onSubmit={(event) => {
             event.preventDefault()
@@ -215,11 +190,12 @@ export function CreateRoleForm({
                       onChange={(event) => {
                         field.handleChange(event.target.value)
 
-                        if (createRoleMutation.isError) {
-                          createRoleMutation.reset()
+                        if (updateRoleMutation.isError) {
+                          updateRoleMutation.reset()
                         }
                       }}
                       aria-invalid={showError}
+                      disabled={isBusy}
                     />
                     <FieldDescription>{copy.roleDescription}</FieldDescription>
                     <FieldError errors={field.state.meta.errors} />
@@ -288,11 +264,12 @@ export function CreateRoleForm({
                                   [resource]: nextSelected,
                                 }))
 
-                                if (createRoleMutation.isError) {
-                                  createRoleMutation.reset()
+                                if (updateRoleMutation.isError) {
+                                  updateRoleMutation.reset()
                                 }
                               }}
                               className="mt-0.5"
+                              disabled={isBusy}
                             />
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2">
@@ -317,11 +294,11 @@ export function CreateRoleForm({
             </div>
           </FieldSet>
 
-          {createRoleMutation.error ? (
+          {updateRoleMutation.error ? (
             <Alert variant="destructive">
               <AlertTitle>{copy.errorTitle}</AlertTitle>
               <AlertDescription>
-                {createRoleMutation.error.message || copy.genericError}
+                {updateRoleMutation.error.message || copy.genericError}
               </AlertDescription>
             </Alert>
           ) : null}
@@ -333,13 +310,14 @@ export function CreateRoleForm({
             })}
           >
             {({ canSubmit, isSubmitting }) => {
-              const isBusy = isSubmitting || createRoleMutation.isPending
+              const isSubmitDisabled =
+                !canSubmit || isSubmitting || updateRoleMutation.isPending
 
               return (
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={!canSubmit || isBusy}
+                  disabled={isSubmitDisabled}
                 >
                   {isBusy ? (
                     <>

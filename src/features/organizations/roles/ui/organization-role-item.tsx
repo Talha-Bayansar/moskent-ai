@@ -1,14 +1,27 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import { UserShield01Icon } from "@hugeicons/core-free-icons"
+import {
+  MoreHorizontalCircle01Icon,
+  UserShield01Icon,
+} from "@hugeicons/core-free-icons"
+import { Link } from "@tanstack/react-router"
 
-import { baselineOrganizationRoleNames } from "@/shared/auth/permissions"
+import type { OrganizationRoleSummary } from "../model/types"
 import { m } from "@/shared/i18n"
 import { cn } from "@/shared/lib/utils"
 import { Badge } from "@/shared/ui/badge"
+import { Button } from "@/shared/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu"
 import {
   Item,
+  ItemActions,
   ItemContent,
   ItemDescription,
   ItemFooter,
@@ -16,7 +29,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/shared/ui/item"
-import type { OrganizationRoleSummary } from "../model/types"
+import { baselineOrganizationRoleNames } from "@/shared/auth/permissions"
 
 function formatRoleLabel(role: string) {
   return role.trim() || "member"
@@ -55,13 +68,23 @@ function formatPermissionSummary(
 
 type OrganizationRoleItemProps = {
   role: OrganizationRoleSummary
+  canEdit?: boolean
+  canDelete?: boolean
+  onDelete?: (role: OrganizationRoleSummary) => void
 }
 
-export function OrganizationRoleItem({ role }: OrganizationRoleItemProps) {
+export function OrganizationRoleItem({
+  role,
+  canEdit = false,
+  canDelete = false,
+  onDelete,
+}: OrganizationRoleItemProps) {
   const joinedDate = formatJoinedDate(role.createdAt)
   const isBaselineRole = baselineOrganizationRoleNames.includes(
     role.role as (typeof baselineOrganizationRoleNames)[number]
   )
+  const hasActions =
+    canEdit || (canDelete && !isBaselineRole && Boolean(onDelete))
 
   return (
     <Item variant="outline" size="sm" className="items-start">
@@ -80,9 +103,64 @@ export function OrganizationRoleItem({ role }: OrganizationRoleItemProps) {
             </ItemDescription>
           </div>
 
-          <Badge variant="outline" className="uppercase">
-            {isBaselineRole ? m.roles_default_badge() : m.roles_custom_badge()}
-          </Badge>
+          <ItemActions className="shrink-0 items-center gap-2">
+            <Badge variant="outline" className="uppercase">
+              {isBaselineRole ? m.roles_default_badge() : m.roles_custom_badge()}
+            </Badge>
+
+            {hasActions ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  aria-label={m.roles_more_label()}
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      className="rounded-full"
+                    />
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={MoreHorizontalCircle01Icon}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end" className="min-w-48">
+                  {canEdit ? (
+                    <DropdownMenuItem
+                      className="w-full justify-start rounded-xl px-3 py-2"
+                      render={
+                        <Link
+                          to="/dashboard/roles/$roleId/edit"
+                          params={{ roleId: role.id }}
+                        />
+                      }
+                    >
+                      <span>{m.roles_edit_action()}</span>
+                    </DropdownMenuItem>
+                  ) : null}
+
+                  {canEdit && canDelete && !isBaselineRole && onDelete ? (
+                    <DropdownMenuSeparator />
+                  ) : null}
+
+                  {canDelete && !isBaselineRole && onDelete ? (
+                    <DropdownMenuItem
+                      variant="destructive"
+                      className="w-full justify-start rounded-xl px-3 py-2"
+                      onClick={() => {
+                        onDelete(role)
+                      }}
+                    >
+                      <span>{m.roles_delete_action()}</span>
+                    </DropdownMenuItem>
+                  ) : null}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
+          </ItemActions>
         </ItemHeader>
 
         <ItemFooter

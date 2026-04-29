@@ -1,15 +1,36 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { organizationRoleKeys } from "./queries"
 import { createRoleSchema, normalizeRoleName, normalizeRolePermissionMap } from "./schema"
+import { organizationRoleKeys } from "./queries"
+import type { CreateRoleInput } from "./schema"
+import { revalidateSignedInAuthState } from "@/shared/auth/model/auth-cache"
 import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
 import { authClient } from "@/shared/auth/model/auth-client"
 import { hasPermission } from "@/shared/auth/model/permission-checks"
 import { m } from "@/shared/i18n"
-import type { CreateRoleInput } from "./schema"
 
 type CreateOrganizationRoleMutationOptions = {
   onSuccess?: () => void
+}
+
+type UpdateOrganizationRoleMutationOptions = {
+  onSuccess?: () => void
+}
+
+type DeleteOrganizationRoleMutationOptions = {
+  onSuccess?: () => void
+}
+
+type UpdateOrganizationRoleInput = {
+  organizationId: string | null
+  roleId: string
+  roleName: string
+  permission: Record<string, Array<string>>
+}
+
+type DeleteOrganizationRoleInput = {
+  organizationId: string | null
+  roleId: string
 }
 
 export function useCreateOrganizationRoleMutation(
@@ -46,6 +67,97 @@ export function useCreateOrganizationRoleMutation(
       return data
     },
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: organizationRoleKeys.all,
+      })
+
+      options?.onSuccess?.()
+    },
+  })
+}
+
+export function useUpdateOrganizationRoleMutation(
+  options?: UpdateOrganizationRoleMutationOptions
+) {
+  const queryClient = useQueryClient()
+  const currentUserState = useCurrentUserQuery()
+
+  return useMutation({
+    mutationFn: async (input: UpdateOrganizationRoleInput) => {
+      const parsed = createRoleSchema.parse({
+        role: normalizeRoleName(input.roleName),
+        permission: normalizeRolePermissionMap(input.permission),
+      })
+
+      const rolePermissions =
+        currentUserState.data?.activeOrganizationRole?.permission ?? null
+
+      if (
+        !input.organizationId ||
+        !hasPermission(rolePermissions, "ac", "update")
+      ) {
+        throw new Error(m.roles_update_no_access_description())
+      }
+
+      const { data, error } = await authClient.organization.updateRole({
+        roleId: input.roleId,
+        organizationId: input.organizationId,
+        data: {
+          roleName: parsed.role,
+          permission: parsed.permission,
+        },
+      })
+
+      if (error) {
+        throw new Error(error.message ?? m.roles_update_generic_error())
+      }
+
+      return data
+    },
+    onSuccess: async () => {
+      await revalidateSignedInAuthState(queryClient)
+
+      await queryClient.invalidateQueries({
+        queryKey: organizationRoleKeys.all,
+      })
+
+      options?.onSuccess?.()
+    },
+  })
+}
+
+export function useDeleteOrganizationRoleMutation(
+  options?: DeleteOrganizationRoleMutationOptions
+) {
+  const queryClient = useQueryClient()
+  const currentUserState = useCurrentUserQuery()
+
+  return useMutation({
+    mutationFn: async (input: DeleteOrganizationRoleInput) => {
+      const rolePermissions =
+        currentUserState.data?.activeOrganizationRole?.permission ?? null
+
+      if (
+        !input.organizationId ||
+        !hasPermission(rolePermissions, "ac", "delete")
+      ) {
+        throw new Error(m.roles_delete_no_access_description())
+      }
+
+      const { data, error } = await authClient.organization.deleteRole({
+        roleId: input.roleId,
+        organizationId: input.organizationId,
+      })
+
+      if (error) {
+        throw new Error(error.message ?? m.roles_delete_generic_error())
+      }
+
+      return data
+    },
+    onSuccess: async () => {
+      await revalidateSignedInAuthState(queryClient)
+
       await queryClient.invalidateQueries({
         queryKey: organizationRoleKeys.all,
       })

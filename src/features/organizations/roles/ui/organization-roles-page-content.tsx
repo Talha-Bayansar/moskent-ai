@@ -6,12 +6,13 @@ import {
   UserShield01Icon,
   UserTime03Icon,
 } from "@hugeicons/core-free-icons"
-import type { ReactNode } from "react"
 
 import { useOrganizationRolesInfiniteQuery } from "../model/queries"
 import { OrganizationRoleItem } from "./organization-role-item"
 import type { OrganizationRoleSummary } from "../model/types"
+import type { ReactNode } from "react"
 import { useCurrentUserQuery } from "@/shared/auth/model/current-user"
+import { hasPermission } from "@/shared/auth/model/permission-checks"
 import { m } from "@/shared/i18n"
 import { InfiniteScrollList } from "@/shared/ui/infinite-scroll-list"
 import {
@@ -92,20 +93,32 @@ function RolesErrorState({ error }: { error: Error }) {
 
 type OrganizationRolesPageContentInnerProps = {
   headerAction?: ReactNode
+  onDeleteRole?: (role: OrganizationRoleSummary) => void
 }
 
 export function OrganizationRolesPageContent({
   headerAction,
+  onDeleteRole,
 }: OrganizationRolesPageContentInnerProps) {
-  return <OrganizationRolesPageContentInner headerAction={headerAction} />
+  return (
+    <OrganizationRolesPageContentInner
+      headerAction={headerAction}
+      onDeleteRole={onDeleteRole}
+    />
+  )
 }
 
 function OrganizationRolesPageContentInner({
   headerAction,
+  onDeleteRole,
 }: OrganizationRolesPageContentInnerProps) {
   const currentUserState = useCurrentUserQuery()
   const organizationId =
     currentUserState.data?.session.activeOrganizationId ?? null
+  const rolePermissions =
+    currentUserState.data?.activeOrganizationRole?.permission ?? null
+  const canEditRoles = hasPermission(rolePermissions, "ac", "update")
+  const canDeleteRoles = hasPermission(rolePermissions, "ac", "delete")
   const rolesQuery = useOrganizationRolesInfiniteQuery({
     organizationId,
     enabled: Boolean(currentUserState.data),
@@ -156,7 +169,14 @@ function OrganizationRolesPageContentInner({
       <InfiniteScrollList<OrganizationRoleSummary>
         items={roles}
         keyExtractor={(role) => role.id}
-        renderItem={(role) => <OrganizationRoleItem role={role} />}
+        renderItem={(role) => (
+          <OrganizationRoleItem
+            role={role}
+            canEdit={canEditRoles}
+            canDelete={canDeleteRoles}
+            onDelete={onDeleteRole}
+          />
+        )}
         hasNextPage={rolesQuery.hasNextPage}
         isFetchingNextPage={rolesQuery.isFetchingNextPage}
         isPending={rolesQuery.isPending}

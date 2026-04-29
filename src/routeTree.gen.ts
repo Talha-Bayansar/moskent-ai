@@ -25,6 +25,7 @@ import { Route as DashboardInvitationsIndexRouteImport } from './routes/dashboar
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DashboardRolesNewIndexRouteImport } from './routes/dashboard/roles/new/index'
 import { Route as DashboardMembersInviteIndexRouteImport } from './routes/dashboard/members/invite/index'
+import { Route as DashboardRolesRoleIdEditIndexRouteImport } from './routes/dashboard/roles/$roleId/edit/index'
 import { Route as DashboardMembersMemberIdEditIndexRouteImport } from './routes/dashboard/members/$memberId/edit/index'
 
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
@@ -110,6 +111,12 @@ const DashboardMembersInviteIndexRoute =
     path: '/members/invite/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardRolesRoleIdEditIndexRoute =
+  DashboardRolesRoleIdEditIndexRouteImport.update({
+    id: '/roles/$roleId/edit/',
+    path: '/roles/$roleId/edit/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 const DashboardMembersMemberIdEditIndexRoute =
   DashboardMembersMemberIdEditIndexRouteImport.update({
     id: '/members/$memberId/edit/',
@@ -135,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/members/invite/': typeof DashboardMembersInviteIndexRoute
   '/dashboard/roles/new/': typeof DashboardRolesNewIndexRoute
   '/dashboard/members/$memberId/edit/': typeof DashboardMembersMemberIdEditIndexRoute
+  '/dashboard/roles/$roleId/edit/': typeof DashboardRolesRoleIdEditIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -153,6 +161,7 @@ export interface FileRoutesByTo {
   '/dashboard/members/invite': typeof DashboardMembersInviteIndexRoute
   '/dashboard/roles/new': typeof DashboardRolesNewIndexRoute
   '/dashboard/members/$memberId/edit': typeof DashboardMembersMemberIdEditIndexRoute
+  '/dashboard/roles/$roleId/edit': typeof DashboardRolesRoleIdEditIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -173,6 +182,7 @@ export interface FileRoutesById {
   '/dashboard/members/invite/': typeof DashboardMembersInviteIndexRoute
   '/dashboard/roles/new/': typeof DashboardRolesNewIndexRoute
   '/dashboard/members/$memberId/edit/': typeof DashboardMembersMemberIdEditIndexRoute
+  '/dashboard/roles/$roleId/edit/': typeof DashboardRolesRoleIdEditIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/dashboard/members/invite/'
     | '/dashboard/roles/new/'
     | '/dashboard/members/$memberId/edit/'
+    | '/dashboard/roles/$roleId/edit/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/dashboard/members/invite'
     | '/dashboard/roles/new'
     | '/dashboard/members/$memberId/edit'
+    | '/dashboard/roles/$roleId/edit'
   id:
     | '__root__'
     | '/'
@@ -231,6 +243,7 @@ export interface FileRouteTypes {
     | '/dashboard/members/invite/'
     | '/dashboard/roles/new/'
     | '/dashboard/members/$memberId/edit/'
+    | '/dashboard/roles/$roleId/edit/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -359,6 +372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMembersInviteIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/roles/$roleId/edit/': {
+      id: '/dashboard/roles/$roleId/edit/'
+      path: '/roles/$roleId/edit'
+      fullPath: '/dashboard/roles/$roleId/edit/'
+      preLoaderRoute: typeof DashboardRolesRoleIdEditIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/members/$memberId/edit/': {
       id: '/dashboard/members/$memberId/edit/'
       path: '/members/$memberId/edit'
@@ -378,6 +398,7 @@ interface DashboardRouteRouteChildren {
   DashboardMembersInviteIndexRoute: typeof DashboardMembersInviteIndexRoute
   DashboardRolesNewIndexRoute: typeof DashboardRolesNewIndexRoute
   DashboardMembersMemberIdEditIndexRoute: typeof DashboardMembersMemberIdEditIndexRoute
+  DashboardRolesRoleIdEditIndexRoute: typeof DashboardRolesRoleIdEditIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
@@ -390,6 +411,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardRolesNewIndexRoute: DashboardRolesNewIndexRoute,
   DashboardMembersMemberIdEditIndexRoute:
     DashboardMembersMemberIdEditIndexRoute,
+  DashboardRolesRoleIdEditIndexRoute: DashboardRolesRoleIdEditIndexRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(

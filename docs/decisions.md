@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-29 - Role editing uses a dedicated route and role deletion stays on the overview menu
+
+- Status: accepted
+- Context: the roles overview needed a way to edit individual roles, and destructive actions needed to stay consistent with the shared confirmation pattern already used elsewhere in the app.
+- Decision: add a dedicated `/dashboard/roles/$roleId/edit` route with a reusable update role form, and keep delete as an overview-only action exposed from the role item's more menu for non-default roles.
+- Why: editing works better as a bookmarkable route with its own validation and loading states, while leaving delete on the overview keeps the edit page focused and lets the app reuse the shared destructive confirmation dialog.
+- Impact: role items now expose edit navigation, the roles page owns the delete confirmation modal state, and future role-management actions should follow the same route-for-edit / menu-for-delete pattern unless there is a stronger reason to diverge.
+- Follow-up: decide later whether role cloning or duplication should use a route or a menu action.
+
 ## 2026-04-29 - Delete confirmations use a shared dialog component
 
 - Status: accepted

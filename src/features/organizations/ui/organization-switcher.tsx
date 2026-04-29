@@ -74,7 +74,7 @@ export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
             )}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent align="start" className="min-w-60">
+        <SelectContent align="start">
           <SelectGroup>
             {organizations.map((organization) => (
               <SelectItem
@@ -82,7 +82,9 @@ export function OrganizationSwitcher({ className }: OrganizationSwitcherProps) {
                 value={organization.id}
                 label={organization.name}
               >
-                <span className="truncate font-medium">{organization.name}</span>
+                <span className="truncate font-medium">
+                  {organization.name}
+                </span>
               </SelectItem>
             ))}
           </SelectGroup>

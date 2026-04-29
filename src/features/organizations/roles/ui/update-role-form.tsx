@@ -1,14 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { useForm } from "@tanstack/react-form"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { UserEdit01Icon } from "@hugeicons/core-free-icons"
 
 import { useUpdateOrganizationRoleMutation } from "../model/mutations"
 import {
-  createRoleNameDraftSchema,
-  normalizeRoleName,
   normalizeRolePermissionMap,
   rolePermissionEntries,
 } from "../model/schema"
@@ -21,23 +18,12 @@ import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Checkbox } from "@/shared/ui/checkbox"
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLegend,
-  FieldSet,
-} from "@/shared/ui/field"
-import { Input } from "@/shared/ui/input"
+import { FieldLegend, FieldSet } from "@/shared/ui/field"
 import { Spinner } from "@/shared/ui/spinner"
 
 export type UpdateRoleFormCopy = {
   cardTitle: string
   cardDescription: string
-  roleLabel: string
-  roleDescription: string
-  rolePlaceholder: string
   permissionsLabel: string
   permissionsDescription: string
   submitLabel: string
@@ -110,29 +96,9 @@ export function UpdateRoleForm({
     },
   })
 
-  const form = useForm({
-    defaultValues: {
-      role: role.role,
-    },
-    validators: {
-      onSubmit: createRoleNameDraftSchema,
-    },
-    onSubmit: async ({ value }) => {
-      try {
-        await updateRoleMutation.mutateAsync({
-          organizationId,
-          roleId: role.id,
-          roleName: normalizeRoleName(value.role),
-          permission: permissionMap,
-        })
-      } catch {
-        // The mutation error is surfaced inline.
-      }
-    },
-  })
-
-  const isBusy = form.state.isSubmitting || updateRoleMutation.isPending
-  const currentRoleName = role.role.trim() || "member"
+  const isBusy = updateRoleMutation.isPending
+  const currentRoleKey = role.role.trim() || "member"
+  const currentRoleName = role.role.trim() || m.roles_member_fallback()
 
   return (
     <Card className={cn("bg-card/80", className)}>
@@ -147,11 +113,14 @@ export function UpdateRoleForm({
       <CardContent>
         <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-border/70 bg-background px-4 py-3">
           <span className="text-sm text-muted-foreground">
-            {isBaselineRole(currentRoleName)
+            {isBaselineRole(currentRoleKey)
               ? m.roles_default_badge()
               : m.roles_custom_badge()}
           </span>
-          <Badge variant={isBaselineRole(currentRoleName) ? "secondary" : "outline"} className="uppercase">
+          <Badge
+            variant={isBaselineRole(currentRoleKey) ? "secondary" : "outline"}
+            className="uppercase"
+          >
             {currentRoleName}
           </Badge>
         </div>
@@ -160,51 +129,17 @@ export function UpdateRoleForm({
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            void form.handleSubmit()
+
+            void updateRoleMutation.mutateAsync({
+              organizationId,
+              roleId: role.id,
+              permission: permissionMap,
+            }).catch(() => {
+              // The mutation error is surfaced inline.
+            })
           }}
           className="flex flex-col gap-6"
         >
-          <FieldGroup className="gap-4">
-            <form.Field
-              name="role"
-              children={(field) => {
-                const showError =
-                  field.state.meta.errors.length > 0 &&
-                  (field.state.meta.isTouched || form.state.isSubmitted)
-
-                return (
-                  <Field data-invalid={showError}>
-                    <label
-                      htmlFor={field.name}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {copy.roleLabel}
-                    </label>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      autoComplete="off"
-                      placeholder={copy.rolePlaceholder}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) => {
-                        field.handleChange(event.target.value)
-
-                        if (updateRoleMutation.isError) {
-                          updateRoleMutation.reset()
-                        }
-                      }}
-                      aria-invalid={showError}
-                      disabled={isBusy}
-                    />
-                    <FieldDescription>{copy.roleDescription}</FieldDescription>
-                    <FieldError errors={field.state.meta.errors} />
-                  </Field>
-                )
-              }}
-            />
-          </FieldGroup>
-
           <FieldSet className="gap-4">
             <FieldLegend variant="label" className="mb-0 text-sm font-medium">
               {copy.permissionsLabel}
@@ -303,34 +238,18 @@ export function UpdateRoleForm({
             </Alert>
           ) : null}
 
-          <form.Subscribe
-            selector={(state) => ({
-              canSubmit: state.canSubmit,
-              isSubmitting: state.isSubmitting,
-            })}
-          >
-            {({ canSubmit, isSubmitting }) => {
-              const isSubmitDisabled =
-                !canSubmit || isSubmitting || updateRoleMutation.isPending
-
-              return (
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isSubmitDisabled}
-                >
-                  {isBusy ? (
-                    <>
-                      <Spinner data-icon="inline-start" />
-                      {copy.submittingLabel}
-                    </>
-                  ) : (
-                    copy.submitLabel
-                  )}
-                </Button>
-              )
-            }}
-          </form.Subscribe>
+          <div className="flex justify-end">
+            <Button type="submit" className="w-full sm:w-auto" disabled={isBusy}>
+              {isBusy ? (
+                <>
+                  <Spinner data-icon="inline-start" />
+                  {copy.submittingLabel}
+                </>
+              ) : (
+                copy.submitLabel
+              )}
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

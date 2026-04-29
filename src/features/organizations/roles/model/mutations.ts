@@ -1,6 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { createRoleSchema, normalizeRoleName, normalizeRolePermissionMap } from "./schema"
+import {
+  createRoleSchema,
+  normalizeRoleName,
+  normalizeRolePermissionMap,
+  updateRoleSchema,
+} from "./schema"
 import { organizationRoleKeys } from "./queries"
 import type { CreateRoleInput } from "./schema"
 import { revalidateSignedInAuthState } from "@/shared/auth/model/auth-cache"
@@ -24,7 +29,6 @@ type DeleteOrganizationRoleMutationOptions = {
 type UpdateOrganizationRoleInput = {
   organizationId: string | null
   roleId: string
-  roleName: string
   permission: Record<string, Array<string>>
 }
 
@@ -84,8 +88,7 @@ export function useUpdateOrganizationRoleMutation(
 
   return useMutation({
     mutationFn: async (input: UpdateOrganizationRoleInput) => {
-      const parsed = createRoleSchema.parse({
-        role: normalizeRoleName(input.roleName),
+      const parsed = updateRoleSchema.parse({
         permission: normalizeRolePermissionMap(input.permission),
       })
 
@@ -103,7 +106,6 @@ export function useUpdateOrganizationRoleMutation(
         roleId: input.roleId,
         organizationId: input.organizationId,
         data: {
-          roleName: parsed.role,
           permission: parsed.permission,
         },
       })

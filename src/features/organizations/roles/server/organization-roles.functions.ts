@@ -4,6 +4,7 @@ import { and, count, desc, eq, ilike } from "drizzle-orm"
 import { z } from "zod"
 
 import { hasPermission } from "@/shared/auth/model/permission-checks"
+import { m } from "@/shared/i18n"
 import { findCurrentUser } from "@/shared/auth/server/current-user.server"
 import { organizationRole } from "@/shared/auth/server/schema"
 import { getDatabaseClient } from "@/shared/database/client.server"
@@ -37,9 +38,7 @@ export const getOrganizationRolesPage = createServerFn({ method: "GET" })
     const rolePermissions = currentUser?.activeOrganizationRole?.permission ?? null
 
     if (!hasPermission(rolePermissions, "ac", "read")) {
-      throw new Error(
-        "You do not have permission to read organization roles."
-      )
+      throw new Error(m.organization_roles_no_access_description())
     }
 
     const db = getDatabaseClient()

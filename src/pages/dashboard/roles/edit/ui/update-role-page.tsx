@@ -211,9 +211,6 @@ function UpdateRolePageContent({ roleId }: UpdateRolePageProps) {
         copy={{
           cardTitle: m.roles_update_card_title(),
           cardDescription: m.roles_update_card_description(),
-          roleLabel: m.roles_update_role_label(),
-          roleDescription: m.roles_update_role_description(),
-          rolePlaceholder: m.roles_update_role_placeholder(),
           permissionsLabel: m.roles_update_permissions_label(),
           permissionsDescription: m.roles_update_permissions_description(),
           submitLabel: m.roles_update_submit(),

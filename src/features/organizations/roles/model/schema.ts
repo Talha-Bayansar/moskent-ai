@@ -28,7 +28,11 @@ export const createRoleSchema = z.object({
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       m.validation_role_name_pattern()
-    ),
+  ),
+  permission: z.record(z.string(), z.array(z.string())),
+})
+
+export const updateRoleSchema = z.object({
   permission: z.record(z.string(), z.array(z.string())),
 })
 

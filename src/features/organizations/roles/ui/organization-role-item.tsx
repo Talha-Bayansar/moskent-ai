@@ -32,7 +32,7 @@ import {
 import { baselineOrganizationRoleNames } from "@/shared/auth/permissions"
 
 function formatRoleLabel(role: string) {
-  return role.trim() || "member"
+  return role.trim() || m.roles_member_fallback()
 }
 
 function formatJoinedDate(value?: string | Date | null) {

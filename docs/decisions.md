@@ -32,6 +32,15 @@ Use this template for new entries:
 
 ## Current Decisions
 
+## 2026-04-29 - Organization role names are immutable after creation
+
+- Status: accepted
+- Context: member assignments currently reference Better Auth organization roles by role name, so renaming a role breaks existing member links.
+- Decision: keep organization role names immutable after creation and restrict the role edit flow to permission changes only.
+- Why: this preserves compatibility with Better Auth's existing organization APIs and avoids introducing a custom role-identity layer or schema change just to support renaming.
+- Impact: the role edit route no longer exposes a role-name field, future member-role matching continues to rely on the existing Better Auth role key, and any future desire to rename roles must be handled as a new role plus explicit reassignment.
+- Follow-up: decide later whether role deletion should be blocked while members still reference the role or handled by a separate reassignment flow.
+
 ## 2026-04-29 - Role editing uses a dedicated route and role deletion stays on the overview menu
 
 - Status: accepted

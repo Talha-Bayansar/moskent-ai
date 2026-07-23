@@ -24,6 +24,10 @@ _Avoid_: User, account, contact
 The sign-in identity through which a Person may receive access to one or more Mosque Organizations.
 _Avoid_: Person, member
 
+**Organization Administrator**:
+A verified User Account entrusted with organization-wide governance of a Mosque Organization. The role is shared by at least two people and conveys no permanent personal ownership of the organization.
+_Avoid_: Owner, super admin, founding owner
+
 **Team**:
 An organizational unit within a Mosque Organization that may have one parent Team and any number of child Teams, forming an unrestricted hierarchy. A Team's position does not itself grant access to its descendants.
 _Avoid_: Department, workspace, fixed-level subteam

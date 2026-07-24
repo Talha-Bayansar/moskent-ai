@@ -33,12 +33,16 @@ An organizational unit within a Mosque Organization that may have one parent Tea
 _Avoid_: Department, workspace, fixed-level subteam
 
 **Role Template**:
-A reusable set of permissions defined by a Mosque Organization for assignment within its Team hierarchy. A Team may also define a specialized Role Template for local needs.
+A reusable entity-and-action permission set defined by a Mosque Organization or by a Team for use within its subtree. Changes to a Role Template affect every Role Assignment that references it.
 _Avoid_: User type, job title
 
 **Role Assignment**:
-The grant of a Role Template to a User Account for either one Team or that Team and its descendants.
+An additive grant of a Role Template to an active User Account for either one Team or that Team and its current and future descendants.
 _Avoid_: Team position, membership
+
+**Team Administrator**:
+A protected Role Template granting management authority within its assigned Team scope. It conveys no permanent ownership, and every Team has at least one directly assigned Team Administrator.
+_Avoid_: Team owner, workspace owner
 
 **Audience**:
 A manually maintained or rule-based collection of Persons used for filtering, insights, and targeted communication. Inclusion in an Audience grants no access or Team workspace.

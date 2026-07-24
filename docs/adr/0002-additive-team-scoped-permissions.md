@@ -1,0 +1,7 @@
+# Additive, Team-scoped permissions
+
+Moskent grants access through additive Role Assignments: an active User Account receives a Role Template for either one Team or that Team and its current and future descendants. Role Templates select product-defined actions per entity, with `Own` and `Any` variants where the relationship is meaningful; explicit deny rules and temporary assignments are deferred because their precedence and lifecycle costs outweigh first-release needs.
+
+Organization-wide templates may be used anywhere, while Team-local templates remain within their defining Team's subtree. A person may delegate only authority they already hold at the same or a broader scope. Template changes propagate to existing assignments after an impact preview, and permission changes take effect immediately across Moskent, including Moskent Copilot.
+
+`Team Administrator` is a protected system Role Template, and every Team must retain at least one direct assignment. Creating a child Team automatically grants its creator Team Administrator for that child without establishing permanent ownership. `Organization Administrator` remains separate governance authority: it can inspect access metadata and recover governance without automatically receiving operational Team access. Except for ADR-0001's critical governance changes, holding a permission is sufficient to perform its action without a second approval.
